@@ -874,6 +874,7 @@
       <div class="filtros">
         <button class="filtro activo" data-filtro="todas">Todas</button>
         <button class="filtro" data-filtro="favoritas">Favoritas</button>
+        <button class="filtro" data-filtro="encasa">En casa</button>
         <button class="filtro" data-filtro="Desayuno">Desayuno</button>
         <button class="filtro" data-filtro="Comida">Comida</button>
         <button class="filtro" data-filtro="Cena">Cena</button>
@@ -1084,7 +1085,8 @@
   </div>
 
   <div id="modo-cocina" class="modo-cocina oculto"></div>
-    <script src="recetas-extra.js"></script>
+
+  <script src="recetas-extra.js"></script>
 
   <script>
     const CLAVE_RECETAS = "miCocinaRecetas";
@@ -1103,6 +1105,7 @@
         proteina: 28,
         favorita: false,
         racionesBase: 1,
+        etiquetas: ["Sin fuego", "Rápido", "Vegetariano"],
         ingredientes: [
           { nombre: "Yogur griego natural", cantidad: 200, unidad: "g", categoria: "Lácteos y huevos" },
           { nombre: "Avena", cantidad: 30, unidad: "g", categoria: "Despensa" },
@@ -1133,6 +1136,7 @@
         proteina: 22,
         favorita: false,
         racionesBase: 1,
+        etiquetas: ["Rápido", "Vegetariano"],
         ingredientes: [
           { nombre: "Pan integral", cantidad: 60, unidad: "g", categoria: "Despensa" },
           { nombre: "Huevo", cantidad: 2, unidad: "ud", categoria: "Lácteos y huevos" },
@@ -1166,6 +1170,7 @@
         proteina: 45,
         favorita: false,
         racionesBase: 1,
+        etiquetas: ["Pollo", "Con arroz", "Batch cooking"],
         ingredientes: [
           { nombre: "Pechuga de pollo", cantidad: 180, unidad: "g", categoria: "Carne y pescado" },
           { nombre: "Arroz basmati", cantidad: 70, unidad: "g", categoria: "Despensa" },
@@ -1203,6 +1208,7 @@
         proteina: 38,
         favorita: false,
         racionesBase: 1,
+        etiquetas: ["Pescado", "Al horno", "Batch cooking"],
         ingredientes: [
           { nombre: "Salmón", cantidad: 150, unidad: "g", categoria: "Carne y pescado" },
           { nombre: "Patata", cantidad: 200, unidad: "g", categoria: "Fruta y verdura" },
@@ -1238,6 +1244,7 @@
         proteina: 40,
         favorita: false,
         racionesBase: 1,
+        etiquetas: ["Pollo", "Rápido", "Batch cooking"],
         ingredientes: [
           { nombre: "Pechuga de pollo", cantidad: 150, unidad: "g", categoria: "Carne y pescado" },
           { nombre: "Fideos de arroz", cantidad: 60, unidad: "g", categoria: "Despensa" },
@@ -1278,6 +1285,7 @@
         proteina: 35,
         favorita: false,
         racionesBase: 1,
+        etiquetas: ["Vegetariano", "Legumbres", "Batch cooking"],
         ingredientes: [
           { nombre: "Lentejas cocidas", cantidad: 250, unidad: "g", categoria: "Despensa" },
           { nombre: "Zanahoria", cantidad: 100, unidad: "g", categoria: "Fruta y verdura" },
@@ -1314,6 +1322,7 @@
         proteina: 40,
         favorita: false,
         racionesBase: 1,
+        etiquetas: ["Pescado", "Al horno", "Batch cooking"],
         ingredientes: [
           { nombre: "Merluza", cantidad: 180, unidad: "g", categoria: "Carne y pescado" },
           { nombre: "Patata", cantidad: 180, unidad: "g", categoria: "Fruta y verdura" },
@@ -1349,6 +1358,7 @@
         proteina: 42,
         favorita: false,
         racionesBase: 1,
+        etiquetas: ["Ternera", "Con arroz", "Batch cooking"],
         ingredientes: [
           { nombre: "Ternera picada magra", cantidad: 150, unidad: "g", categoria: "Carne y pescado" },
           { nombre: "Arroz integral", cantidad: 70, unidad: "g", categoria: "Despensa" },
@@ -1386,6 +1396,7 @@
         proteina: 38,
         favorita: false,
         racionesBase: 1,
+        etiquetas: ["Pescado", "Con pasta", "Batch cooking"],
         ingredientes: [
           { nombre: "Pasta integral", cantidad: 80, unidad: "g", categoria: "Despensa" },
           { nombre: "Atún al natural", cantidad: 120, unidad: "g", categoria: "Despensa" },
@@ -1421,6 +1432,7 @@
         proteina: 35,
         favorita: false,
         racionesBase: 1,
+        etiquetas: ["Pescado", "Sin fuego", "Ensalada"],
         ingredientes: [
           { nombre: "Atún al natural", cantidad: 120, unidad: "g", categoria: "Despensa" },
           { nombre: "Huevo", cantidad: 2, unidad: "ud", categoria: "Lácteos y huevos" },
@@ -1461,7 +1473,9 @@
       localStorage.setItem(clave, JSON.stringify(datos));
     }
 
-    let recetas = cargarDatos(CLAVE_RECETAS, recetasIniciales);
+    const recetasCompletas = [...recetasIniciales, ...recetasExtra];
+
+    let recetas = cargarDatos(CLAVE_RECETAS, recetasCompletas);
     let menus = cargarDatos(CLAVE_MENUS, {});
     let compras = cargarDatos(CLAVE_COMPRAS, {});
     let despensa = cargarDatos(CLAVE_DESPENSA, []);
@@ -1487,8 +1501,6 @@
     let semanaEditando = null;
     let formularioCompraVisible = false;
 
-        const recetasCompletas = [...recetasIniciales, ...recetasExtra];
-
     if (!Array.isArray(recetas) || recetas.length === 0) {
       recetas = recetasCompletas;
     }
@@ -1498,10 +1510,11 @@
       ingredientes: Array.isArray(receta.ingredientes) ? receta.ingredientes : [],
       pasos: Array.isArray(receta.pasos) ? receta.pasos : [],
       consejos: Array.isArray(receta.consejos) ? receta.consejos : [],
+      etiquetas: Array.isArray(receta.etiquetas) ? receta.etiquetas : [],
       racionesBase: receta.racionesBase || 1
     }));
 
-      recetasCompletas.forEach(recetaInicial => {
+    recetasCompletas.forEach(recetaInicial => {
       const indice = recetas.findIndex(
         receta => receta.id === recetaInicial.id
       );
@@ -1520,6 +1533,7 @@
           ingredientes: recetaInicial.ingredientes,
           pasos: recetaInicial.pasos,
           consejos: recetaInicial.consejos,
+          etiquetas: recetaInicial.etiquetas,
           calorias: recetaInicial.calorias,
           proteina: recetaInicial.proteina,
           racionesBase: recetaInicial.racionesBase
@@ -1528,6 +1542,20 @@
     });
 
     guardarDatos(CLAVE_RECETAS, recetas);
+
+    function tengoIngrediente(nombre) {
+      const nombreNormalizado = nombre.toLowerCase().trim();
+
+      return despensa.some(item =>
+        item.toLowerCase().trim() === nombreNormalizado
+      );
+    }
+
+    function puedoHacerReceta(receta) {
+      return (receta.ingredientes || []).every(ingrediente =>
+        tengoIngrediente(ingrediente.nombre)
+      );
+    }
 
     function obtenerSemanaISO(fechaTexto) {
       const fecha = new Date(fechaTexto + "T12:00:00");
@@ -1755,6 +1783,7 @@
       const recetasFiltradas = recetas.filter(receta => {
         if (filtroActual === "todas") return true;
         if (filtroActual === "favoritas") return receta.favorita;
+        if (filtroActual === "encasa") return puedoHacerReceta(receta);
         return receta.tipo === filtroActual;
       });
 
@@ -1764,6 +1793,7 @@
 
         const claseTipo = (receta.tipo || "").toLowerCase();
         const numeroPasos = (receta.pasos || []).length;
+        const disponible = puedoHacerReceta(receta);
 
         tarjeta.innerHTML = `
           <div class="receta-cabecera ${claseTipo}">
@@ -1779,6 +1809,11 @@
             <span class="dato">🔥 ${receta.calorias} kcal</span>
             <span class="dato">💪 ${receta.proteina} g</span>
             <span class="dato">📋 ${numeroPasos} pasos</span>
+            <span class="dato">${disponible ? "✅ En casa" : "🛒 Faltan ingredientes"}</span>
+          </div>
+
+          <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px;">
+            ${(receta.etiquetas || []).map(etiqueta => `<span class="chip">${etiqueta}</span>`).join("")}
           </div>
         `;
 
@@ -1811,7 +1846,12 @@
       });
 
       if (!recetasFiltradas.length) {
-        contenedor.innerHTML = "<p>No hay recetas en este filtro.</p>";
+        contenedor.innerHTML = `
+          <div class="tarjeta">
+            <h3>No hay recetas con este filtro</h3>
+            <p>Si has elegido “En casa”, añade ingredientes desde la lista de compra usando el botón 🧺.</p>
+          </div>
+        `;
       }
     }
 
@@ -1822,14 +1862,36 @@
           return;
         }
 
-        document.querySelectorAll(".filtro").forEach(filtro => {
-          if (filtro.id !== "boton-nueva-receta") {
-            filtro.classList.remove("activo");
-          }
-        });
+        const botonTodas = document.querySelector(
+          '.filtro[data-filtro="todas"]'
+        );
 
-        boton.classList.add("activo");
-        filtroActual = boton.dataset.filtro;
+        if (
+          boton.classList.contains("activo") &&
+          boton.dataset.filtro !== "todas"
+        ) {
+          filtroActual = "todas";
+
+          document.querySelectorAll(".filtro").forEach(filtro => {
+            if (filtro.id !== "boton-nueva-receta") {
+              filtro.classList.remove("activo");
+            }
+          });
+
+          if (botonTodas) {
+            botonTodas.classList.add("activo");
+          }
+        } else {
+          document.querySelectorAll(".filtro").forEach(filtro => {
+            if (filtro.id !== "boton-nueva-receta") {
+              filtro.classList.remove("activo");
+            }
+          });
+
+          boton.classList.add("activo");
+          filtroActual = boton.dataset.filtro;
+        }
+
         renderizarRecetas();
       };
     });
@@ -1899,6 +1961,7 @@
           proteina,
           favorita: false,
           racionesBase: 1,
+          etiquetas: [],
           ingredientes,
           pasos,
           consejos
@@ -1982,7 +2045,7 @@
         oscilador.start();
         oscilador.stop(contexto.currentTime + 1);
       } catch (error) {
-        // Si el navegador bloquea el sonido, seguirá la vibración y el aviso visual.
+        // Si el navegador bloquea el sonido, seguirán la vibración y el aviso visual.
       }
     }
 
@@ -2386,124 +2449,153 @@
     }
 
     function abrirModalDia(nombreDia, semana, menu) {
-  diaEditando = nombreDia;
-  semanaEditando = semana;
+      diaEditando = nombreDia;
+      semanaEditando = semana;
 
-  document.getElementById("titulo-modal-dia").textContent =
-    `Editar ${nombreDia}`;
+      document.getElementById("titulo-modal-dia").textContent =
+        `Editar ${nombreDia}`;
 
-  const contenedor = document.getElementById("campos-dia");
-  contenedor.innerHTML = "";
+      const contenedor = document.getElementById("campos-dia");
+      contenedor.innerHTML = "";
 
-  const buscador = document.createElement("input");
-  buscador.type = "text";
-  buscador.placeholder = "Buscar receta...";
-  buscador.id = "buscador-recetas";
-  buscador.style.marginBottom = "14px";
+      const buscador = document.createElement("input");
+      buscador.type = "text";
+      buscador.placeholder = "Buscar receta...";
+      buscador.id = "buscador-recetas";
+      buscador.style.marginBottom = "14px";
 
-  const filtros = document.createElement("div");
-  filtros.className = "filtros";
-  filtros.style.marginBottom = "14px";
-
-  const etiquetas = ["Todas"];
-
-  recetas.forEach(receta => {
-    (receta.etiquetas || []).forEach(etiqueta => {
-      if (!etiquetas.includes(etiqueta)) {
-        etiquetas.push(etiqueta);
-      }
-    });
-  });
-
-  let filtroEtiqueta = "Todas";
-
-  etiquetas.forEach(etiqueta => {
-    const boton = document.createElement("button");
-    boton.className = `filtro ${etiqueta === "Todas" ? "activo" : ""}`;
-    boton.textContent = etiqueta;
-
-    boton.onclick = () => {
-      filtroEtiqueta = etiqueta;
-
-      filtros.querySelectorAll(".filtro").forEach(filtro => {
-        filtro.classList.remove("activo");
-      });
-
-      boton.classList.add("activo");
-      actualizarOpciones();
-    };
-
-    filtros.appendChild(boton);
-  });
-
-  const crearSelector = comida => {
-    const clave = `${nombreDia}-${comida}`;
-    const seleccionada = menu[clave] || "";
-
-    const label = document.createElement("label");
-    label.textContent = comida;
-
-    const select = document.createElement("select");
-    select.dataset.clave = clave;
-    select.className = "selector-receta";
-
-    label.appendChild(select);
-    contenedor.appendChild(label);
-
-    return select;
-  };
-
-  const selectorDesayuno = crearSelector("Desayuno");
-  const selectorComida = crearSelector("Comida");
-  const selectorCena = crearSelector("Cena");
-
-  function actualizarOpciones() {
-    const texto = buscador.value.trim().toLowerCase();
-
-    const recetasFiltradas = recetas.filter(receta => {
-      const coincideTexto = receta.nombre
-        .toLowerCase()
-        .includes(texto);
-
-      const coincideEtiqueta =
-        filtroEtiqueta === "Todas" ||
-        (receta.etiquetas || []).includes(filtroEtiqueta);
-
-      return coincideTexto && coincideEtiqueta;
-    });
-
-    [selectorDesayuno, selectorComida, selectorCena].forEach(selector => {
-      const valorActual = selector.value;
-      selector.innerHTML = "";
-
-      const opcionVacia = document.createElement("option");
-      opcionVacia.value = "";
-      opcionVacia.textContent = "Sin planificar";
-      selector.appendChild(opcionVacia);
-
-      recetasFiltradas.forEach(receta => {
-        const opcion = document.createElement("option");
-        opcion.value = receta.id;
-        opcion.textContent = `${receta.tipo} · ${receta.nombre}`;
-
-        if (String(receta.id) === String(valorActual)) {
-          opcion.selected = true;
+      buscador.addEventListener("keydown", evento => {
+        if (evento.key === "Enter") {
+          evento.preventDefault();
         }
-
-        selector.appendChild(opcion);
       });
-    });
-  }
 
-  buscador.oninput = actualizarOpciones;
+      const filtros = document.createElement("div");
+      filtros.className = "filtros";
+      filtros.style.marginBottom = "14px";
 
-  contenedor.insertBefore(buscador, contenedor.firstChild);
-  contenedor.insertBefore(filtros, buscador.nextSibling);
+      const etiquetas = ["Todas", "En casa"];
 
-  actualizarOpciones();
+      recetas.forEach(receta => {
+        (receta.etiquetas || []).forEach(etiqueta => {
+          if (!etiquetas.includes(etiqueta)) {
+            etiquetas.push(etiqueta);
+          }
+        });
+      });
 
-  document.getElementById("modal-dia").classList.remove("oculto");
-}
+      let filtroEtiqueta = "Todas";
+
+      etiquetas.forEach(etiqueta => {
+        const boton = document.createElement("button");
+        boton.type = "button";
+        boton.className = `filtro ${etiqueta === "Todas" ? "activo" : ""}`;
+        boton.textContent = etiqueta;
+
+        boton.onclick = () => {
+          if (filtroEtiqueta === etiqueta && etiqueta !== "Todas") {
+            filtroEtiqueta = "Todas";
+
+            filtros.querySelectorAll(".filtro").forEach(filtro => {
+              filtro.classList.remove("activo");
+            });
+
+            const botonTodas = [...filtros.querySelectorAll(".filtro")]
+              .find(filtro => filtro.textContent === "Todas");
+
+            if (botonTodas) {
+              botonTodas.classList.add("activo");
+            }
+          } else {
+            filtroEtiqueta = etiqueta;
+
+            filtros.querySelectorAll(".filtro").forEach(filtro => {
+              filtro.classList.remove("activo");
+            });
+
+            boton.classList.add("activo");
+          }
+
+          actualizarOpciones();
+        };
+
+        filtros.appendChild(boton);
+      });
+
+      const crearSelector = comida => {
+        const clave = `${nombreDia}-${comida}`;
+        const seleccionada = menu[clave] || "";
+
+        const label = document.createElement("label");
+        label.textContent = comida;
+
+        const select = document.createElement("select");
+        select.dataset.clave = clave;
+        select.className = "selector-receta";
+
+        label.appendChild(select);
+        contenedor.appendChild(label);
+
+        return select;
+      };
+
+      const selectorDesayuno = crearSelector("Desayuno");
+      const selectorComida = crearSelector("Comida");
+      const selectorCena = crearSelector("Cena");
+
+      function actualizarOpciones() {
+        const texto = buscador.value.trim().toLowerCase();
+
+        const recetasFiltradas = recetas.filter(receta => {
+          const coincideTexto = receta.nombre
+            .toLowerCase()
+            .includes(texto);
+
+          let coincideEtiqueta = false;
+
+          if (filtroEtiqueta === "Todas") {
+            coincideEtiqueta = true;
+          } else if (filtroEtiqueta === "En casa") {
+            coincideEtiqueta = puedoHacerReceta(receta);
+          } else {
+            coincideEtiqueta = (receta.etiquetas || []).includes(filtroEtiqueta);
+          }
+
+          return coincideTexto && coincideEtiqueta;
+        });
+
+        [selectorDesayuno, selectorComida, selectorCena].forEach(selector => {
+          const valorActual = selector.value;
+          selector.innerHTML = "";
+
+          const opcionVacia = document.createElement("option");
+          opcionVacia.value = "";
+          opcionVacia.textContent = "Sin planificar";
+          selector.appendChild(opcionVacia);
+
+          recetasFiltradas.forEach(receta => {
+            const opcion = document.createElement("option");
+            opcion.value = receta.id;
+            opcion.textContent = `${receta.tipo} · ${receta.nombre}`;
+
+            if (String(receta.id) === String(valorActual)) {
+              opcion.selected = true;
+            }
+
+            selector.appendChild(opcion);
+          });
+        });
+      }
+
+      buscador.oninput = actualizarOpciones;
+
+      contenedor.insertBefore(buscador, contenedor.firstChild);
+      contenedor.insertBefore(filtros, buscador.nextSibling);
+
+      actualizarOpciones();
+
+      document.getElementById("modal-dia").classList.remove("oculto");
+    }
 
     function cerrarModalDia() {
       document.getElementById("modal-dia").classList.add("oculto");
@@ -2551,9 +2643,7 @@
         if (!receta) return;
 
         (receta.ingredientes || []).forEach(ingrediente => {
-          const yaEnDespensa = despensa.some(item =>
-            item.toLowerCase() === ingrediente.nombre.toLowerCase()
-          );
+          const yaEnDespensa = tengoIngrediente(ingrediente.nombre);
 
           if (yaEnDespensa) return;
 
@@ -3037,10 +3127,11 @@
             ingredientes: Array.isArray(receta.ingredientes) ? receta.ingredientes : [],
             pasos: Array.isArray(receta.pasos) ? receta.pasos : [],
             consejos: Array.isArray(receta.consejos) ? receta.consejos : [],
+            etiquetas: Array.isArray(receta.etiquetas) ? receta.etiquetas : [],
             racionesBase: receta.racionesBase || 1
           }));
 
-          recetasIniciales.forEach(recetaInicial => {
+          recetasCompletas.forEach(recetaInicial => {
             const indice = recetas.findIndex(
               receta => receta.id === recetaInicial.id
             );
@@ -3050,7 +3141,8 @@
                 ...recetas[indice],
                 pasos: recetaInicial.pasos,
                 consejos: recetaInicial.consejos,
-                ingredientes: recetaInicial.ingredientes
+                ingredientes: recetaInicial.ingredientes,
+                etiquetas: recetaInicial.etiquetas
               };
             }
           });
