@@ -6,6 +6,7 @@
   <meta name="theme-color" content="#F7F2EC">
   <title>Mi Cocina</title>
   <link rel="manifest" href="manifest.json">
+  <link rel="apple-touch-icon" href="./icons/apple-touch-icon.png">
 
   <style>
     :root {
@@ -385,6 +386,90 @@
       display: none;
     }
 
+    .modo-cocina {
+      position: fixed;
+      inset: 0;
+      z-index: 100;
+      display: flex;
+      flex-direction: column;
+      background: var(--fondo);
+      padding: calc(24px + env(safe-area-inset-top)) 22px calc(24px + env(safe-area-inset-bottom));
+      overflow-y: auto;
+    }
+
+    .modo-cocina.oculto {
+      display: none;
+    }
+
+    .modo-cocina-cabecera {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+
+    .modo-cocina h2 {
+      margin: 0;
+      font-size: 24px;
+    }
+
+    .paso-actual {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      font-size: 30px;
+      font-weight: 800;
+      line-height: 1.25;
+      padding: 30px 0;
+    }
+
+    .paso-numero {
+      font-size: 14px;
+      font-weight: 800;
+      color: var(--texto-suave);
+      text-transform: uppercase;
+      letter-spacing: .1em;
+      text-align: center;
+      margin-bottom: 10px;
+    }
+
+    .controles-cocina {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-top: 20px;
+    }
+
+    .selector-raciones {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      background: var(--superficie);
+      border: 1px solid var(--borde);
+      border-radius: 20px;
+      padding: 14px;
+      margin-bottom: 18px;
+    }
+
+    .selector-raciones strong {
+      font-size: 20px;
+    }
+
+    .boton-racion {
+      min-width: 48px;
+      min-height: 48px;
+      border: none;
+      border-radius: 16px;
+      background: var(--principal-suave);
+      color: var(--principal);
+      font-size: 22px;
+      font-weight: 800;
+    }
+
     @media (max-width: 480px) {
       .anadir-producto {
         grid-template-columns: 1fr;
@@ -463,6 +548,14 @@
             ></textarea>
           </label>
 
+          <label>Pasos
+            <textarea
+              id="receta-pasos"
+              rows="6"
+              placeholder="Un paso por línea"
+            ></textarea>
+          </label>
+
           <button type="submit">Guardar receta</button>
         </form>
       </div>
@@ -527,6 +620,8 @@
     <a href="#" class="nav-item" data-pantalla="compra">Compra</a>
   </nav>
 
+  <div id="modo-cocina" class="modo-cocina oculto"></div>
+
   <script>
     const CLAVE_RECETAS = "miCocinaRecetas";
     const CLAVE_MENUS = "miCocinaMenus";
@@ -540,10 +635,16 @@
         calorias: 300,
         proteina: 28,
         favorita: false,
+        racionesBase: 1,
         ingredientes: [
           { nombre: "Yogur griego natural", cantidad: 200, unidad: "g", categoria: "Lácteos y huevos" },
           { nombre: "Avena", cantidad: 30, unidad: "g", categoria: "Despensa" },
           { nombre: "Fresas", cantidad: 100, unidad: "g", categoria: "Fruta y verdura" }
+        ],
+        pasos: [
+          "Pon el yogur griego en un bol.",
+          "Añade la avena y las fresas troceadas.",
+          "Mezcla y sirve."
         ]
       },
       {
@@ -553,10 +654,16 @@
         calorias: 350,
         proteina: 22,
         favorita: false,
+        racionesBase: 1,
         ingredientes: [
           { nombre: "Pan integral", cantidad: 60, unidad: "g", categoria: "Despensa" },
           { nombre: "Huevo", cantidad: 2, unidad: "ud", categoria: "Lácteos y huevos" },
           { nombre: "Tomate", cantidad: 1, unidad: "ud", categoria: "Fruta y verdura" }
+        ],
+        pasos: [
+          "Tuesta el pan integral.",
+          "Cocina el huevo a tu gusto.",
+          "Sirve con tomate en rodajas."
         ]
       },
       {
@@ -566,10 +673,17 @@
         calorias: 560,
         proteina: 45,
         favorita: false,
+        racionesBase: 1,
         ingredientes: [
           { nombre: "Pechuga de pollo", cantidad: 180, unidad: "g", categoria: "Carne y pescado" },
           { nombre: "Arroz basmati", cantidad: 70, unidad: "g", categoria: "Despensa" },
           { nombre: "Judías verdes", cantidad: 150, unidad: "g", categoria: "Fruta y verdura" }
+        ],
+        pasos: [
+          "Cuece el arroz según las instrucciones del paquete.",
+          "Cocina las judías verdes al vapor o en agua.",
+          "Haz la pechuga de pollo a la plancha.",
+          "Sirve todo junto."
         ]
       },
       {
@@ -579,10 +693,17 @@
         calorias: 550,
         proteina: 38,
         favorita: false,
+        racionesBase: 1,
         ingredientes: [
           { nombre: "Salmón", cantidad: 150, unidad: "g", categoria: "Carne y pescado" },
           { nombre: "Patata", cantidad: 200, unidad: "g", categoria: "Fruta y verdura" },
           { nombre: "Brócoli", cantidad: 150, unidad: "g", categoria: "Fruta y verdura" }
+        ],
+        pasos: [
+          "Precalienta el horno a 200 grados.",
+          "Corta la patata y ponla en la bandeja.",
+          "Añade el salmón y el brócoli.",
+          "Hornea unos 20 minutos."
         ]
       },
       {
@@ -592,11 +713,19 @@
         calorias: 520,
         proteina: 40,
         favorita: false,
+        racionesBase: 1,
         ingredientes: [
           { nombre: "Pechuga de pollo", cantidad: 150, unidad: "g", categoria: "Carne y pescado" },
           { nombre: "Fideos de arroz", cantidad: 60, unidad: "g", categoria: "Despensa" },
           { nombre: "Calabacín", cantidad: 100, unidad: "g", categoria: "Fruta y verdura" },
           { nombre: "Pimiento rojo", cantidad: 100, unidad: "g", categoria: "Fruta y verdura" }
+        ],
+        pasos: [
+          "Prepara los fideos de arroz según el paquete.",
+          "Corta el pollo y las verduras.",
+          "Saltea el pollo en la sartén.",
+          "Añade las verduras y los fideos.",
+          "Mezcla y sirve."
         ]
       },
       {
@@ -606,10 +735,16 @@
         calorias: 580,
         proteina: 35,
         favorita: false,
+        racionesBase: 1,
         ingredientes: [
           { nombre: "Lentejas cocidas", cantidad: 250, unidad: "g", categoria: "Despensa" },
           { nombre: "Zanahoria", cantidad: 100, unidad: "g", categoria: "Fruta y verdura" },
           { nombre: "Huevo", cantidad: 1, unidad: "ud", categoria: "Lácteos y huevos" }
+        ],
+        pasos: [
+          "Calienta las lentejas con la zanahoria troceada.",
+          "Cuece el huevo.",
+          "Sirve las lentejas con el huevo duro."
         ]
       },
       {
@@ -619,10 +754,17 @@
         calorias: 480,
         proteina: 40,
         favorita: false,
+        racionesBase: 1,
         ingredientes: [
           { nombre: "Merluza", cantidad: 180, unidad: "g", categoria: "Carne y pescado" },
           { nombre: "Patata", cantidad: 180, unidad: "g", categoria: "Fruta y verdura" },
           { nombre: "Espárragos verdes", cantidad: 150, unidad: "g", categoria: "Fruta y verdura" }
+        ],
+        pasos: [
+          "Precalienta el horno a 200 grados.",
+          "Coloca la patata, la merluza y los espárragos en una bandeja.",
+          "Hornea unos 20 minutos.",
+          "Sirve caliente."
         ]
       },
       {
@@ -632,10 +774,16 @@
         calorias: 620,
         proteina: 42,
         favorita: false,
+        racionesBase: 1,
         ingredientes: [
           { nombre: "Ternera picada magra", cantidad: 150, unidad: "g", categoria: "Carne y pescado" },
           { nombre: "Arroz integral", cantidad: 70, unidad: "g", categoria: "Despensa" },
           { nombre: "Aguacate", cantidad: 50, unidad: "g", categoria: "Fruta y verdura" }
+        ],
+        pasos: [
+          "Cuece el arroz integral.",
+          "Cocina la ternera picada.",
+          "Sirve en un bowl con el aguacate."
         ]
       },
       {
@@ -645,10 +793,17 @@
         calorias: 560,
         proteina: 38,
         favorita: false,
+        racionesBase: 1,
         ingredientes: [
           { nombre: "Pasta integral", cantidad: 80, unidad: "g", categoria: "Despensa" },
           { nombre: "Atún al natural", cantidad: 120, unidad: "g", categoria: "Despensa" },
           { nombre: "Tomate", cantidad: 150, unidad: "g", categoria: "Fruta y verdura" }
+        ],
+        pasos: [
+          "Cuece la pasta integral.",
+          "Calienta el tomate.",
+          "Mezcla la pasta con el tomate y el atún.",
+          "Sirve."
         ]
       },
       {
@@ -658,11 +813,18 @@
         calorias: 480,
         proteina: 35,
         favorita: false,
+        racionesBase: 1,
         ingredientes: [
           { nombre: "Atún al natural", cantidad: 120, unidad: "g", categoria: "Despensa" },
           { nombre: "Huevo", cantidad: 2, unidad: "ud", categoria: "Lácteos y huevos" },
           { nombre: "Lechuga", cantidad: 100, unidad: "g", categoria: "Fruta y verdura" },
           { nombre: "Aguacate", cantidad: 50, unidad: "g", categoria: "Fruta y verdura" }
+        ],
+        pasos: [
+          "Lava y trocea la lechuga.",
+          "Cuece los huevos.",
+          "Mezcla todos los ingredientes.",
+          "Sirve la ensalada."
         ]
       }
     ];
@@ -680,6 +842,9 @@
     let menus = cargarDatos(CLAVE_MENUS, {});
     let compras = cargarDatos(CLAVE_COMPRAS, {});
     let filtroActual = "todas";
+    let recetaCocinando = null;
+    let pasoActual = 0;
+    let racionesActuales = 1;
 
     if (!localStorage.getItem(CLAVE_RECETAS)) {
       guardarDatos(CLAVE_RECETAS, recetas);
@@ -855,6 +1020,13 @@
           renderizarRecetas();
         };
 
+        const botonCocinar = document.createElement("button");
+        botonCocinar.className = "boton";
+        botonCocinar.textContent = "Cocinar";
+
+        botonCocinar.onclick = () => abrirModoCocina(receta);
+
+        tarjeta.appendChild(botonCocinar);
         contenedor.appendChild(tarjeta);
       });
 
@@ -889,6 +1061,9 @@
         const ingredientesTexto = document
           .getElementById("receta-ingredientes")
           .value.trim();
+        const pasosTexto = document
+          .getElementById("receta-pasos")
+          .value.trim();
 
         if (!nombre || !ingredientesTexto) return;
 
@@ -906,6 +1081,10 @@
           })
           .filter(ingrediente => ingrediente.nombre);
 
+        const pasos = pasosTexto
+          ? pasosTexto.split("\n").filter(paso => paso.trim())
+          : ["Prepara los ingredientes.", "Cocina y sirve."];
+
         recetas.push({
           id: Date.now(),
           nombre,
@@ -913,13 +1092,132 @@
           calorias,
           proteina,
           favorita: false,
-          ingredientes
+          racionesBase: 1,
+          ingredientes,
+          pasos
         });
 
         guardarDatos(CLAVE_RECETAS, recetas);
         evento.target.reset();
         renderizarRecetas();
       });
+
+    function abrirModoCocina(receta) {
+      recetaCocinando = receta;
+      pasoActual = 0;
+      racionesActuales = receta.racionesBase || 1;
+
+      document.getElementById("modo-cocina").classList.remove("oculto");
+      renderizarModoCocina();
+    }
+
+    function cerrarModoCocina() {
+      document.getElementById("modo-cocina").classList.add("oculto");
+      recetaCocinando = null;
+      pasoActual = 0;
+    }
+
+    function renderizarModoCocina() {
+      const contenedor = document.getElementById("modo-cocina");
+      const receta = recetaCocinando;
+      const factor = racionesActuales / (receta.racionesBase || 1);
+
+      const pasos = receta.pasos && receta.pasos.length
+        ? receta.pasos
+        : ["Prepara los ingredientes.", "Cocina y sirve."];
+
+      const paso = pasos[pasoActual];
+
+      contenedor.innerHTML = `
+        <div class="modo-cocina-cabecera">
+          <h2>${receta.nombre}</h2>
+          <button class="boton-peligro" id="cerrar-cocina">Cerrar</button>
+        </div>
+
+        <div class="selector-raciones">
+          <div>
+            <span style="font-size:13px;color:var(--texto-suave);font-weight:700;">
+              RACIONES
+            </span>
+            <strong>${racionesActuales}</strong>
+          </div>
+          <div style="display:flex;gap:8px;">
+            <button class="boton-racion" id="menos-raciones">−</button>
+            <button class="boton-racion" id="mas-raciones">+</button>
+          </div>
+        </div>
+
+        <div class="paso-numero">
+          Paso ${pasoActual + 1} de ${pasos.length}
+        </div>
+
+        <div class="paso-actual">${paso}</div>
+
+        <div class="tarjeta">
+          <h3>Ingredientes para ${racionesActuales} ración${racionesActuales === 1 ? "" : "es"}</h3>
+          <div id="ingredientes-cocina"></div>
+        </div>
+
+        <div class="controles-cocina">
+          <button class="boton secundario" id="paso-anterior">Anterior</button>
+          <button class="boton" id="paso-siguiente">
+            ${pasoActual === pasos.length - 1 ? "Terminar" : "Siguiente"}
+          </button>
+        </div>
+      `;
+
+      const contenedorIngredientes =
+        document.getElementById("ingredientes-cocina");
+
+      receta.ingredientes.forEach(ingrediente => {
+        const fila = document.createElement("div");
+        fila.className = "comida-linea";
+
+        const cantidadAjustada = ingrediente.cantidad * factor;
+        const cantidadTexto = Number.isInteger(cantidadAjustada)
+          ? cantidadAjustada
+          : cantidadAjustada.toFixed(1);
+
+        fila.innerHTML = `
+          <span>${ingrediente.nombre}</span>
+          <span>${cantidadTexto} ${ingrediente.unidad}</span>
+        `;
+
+        contenedorIngredientes.appendChild(fila);
+      });
+
+      document.getElementById("cerrar-cocina").onclick = cerrarModoCocina;
+
+      document.getElementById("menos-raciones").onclick = () => {
+        if (racionesActuales > 1) {
+          racionesActuales -= 1;
+          renderizarModoCocina();
+        }
+      };
+
+      document.getElementById("mas-raciones").onclick = () => {
+        if (racionesActuales < 8) {
+          racionesActuales += 1;
+          renderizarModoCocina();
+        }
+      };
+
+      document.getElementById("paso-anterior").onclick = () => {
+        if (pasoActual > 0) {
+          pasoActual -= 1;
+          renderizarModoCocina();
+        }
+      };
+
+      document.getElementById("paso-siguiente").onclick = () => {
+        if (pasoActual < pasos.length - 1) {
+          pasoActual += 1;
+          renderizarModoCocina();
+        } else {
+          cerrarModoCocina();
+        }
+      };
+    }
 
     function renderizarMenu() {
       const fechaInput = document.getElementById("fecha-menu");
