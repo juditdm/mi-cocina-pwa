@@ -871,6 +871,8 @@
     <section id="pantalla-recetas" class="oculto">
       <h2>Mis recetas</h2>
 
+      <div id="sugerencias-recetas"></div>
+
       <div class="filtros">
         <button class="filtro activo" data-filtro="todas">Todas</button>
         <button class="filtro" data-filtro="favoritas">Favoritas</button>
@@ -1593,6 +1595,12 @@
       );
     }
 
+    function obtenerIngredientesFaltantes(receta) {
+      return (receta.ingredientes || [])
+        .filter(ingrediente => !tengoIngrediente(ingrediente.nombre))
+        .map(ingrediente => ingrediente.nombre);
+    }
+
     function anadirIngredienteADespensa(nombre) {
       if (!nombre || tengoIngrediente(nombre)) {
         return false;
@@ -1613,6 +1621,22 @@
       });
 
       return anadidos;
+    }
+
+    function obtenerSugerencias() {
+      return recetas
+        .map(receta => ({
+          receta,
+          faltantes: obtenerIngredientesFaltantes(receta)
+        }))
+        .sort((a, b) => {
+          if (a.receta.favorita !== b.receta.favorita) {
+            return a.receta.favorita ? -1 : 1;
+          }
+
+          return a.faltantes.length - b.faltantes.length;
+        })
+        .slice(0, 3);
     }
 
     function obtenerSemanaISO(fechaTexto) {
@@ -1829,7 +1853,60 @@
         `${Math.round(proteinaTotal / 7)} g`;
     }
 
+    function renderizarSugerencias() {
+      const contenedor = document.getElementById("sugerencias-recetas");
+      const sugerencias = obtenerSugerencias();
+
+      contenedor.innerHTML = "";
+
+      const tarjeta = document.createElement("div");
+      tarjeta.className = "tarjeta tarjeta-hero";
+
+      tarjeta.innerHTML = `
+        <span class="etiqueta">Para ti</span>
+        <h3 style="margin:12px 0 4px;">Sugerencias inteligentes</h3>
+        <p style="color:var(--texto-medio);font-size:14px;margin:0 0 16px;">
+          Recetas ordenadas por tus favoritas y por los ingredientes que te faltan.
+        </p>
+      `;
+
+      sugerencias.forEach(sugerencia => {
+        const receta = sugerencia.receta;
+        const faltantes = sugerencia.faltantes;
+
+        const bloque = document.createElement("div");
+        bloque.style.cssText =
+          "border-top:1px solid var(--borde);padding-top:14px;margin-top:14px;";
+
+        bloque.innerHTML = `
+          <strong>${receta.favorita ? "♥ " : ""}${receta.nombre}</strong>
+          <div style="display:flex;gap:8px;flex-wrap:wrap;margin:8px 0 10px;">
+            <span class="dato">${faltantes.length === 0 ? "✅ Lista para cocinar" : `🛒 Faltan ${faltantes.length}`}</span>
+            <span class="dato">🔥 ${receta.calorias} kcal</span>
+          </div>
+          ${faltantes.length ? `
+            <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px;">
+              ${faltantes.map(nombre => `<span class="chip">${nombre}</span>`).join("")}
+            </div>
+          ` : ""}
+        `;
+
+        const botonCocinar = document.createElement("button");
+        botonCocinar.className = "boton";
+        botonCocinar.textContent = "Cocinar paso a paso";
+
+        botonCocinar.onclick = () => abrirModoCocina(receta);
+
+        bloque.appendChild(botonCocinar);
+        tarjeta.appendChild(bloque);
+      });
+
+      contenedor.appendChild(tarjeta);
+    }
+
     function renderizarRecetas() {
+      renderizarSugerencias();
+
       const contenedor = document.getElementById("lista-recetas");
       contenedor.innerHTML = "";
 
