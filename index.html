@@ -30,10 +30,6 @@
       --peligro-suave: rgba(225, 112, 92, .14);
       --radio-tarjeta: 24px;
       --radio-boton: 16px;
-      --espacio-2: 8px;
-      --espacio-3: 12px;
-      --espacio-4: 16px;
-      --espacio-5: 20px;
     }
 
     * {
@@ -399,29 +395,75 @@
     .dia-semana {
       border: 1px solid var(--borde);
       border-radius: 22px;
-      padding: 16px;
+      padding: 18px;
       background: var(--superficie);
-      cursor: pointer;
       scroll-margin-top: 78px;
     }
 
-    .dia-semana.hoy { border-color: rgba(240, 154, 99, .5); }
+    .dia-semana.hoy {
+      border-color: rgba(240, 154, 99, .5);
+      background:
+        linear-gradient(150deg, rgba(240, 154, 99, .08), transparent),
+        var(--superficie);
+    }
+
+    .dia-semana.completo {
+      border-color: rgba(127, 200, 169, .35);
+    }
 
     .dia-cabecera {
       display: flex;
       justify-content: space-between;
-      margin-bottom: 10px;
+      align-items: flex-start;
+      gap: 12px;
+      margin-bottom: 12px;
     }
 
-    .dia-nombre { font-weight: 820; }
-    .dia-fecha { font-size: 13px; color: var(--texto-suave); }
+    .dia-nombre {
+      display: block;
+      font-weight: 820;
+      font-size: 17px;
+    }
+
+    .dia-fecha {
+      display: block;
+      font-size: 13px;
+      color: var(--texto-suave);
+      margin-top: 2px;
+    }
+
+    .puntos-comida {
+      display: flex;
+      gap: 6px;
+      margin-top: 10px;
+    }
+
+    .punto-comida {
+      width: 10px;
+      height: 10px;
+      border-radius: 999px;
+      background: var(--superficie-alta);
+      border: 1px solid var(--borde-fuerte);
+    }
+
+    .punto-comida.lleno {
+      background: var(--verde);
+      border-color: var(--verde);
+    }
+
+    .resumen-dia {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin: 12px 0 14px;
+    }
 
     .comida-linea {
       display: flex;
       justify-content: space-between;
       gap: 10px;
       font-size: 14px;
-      padding: 5px 0;
+      padding: 6px 0;
     }
 
     .comida-linea span:first-child {
@@ -1670,14 +1712,20 @@
       };
     }
 
-    function crearChipsDias(nombresDias) {
+    function crearChipsDias(nombresDias, menu) {
       const contenedor = document.getElementById("chips-dias");
       contenedor.innerHTML = "";
 
+      const tiposComida = ["Desayuno", "Comida", "Cena"];
+
       nombresDias.forEach(nombreDia => {
+        const completas = tiposComida.filter(comida =>
+          menu[`${nombreDia}-${comida}`]
+        ).length;
+
         const chip = document.createElement("button");
         chip.className = "chip-navegacion";
-        chip.textContent = nombreDia;
+        chip.textContent = `${nombreDia} ${completas}/3`;
 
         chip.onclick = () => {
           const destino = document.getElementById(`dia-${nombreDia}`);
@@ -1750,7 +1798,7 @@
         "Domingo"
       ];
 
-      crearChipsDias(nombresDias);
+      crearChipsDias(nombresDias, menu);
 
       vistaSemana.innerHTML = "";
       const contenedorSemana = document.createElement("div");
@@ -1764,14 +1812,44 @@
         fechaDia.setDate(fechaDia.getDate() + indice);
         const fechaISO = obtenerFechaISO(fechaDia);
 
+        const recetasDia = tiposComida
+          .map(comida => recetas.find(
+            receta => receta.id === menu[`${nombreDia}-${comida}`]
+          ))
+          .filter(receta => receta);
+
+        const caloriasDia = recetasDia.reduce(
+          (total, receta) => total + receta.calorias,
+          0
+        );
+
+        const proteinaDia = recetasDia.reduce(
+          (total, receta) => total + receta.proteina,
+          0
+        );
+
         const tarjetaDia = document.createElement("div");
-        tarjetaDia.className = `dia-semana ${fechaISO === fechaHoy ? "hoy" : ""}`;
+        tarjetaDia.className = `dia-semana ${fechaISO === fechaHoy ? "hoy" : ""} ${recetasDia.length === 3 ? "completo" : ""}`;
         tarjetaDia.id = `dia-${nombreDia}`;
+
+        const puntos = tiposComida.map(comida => {
+          const lleno = Boolean(menu[`${nombreDia}-${comida}`]);
+          return `<span class="punto-comida ${lleno ? "lleno" : ""}"></span>`;
+        }).join("");
 
         tarjetaDia.innerHTML = `
           <div class="dia-cabecera">
-            <span class="dia-nombre">${nombreDia}</span>
-            <span class="dia-fecha">${fechaISO}</span>
+            <div>
+              <span class="dia-nombre">${nombreDia}</span>
+              <span class="dia-fecha">${fechaISO}</span>
+            </div>
+          </div>
+
+          <div class="puntos-comida">${puntos}</div>
+
+          <div class="resumen-dia">
+            <span class="dato">🔥 ${caloriasDia} kcal</span>
+            <span class="dato">💪 ${proteinaDia} g</span>
           </div>
         `;
 
@@ -1791,10 +1869,15 @@
           tarjetaDia.appendChild(linea);
         });
 
-        tarjetaDia.onclick = () => {
+        const botonEditar = document.createElement("button");
+        botonEditar.className = "boton secundario";
+        botonEditar.textContent = "Editar día";
+
+        botonEditar.onclick = () => {
           abrirModalDia(nombreDia, semana, menu);
         };
 
+        tarjetaDia.appendChild(botonEditar);
         contenedorSemana.appendChild(tarjetaDia);
       });
 
@@ -1987,8 +2070,6 @@
         const botonDespensa = document.createElement("button");
         botonDespensa.className = "boton-mini";
         botonDespensa.textContent = "🧺";
-
-        botonDespensa.title = "Guardar en despensa";
         botonDespensa.setAttribute("aria-label", "Guardar en despensa");
 
         botonDespensa.onclick = () => {
