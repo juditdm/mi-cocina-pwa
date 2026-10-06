@@ -1084,6 +1084,7 @@
   </div>
 
   <div id="modo-cocina" class="modo-cocina oculto"></div>
+    <script src="recetas-extra.js"></script>
 
   <script>
     const CLAVE_RECETAS = "miCocinaRecetas";
@@ -1486,8 +1487,10 @@
     let semanaEditando = null;
     let formularioCompraVisible = false;
 
+        const recetasCompletas = [...recetasIniciales, ...recetasExtra];
+
     if (!Array.isArray(recetas) || recetas.length === 0) {
-      recetas = recetasIniciales;
+      recetas = recetasCompletas;
     }
 
     recetas = recetas.map(receta => ({
@@ -1498,7 +1501,7 @@
       racionesBase: receta.racionesBase || 1
     }));
 
-    recetasIniciales.forEach(recetaInicial => {
+      recetasCompletas.forEach(recetaInicial => {
       const indice = recetas.findIndex(
         receta => receta.id === recetaInicial.id
       );
@@ -2383,48 +2386,124 @@
     }
 
     function abrirModalDia(nombreDia, semana, menu) {
-      diaEditando = nombreDia;
-      semanaEditando = semana;
+  diaEditando = nombreDia;
+  semanaEditando = semana;
 
-      document.getElementById("titulo-modal-dia").textContent =
-        `Editar ${nombreDia}`;
+  document.getElementById("titulo-modal-dia").textContent =
+    `Editar ${nombreDia}`;
 
-      const contenedor = document.getElementById("campos-dia");
-      contenedor.innerHTML = "";
+  const contenedor = document.getElementById("campos-dia");
+  contenedor.innerHTML = "";
 
-      ["Desayuno", "Comida", "Cena"].forEach(comida => {
-        const clave = `${nombreDia}-${comida}`;
-        const seleccionada = menu[clave] || "";
+  const buscador = document.createElement("input");
+  buscador.type = "text";
+  buscador.placeholder = "Buscar receta...";
+  buscador.id = "buscador-recetas";
+  buscador.style.marginBottom = "14px";
 
-        const label = document.createElement("label");
-        label.textContent = comida;
+  const filtros = document.createElement("div");
+  filtros.className = "filtros";
+  filtros.style.marginBottom = "14px";
 
-        const select = document.createElement("select");
-        select.dataset.clave = clave;
+  const etiquetas = ["Todas"];
 
-        const opcionVacia = document.createElement("option");
-        opcionVacia.value = "";
-        opcionVacia.textContent = "Sin planificar";
-        select.appendChild(opcionVacia);
+  recetas.forEach(receta => {
+    (receta.etiquetas || []).forEach(etiqueta => {
+      if (!etiquetas.includes(etiqueta)) {
+        etiquetas.push(etiqueta);
+      }
+    });
+  });
 
-        recetas.forEach(receta => {
-          const opcion = document.createElement("option");
-          opcion.value = receta.id;
-          opcion.textContent = receta.nombre;
+  let filtroEtiqueta = "Todas";
 
-          if (receta.id === seleccionada) {
-            opcion.selected = true;
-          }
+  etiquetas.forEach(etiqueta => {
+    const boton = document.createElement("button");
+    boton.className = `filtro ${etiqueta === "Todas" ? "activo" : ""}`;
+    boton.textContent = etiqueta;
 
-          select.appendChild(opcion);
-        });
+    boton.onclick = () => {
+      filtroEtiqueta = etiqueta;
 
-        label.appendChild(select);
-        contenedor.appendChild(label);
+      filtros.querySelectorAll(".filtro").forEach(filtro => {
+        filtro.classList.remove("activo");
       });
 
-      document.getElementById("modal-dia").classList.remove("oculto");
-    }
+      boton.classList.add("activo");
+      actualizarOpciones();
+    };
+
+    filtros.appendChild(boton);
+  });
+
+  const crearSelector = comida => {
+    const clave = `${nombreDia}-${comida}`;
+    const seleccionada = menu[clave] || "";
+
+    const label = document.createElement("label");
+    label.textContent = comida;
+
+    const select = document.createElement("select");
+    select.dataset.clave = clave;
+    select.className = "selector-receta";
+
+    label.appendChild(select);
+    contenedor.appendChild(label);
+
+    return select;
+  };
+
+  const selectorDesayuno = crearSelector("Desayuno");
+  const selectorComida = crearSelector("Comida");
+  const selectorCena = crearSelector("Cena");
+
+  function actualizarOpciones() {
+    const texto = buscador.value.trim().toLowerCase();
+
+    const recetasFiltradas = recetas.filter(receta => {
+      const coincideTexto = receta.nombre
+        .toLowerCase()
+        .includes(texto);
+
+      const coincideEtiqueta =
+        filtroEtiqueta === "Todas" ||
+        (receta.etiquetas || []).includes(filtroEtiqueta);
+
+      return coincideTexto && coincideEtiqueta;
+    });
+
+    [selectorDesayuno, selectorComida, selectorCena].forEach(selector => {
+      const valorActual = selector.value;
+      selector.innerHTML = "";
+
+      const opcionVacia = document.createElement("option");
+      opcionVacia.value = "";
+      opcionVacia.textContent = "Sin planificar";
+      selector.appendChild(opcionVacia);
+
+      recetasFiltradas.forEach(receta => {
+        const opcion = document.createElement("option");
+        opcion.value = receta.id;
+        opcion.textContent = `${receta.tipo} · ${receta.nombre}`;
+
+        if (String(receta.id) === String(valorActual)) {
+          opcion.selected = true;
+        }
+
+        selector.appendChild(opcion);
+      });
+    });
+  }
+
+  buscador.oninput = actualizarOpciones;
+
+  contenedor.insertBefore(buscador, contenedor.firstChild);
+  contenedor.insertBefore(filtros, buscador.nextSibling);
+
+  actualizarOpciones();
+
+  document.getElementById("modal-dia").classList.remove("oculto");
+}
 
     function cerrarModalDia() {
       document.getElementById("modal-dia").classList.add("oculto");
