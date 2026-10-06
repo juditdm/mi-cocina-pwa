@@ -339,13 +339,13 @@
 
     .navegacion {
       position: fixed;
-      left: 12px;
-      right: 12px;
+      left: 8px;
+      right: 8px;
       bottom: calc(12px + env(safe-area-inset-bottom));
       display: grid;
-      grid-template-columns: repeat(5, 1fr);
-      gap: 4px;
-      padding: 8px;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 2px;
+      padding: 7px;
       background: rgba(31, 24, 38, .88);
       backdrop-filter: blur(24px);
       border: 1px solid var(--borde);
@@ -358,18 +358,18 @@
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      gap: 4px;
+      gap: 3px;
       min-height: 58px;
       border-radius: 18px;
       color: var(--texto-suave);
-      font-size: 10px;
+      font-size: 9px;
       font-weight: 800;
       text-decoration: none;
     }
 
     .nav-item svg {
-      width: 22px;
-      height: 22px;
+      width: 21px;
+      height: 21px;
       stroke: currentColor;
       fill: none;
       stroke-width: 2;
@@ -838,9 +838,9 @@
           Compra
         </button>
 
-        <button class="accion-rapida" data-ir="progreso">
-          <svg viewBox="0 0 24 24"><path d="M3 17l6-6 4 4 8-8"/><path d="M15 7h6v6"/></svg>
-          Progreso
+        <button class="accion-rapida" data-ir="despensa">
+          <svg viewBox="0 0 24 24"><path d="M3 9h18l-1.5 11a2 2 0 0 1-2 1.8H6.5a2 2 0 0 1-2-1.8Z"/><path d="M8 9V6a4 4 0 0 1 8 0v3"/></svg>
+          Despensa
         </button>
       </div>
 
@@ -930,6 +930,37 @@
       <div id="contenido-compra"></div>
     </section>
 
+    <section id="pantalla-despensa" class="oculto">
+      <h2>Mi despensa</h2>
+
+      <div class="tarjeta">
+        <label>Buscar ingrediente
+          <input type="text" id="buscador-despensa" placeholder="Ejemplo: pollo, avena, tomate...">
+        </label>
+
+        <div style="display:grid;grid-template-columns:2fr 1fr 1fr;gap:10px;margin-bottom:14px;">
+          <label style="margin:0;">Añadir ingrediente
+            <input type="text" id="nuevo-ingrediente" placeholder="Nombre del ingrediente">
+          </label>
+
+          <button class="boton" id="boton-anadir-despensa" style="align-self:end;">
+            Añadir
+          </button>
+
+          <button class="boton secundario" id="boton-vaciar-despensa" style="align-self:end;">
+            Vaciar
+          </button>
+        </div>
+
+        <div class="progreso-dia-texto">
+          <span>Ingredientes en casa</span>
+          <span id="total-despensa">0</span>
+        </div>
+      </div>
+
+      <div id="lista-despensa"></div>
+    </section>
+
     <section id="pantalla-progreso" class="oculto">
       <h2>Mi progreso</h2>
 
@@ -1017,6 +1048,11 @@
     <a href="#" class="nav-item" data-pantalla="compra">
       <svg viewBox="0 0 24 24"><path d="M6 2 4 6v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V6l-2-4Z"/><path d="M4 6h16"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
       Compra
+    </a>
+
+    <a href="#" class="nav-item" data-pantalla="despensa">
+      <svg viewBox="0 0 24 24"><path d="M3 9h18l-1.5 11a2 2 0 0 1-2 1.8H6.5a2 2 0 0 1-2-1.8Z"/><path d="M8 9V6a4 4 0 0 1 8 0v3"/></svg>
+      Despensa
     </a>
 
     <a href="#" class="nav-item" data-pantalla="progreso">
@@ -1610,7 +1646,7 @@
     }
 
     function mostrarPantalla(nombre) {
-      ["hoy", "recetas", "menu", "compra", "progreso"].forEach(pantalla => {
+      ["hoy", "recetas", "menu", "compra", "despensa", "progreso"].forEach(pantalla => {
         document
           .getElementById(`pantalla-${pantalla}`)
           .classList.toggle("oculto", pantalla !== nombre);
@@ -1632,6 +1668,7 @@
       if (nombre === "recetas") renderizarRecetas();
       if (nombre === "menu") renderizarMenu();
       if (nombre === "compra") renderizarCompra();
+      if (nombre === "despensa") renderizarDespensa();
       if (nombre === "progreso") renderizarProgreso();
     }
 
@@ -1890,7 +1927,7 @@
         contenedor.innerHTML = `
           <div class="tarjeta">
             <h3>No hay recetas con este filtro</h3>
-            <p>Si has elegido “En casa”, añade ingredientes desde una receta con el botón 🧺.</p>
+            <p>Si has elegido “En casa”, añade ingredientes desde la Despensa o desde una receta.</p>
           </div>
         `;
       }
@@ -3033,6 +3070,103 @@
           };
         });
     }
+
+    function renderizarDespensa() {
+      const buscador = document.getElementById("buscador-despensa");
+      const contenedor = document.getElementById("lista-despensa");
+      const texto = buscador.value.trim().toLowerCase();
+
+      const ingredientesFiltrados = despensa
+        .filter(nombre => nombre.toLowerCase().includes(texto))
+        .sort((a, b) => a.localeCompare(b, "es"));
+
+      document.getElementById("total-despensa").textContent = despensa.length;
+
+      contenedor.innerHTML = "";
+
+      if (!ingredientesFiltrados.length) {
+        contenedor.innerHTML = `
+          <div class="tarjeta">
+            <h3>No hay ingredientes</h3>
+            <p>Añade ingredientes manualmente o usa el botón 🧺 desde una receta o la lista de compra.</p>
+          </div>
+        `;
+        return;
+      }
+
+      const tarjeta = document.createElement("div");
+      tarjeta.className = "tarjeta";
+      tarjeta.innerHTML = `<h3>Lo que tienes en casa</h3>`;
+
+      ingredientesFiltrados.forEach(nombre => {
+        const indice = despensa.findIndex(item =>
+          item.toLowerCase() === nombre.toLowerCase()
+        );
+
+        const fila = document.createElement("div");
+        fila.className = "producto";
+
+        fila.innerHTML = `
+          <div>
+            <strong>${nombre}</strong>
+          </div>
+        `;
+
+        const botonEliminar = document.createElement("button");
+        botonEliminar.className = "boton-mini";
+        botonEliminar.textContent = "×";
+        botonEliminar.setAttribute("aria-label", "Eliminar de la despensa");
+
+        botonEliminar.onclick = () => {
+          despensa.splice(indice, 1);
+          guardarDatos(CLAVE_DESPENSA, despensa);
+          renderizarDespensa();
+        };
+
+        fila.appendChild(botonEliminar);
+        tarjeta.appendChild(fila);
+      });
+
+      contenedor.appendChild(tarjeta);
+    }
+
+    document.getElementById("buscador-despensa").oninput =
+      renderizarDespensa;
+
+    document.getElementById("boton-anadir-despensa").onclick = () => {
+      const input = document.getElementById("nuevo-ingrediente");
+      const nombre = input.value.trim();
+
+      if (!nombre) return;
+
+      if (anadirIngredienteADespensa(nombre)) {
+        input.value = "";
+        renderizarDespensa();
+      } else {
+        alert("Ese ingrediente ya está en la despensa.");
+      }
+    };
+
+    document.getElementById("nuevo-ingrediente").addEventListener("keydown", evento => {
+      if (evento.key === "Enter") {
+        evento.preventDefault();
+        document.getElementById("boton-anadir-despensa").click();
+      }
+    });
+
+    document.getElementById("boton-vaciar-despensa").onclick = () => {
+      if (!despensa.length) return;
+
+      const confirmar = confirm(
+        "¿Seguro que quieres vaciar toda la despensa?"
+      );
+
+      if (confirmar) {
+        despensa = [];
+        guardarDatos(CLAVE_DESPENSA, despensa);
+        renderizarDespensa();
+      }
+    };
 
     function renderizarProgreso() {
       document.getElementById("objetivo-calorias").value = perfil.calorias;
