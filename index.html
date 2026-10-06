@@ -1557,6 +1557,28 @@
       );
     }
 
+    function anadirIngredienteADespensa(nombre) {
+      if (!nombre || tengoIngrediente(nombre)) {
+        return false;
+      }
+
+      despensa.push(nombre);
+      guardarDatos(CLAVE_DESPENSA, despensa);
+      return true;
+    }
+
+    function anadirRecetaADespensa(receta) {
+      let anadidos = 0;
+
+      (receta.ingredientes || []).forEach(ingrediente => {
+        if (anadirIngredienteADespensa(ingrediente.nombre)) {
+          anadidos += 1;
+        }
+      });
+
+      return anadidos;
+    }
+
     function obtenerSemanaISO(fechaTexto) {
       const fecha = new Date(fechaTexto + "T12:00:00");
       const temporal = new Date(
@@ -1817,6 +1839,24 @@
           </div>
         `;
 
+        const botonDespensa = document.createElement("button");
+        botonDespensa.className = "boton secundario";
+        botonDespensa.textContent = disponible
+          ? "✅ Todos los ingredientes están en casa"
+          : "🧺 Añadir ingredientes a despensa";
+
+        botonDespensa.onclick = () => {
+          const anadidos = anadirRecetaADespensa(receta);
+
+          if (anadidos > 0) {
+            alert(`Has añadido ${anadidos} ingredientes a la despensa.`);
+          } else {
+            alert("Todos los ingredientes ya estaban en la despensa.");
+          }
+
+          renderizarRecetas();
+        };
+
         const cabeceraAcciones = document.createElement("div");
         cabeceraAcciones.style.cssText =
           "display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:14px;";
@@ -1842,6 +1882,7 @@
 
         tarjeta.appendChild(cabeceraAcciones);
         tarjeta.appendChild(botonCocinar);
+        tarjeta.appendChild(botonDespensa);
         contenedor.appendChild(tarjeta);
       });
 
@@ -1849,7 +1890,7 @@
         contenedor.innerHTML = `
           <div class="tarjeta">
             <h3>No hay recetas con este filtro</h3>
-            <p>Si has elegido “En casa”, añade ingredientes desde la lista de compra usando el botón 🧺.</p>
+            <p>Si has elegido “En casa”, añade ingredientes desde una receta con el botón 🧺.</p>
           </div>
         `;
       }
@@ -2197,6 +2238,9 @@
 
         <div class="tarjeta">
           <h3>Ingredientes para ${racionesActuales} ración${racionesActuales === 1 ? "" : "es"}</h3>
+          <p style="font-size:13px;color:var(--texto-suave);margin:0 0 10px;">
+            Pulsa 🧺 cuando tengas un ingrediente en casa.
+          </p>
           <div id="ingredientes-cocina"></div>
         </div>
 
@@ -2220,11 +2264,24 @@
           ? cantidadAjustada
           : cantidadAjustada.toFixed(1);
 
+        const enCasa = tengoIngrediente(ingrediente.nombre);
+
         fila.innerHTML = `
-          <span>${ingrediente.nombre}</span>
+          <span>${enCasa ? "✅" : ""} ${ingrediente.nombre}</span>
           <span>${cantidadTexto} ${ingrediente.unidad}</span>
         `;
 
+        const botonDespensa = document.createElement("button");
+        botonDespensa.className = "boton-mini";
+        botonDespensa.textContent = "🧺";
+        botonDespensa.setAttribute("aria-label", "Añadir a despensa");
+
+        botonDespensa.onclick = () => {
+          anadirIngredienteADespensa(ingrediente.nombre);
+          renderizarModoCocina();
+        };
+
+        fila.appendChild(botonDespensa);
         contenedorIngredientes.appendChild(fila);
       });
 
@@ -2740,9 +2797,7 @@
         botonDespensa.setAttribute("aria-label", "Guardar en despensa");
 
         botonDespensa.onclick = () => {
-          despensa.push(producto.nombre);
-          guardarDatos(CLAVE_DESPENSA, despensa);
-
+          anadirIngredienteADespensa(producto.nombre);
           compras[claveCompra].splice(indice, 1);
           guardarDatos(CLAVE_COMPRAS, compras);
           renderizarCompra();
