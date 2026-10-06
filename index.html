@@ -3,25 +3,28 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <meta name="theme-color" content="#F7F2EC">
+  <meta name="theme-color" content="#17121B">
   <title>Mi Cocina</title>
   <link rel="manifest" href="manifest.json">
   <link rel="apple-touch-icon" href="./icons/apple-touch-icon.png">
 
   <style>
     :root {
-      --fondo: #F7F2EC;
-      --superficie: #FFFDF9;
-      --principal: #6D3B5E;
-      --principal-suave: #F0E4EC;
-      --acento: #E8875A;
-      --acento-suave: #FBE8DC;
-      --texto: #2E2430;
-      --texto-suave: #7A6B74;
-      --borde: #E8DFD6;
-      --peligro: #B4472F;
-      --peligro-suave: #F6E0D9;
-      --sombra: 0 12px 32px rgba(46, 36, 48, .08);
+      --fondo: #17121B;
+      --superficie: #221A29;
+      --superficie-alta: #2B2133;
+      --borde: #3A2E44;
+      --texto: #F5EFEA;
+      --texto-suave: #B7A8B5;
+      --principal: #F2996B;
+      --principal-oscuro: #D97B4C;
+      --principal-suave: rgba(242, 153, 107, .14);
+      --ciruela: #6D3B5E;
+      --ciruela-suave: rgba(109, 59, 94, .35);
+      --verde: #7FC8A9;
+      --peligro: #E1705C;
+      --peligro-suave: rgba(225, 112, 92, .16);
+      --sombra: 0 18px 44px rgba(0, 0, 0, .35);
     }
 
     * {
@@ -29,21 +32,27 @@
       -webkit-tap-highlight-color: transparent;
     }
 
+    html {
+      scroll-behavior: smooth;
+    }
+
     body {
       margin: 0;
+      min-height: 100vh;
       background:
-        radial-gradient(circle at 85% -10%, rgba(232, 135, 90, .16), transparent 42%),
-        radial-gradient(circle at 0% 0%, rgba(109, 59, 94, .12), transparent 38%),
+        radial-gradient(circle at 90% -10%, rgba(242, 153, 107, .14), transparent 45%),
+        radial-gradient(circle at -10% 10%, rgba(109, 59, 94, .28), transparent 42%),
         var(--fondo);
       color: var(--texto);
       font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif;
       font-size: 16px;
       line-height: 1.45;
-      padding-bottom: 104px;
+      padding-bottom: 116px;
+      -webkit-font-smoothing: antialiased;
     }
 
     .cabecera {
-      padding: 28px 22px 10px;
+      padding: 34px 24px 12px;
     }
 
     .saludo {
@@ -52,31 +61,43 @@
       font-size: 13px;
       font-weight: 700;
       text-transform: uppercase;
-      letter-spacing: .08em;
+      letter-spacing: .1em;
     }
 
     h1 {
-      margin: 4px 0 0;
-      font-size: 36px;
+      margin: 6px 0 0;
+      font-size: 38px;
       font-weight: 850;
-      letter-spacing: -.8px;
+      letter-spacing: -.9px;
     }
 
     h2 {
-      margin: 10px 0 18px;
-      font-size: 27px;
-      font-weight: 800;
-      letter-spacing: -.5px;
+      margin: 14px 0 18px;
+      font-size: 28px;
+      font-weight: 820;
+      letter-spacing: -.6px;
     }
 
     h3 {
       margin: 0 0 12px;
       font-size: 18px;
-      font-weight: 750;
+      font-weight: 760;
     }
 
     .contenido {
-      padding: 14px 20px 28px;
+      padding: 14px 20px 30px;
+      animation: aparecer .25s ease both;
+    }
+
+    @keyframes aparecer {
+      from {
+        opacity: 0;
+        transform: translateY(8px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
     }
 
     .tarjeta {
@@ -84,13 +105,57 @@
       border: 1px solid var(--borde);
       border-radius: 26px;
       padding: 20px;
+      margin-bottom: 16px;
+      box-shadow: var(--sombra);
+      transition: transform .16s ease, border-color .16s ease;
+    }
+
+    .tarjeta:active {
+      transform: scale(.985);
+    }
+
+    .tarjeta-destacada {
+      background:
+        linear-gradient(145deg, rgba(242, 153, 107, .16), rgba(109, 59, 94, .22)),
+        var(--superficie);
+      border-color: rgba(242, 153, 107, .28);
+    }
+
+    .comida-siguiente {
+      background:
+        linear-gradient(135deg, rgba(242, 153, 107, .22), rgba(109, 59, 94, .30)),
+        var(--superficie-alta);
+      border: 1px solid rgba(242, 153, 107, .30);
+      border-radius: 28px;
+      padding: 24px;
       margin-bottom: 18px;
       box-shadow: var(--sombra);
     }
 
-    .tarjeta-destacada {
-      background: linear-gradient(145deg, #FFFDF9, #FBEFE6);
-      border-color: #F0D9C8;
+    .etiqueta {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 7px 12px;
+      border-radius: 999px;
+      background: var(--principal-suave);
+      color: var(--principal);
+      font-size: 12px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+    }
+
+    .comida-siguiente h3 {
+      margin: 14px 0 6px;
+      font-size: 26px;
+      font-weight: 820;
+      letter-spacing: -.5px;
+    }
+
+    .comida-siguiente p {
+      margin: 0 0 18px;
+      color: var(--texto-suave);
     }
 
     .comida-hoy {
@@ -98,7 +163,7 @@
       align-items: center;
       justify-content: space-between;
       gap: 12px;
-      padding: 14px 0;
+      padding: 15px 0;
       border-bottom: 1px solid var(--borde);
     }
 
@@ -108,6 +173,7 @@
 
     .comida-hoy strong {
       display: block;
+      font-size: 16px;
     }
 
     .comida-hoy span {
@@ -120,14 +186,191 @@
       font-weight: 800;
       padding: 7px 12px;
       border-radius: 999px;
-      background: var(--principal-suave);
-      color: var(--principal);
+      background: var(--ciruela-suave);
+      color: #E7C6DC;
       white-space: nowrap;
     }
 
     .estado.cocinada {
-      background: var(--acento-suave);
-      color: #A8532B;
+      background: rgba(127, 200, 169, .16);
+      color: var(--verde);
+    }
+
+    .boton {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      min-height: 54px;
+      padding: 15px 20px;
+      border: none;
+      border-radius: 18px;
+      background: var(--principal);
+      color: #241712;
+      font-size: 16px;
+      font-weight: 850;
+      cursor: pointer;
+      transition: transform .15s ease, background .15s ease;
+    }
+
+    .boton:active {
+      transform: scale(.97);
+      background: var(--principal-oscuro);
+    }
+
+    .boton.secundario {
+      background: var(--superficie-alta);
+      color: var(--texto);
+      border: 1px solid var(--borde);
+    }
+
+    .boton.secundario:active {
+      background: #332840;
+    }
+
+    .boton-peligro {
+      min-height: 42px;
+      padding: 9px 14px;
+      border: none;
+      border-radius: 14px;
+      background: var(--peligro-suave);
+      color: var(--peligro);
+      font-weight: 800;
+      transition: transform .15s ease;
+    }
+
+    .boton-peligro:active {
+      transform: scale(.95);
+    }
+
+    label {
+      display: block;
+      margin-bottom: 14px;
+      font-size: 12px;
+      font-weight: 780;
+      color: var(--texto-suave);
+      text-transform: uppercase;
+      letter-spacing: .07em;
+    }
+
+    input,
+    select,
+    textarea {
+      width: 100%;
+      margin-top: 8px;
+      padding: 16px;
+      border: 1.5px solid var(--borde);
+      border-radius: 18px;
+      background: var(--superficie-alta);
+      color: var(--texto);
+      font-size: 16px;
+      font-family: inherit;
+      transition: border-color .15s ease, box-shadow .15s ease;
+    }
+
+    input:focus,
+    select:focus,
+    textarea:focus {
+      outline: none;
+      border-color: var(--principal);
+      box-shadow: 0 0 0 4px rgba(242, 153, 107, .16);
+    }
+
+    button[type="submit"] {
+      width: 100%;
+      min-height: 56px;
+      border: none;
+      border-radius: 18px;
+      background: var(--principal);
+      color: #241712;
+      font-size: 16px;
+      font-weight: 850;
+      cursor: pointer;
+      transition: transform .15s ease, background .15s ease;
+    }
+
+    button[type="submit"]:active {
+      transform: scale(.98);
+      background: var(--principal-oscuro);
+    }
+
+    .navegacion {
+      position: fixed;
+      left: 14px;
+      right: 14px;
+      bottom: calc(14px + env(safe-area-inset-bottom));
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 6px;
+      padding: 9px;
+      background: rgba(34, 26, 41, .88);
+      backdrop-filter: blur(24px);
+      border: 1px solid var(--borde);
+      border-radius: 28px;
+      box-shadow: 0 20px 44px rgba(0, 0, 0, .45);
+    }
+
+    .nav-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 3px;
+      min-height: 58px;
+      border-radius: 20px;
+      color: var(--texto-suave);
+      font-size: 11px;
+      font-weight: 800;
+      text-decoration: none;
+      transition: background .15s ease, color .15s ease, transform .15s ease;
+    }
+
+    .nav-item svg {
+      width: 22px;
+      height: 22px;
+      stroke: currentColor;
+      fill: none;
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .nav-item:active {
+      transform: scale(.94);
+    }
+
+    .nav-item.activa {
+      background: var(--principal-suave);
+      color: var(--principal);
+    }
+
+    .resumen-datos {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+      margin-top: 16px;
+    }
+
+    .resumen-datos div {
+      background: rgba(23, 18, 27, .55);
+      border: 1px solid var(--borde);
+      border-radius: 20px;
+      padding: 16px;
+      text-align: center;
+    }
+
+    .resumen-datos strong {
+      display: block;
+      font-size: 24px;
+      color: var(--principal);
+    }
+
+    .resumen-datos span {
+      font-size: 11px;
+      font-weight: 750;
+      color: var(--texto-suave);
+      text-transform: uppercase;
+      letter-spacing: .06em;
     }
 
     .semana {
@@ -137,25 +380,32 @@
 
     .dia-semana {
       border: 1px solid var(--borde);
-      border-radius: 20px;
-      padding: 14px;
+      border-radius: 22px;
+      padding: 16px;
       background: var(--superficie);
+      transition: transform .15s ease;
+    }
+
+    .dia-semana:active {
+      transform: scale(.99);
     }
 
     .dia-semana.hoy {
-      border-color: var(--principal);
-      box-shadow: 0 0 0 3px rgba(109, 59, 94, .12);
+      border-color: rgba(242, 153, 107, .55);
+      background:
+        linear-gradient(145deg, rgba(242, 153, 107, .10), transparent),
+        var(--superficie);
     }
 
     .dia-cabecera {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 8px;
+      margin-bottom: 10px;
     }
 
     .dia-nombre {
-      font-weight: 800;
+      font-weight: 820;
     }
 
     .dia-fecha {
@@ -168,24 +418,37 @@
       justify-content: space-between;
       gap: 10px;
       font-size: 14px;
-      padding: 4px 0;
+      padding: 5px 0;
     }
 
     .comida-linea span:first-child {
       color: var(--texto-suave);
-      font-weight: 700;
+      font-weight: 750;
     }
 
     .favorito {
-      background: none;
-      border: none;
-      font-size: 22px;
+      width: 42px;
+      height: 42px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--superficie-alta);
+      border: 1px solid var(--borde);
+      border-radius: 999px;
+      font-size: 19px;
       cursor: pointer;
       color: var(--texto-suave);
+      transition: transform .15s ease, color .15s ease, border-color .15s ease;
     }
 
     .favorito.activo {
-      color: var(--acento);
+      color: var(--principal);
+      border-color: rgba(242, 153, 107, .45);
+      background: var(--principal-suave);
+    }
+
+    .favorito:active {
+      transform: scale(.9);
     }
 
     .filtros {
@@ -194,155 +457,46 @@
       overflow-x: auto;
       padding-bottom: 6px;
       margin-bottom: 16px;
+      scrollbar-width: none;
+    }
+
+    .filtros::-webkit-scrollbar {
+      display: none;
     }
 
     .filtro {
-      min-height: 42px;
-      padding: 10px 16px;
+      min-height: 44px;
+      padding: 11px 17px;
       border-radius: 999px;
       border: 1.5px solid var(--borde);
       background: var(--superficie);
       color: var(--texto-suave);
-      font-weight: 700;
+      font-weight: 780;
       font-size: 14px;
       white-space: nowrap;
+      transition: transform .15s ease, background .15s ease, color .15s ease;
+    }
+
+    .filtro:active {
+      transform: scale(.95);
     }
 
     .filtro.activo {
       background: var(--principal);
       border-color: var(--principal);
-      color: white;
+      color: #241712;
     }
 
-    .boton {
+    .chip {
       display: inline-flex;
       align-items: center;
-      justify-content: center;
-      min-height: 52px;
-      padding: 14px 18px;
-      border: none;
-      border-radius: 18px;
-      background: var(--principal);
-      color: white;
-      font-size: 16px;
-      font-weight: 800;
-      cursor: pointer;
-    }
-
-    .boton.secundario {
-      background: var(--principal-suave);
-      color: var(--principal);
-    }
-
-    .boton-peligro {
-      min-height: 42px;
-      padding: 9px 14px;
-      border: none;
-      border-radius: 14px;
-      background: var(--peligro-suave);
-      color: var(--peligro);
-      font-weight: 800;
-    }
-
-    label {
-      display: block;
-      margin-bottom: 14px;
-      font-size: 13px;
-      font-weight: 750;
-      color: var(--texto-suave);
-      text-transform: uppercase;
-    }
-
-    input,
-    select,
-    textarea {
-      width: 100%;
-      margin-top: 8px;
-      padding: 15px;
-      border: 1.5px solid var(--borde);
-      border-radius: 18px;
-      background: var(--superficie);
-      color: var(--texto);
-      font-size: 16px;
-      font-family: inherit;
-    }
-
-    input:focus,
-    select:focus,
-    textarea:focus {
-      outline: none;
-      border-color: var(--principal);
-      box-shadow: 0 0 0 4px rgba(109, 59, 94, .13);
-    }
-
-    button[type="submit"] {
-      width: 100%;
-      min-height: 54px;
-      border: none;
-      border-radius: 18px;
-      background: var(--principal);
-      color: white;
-      font-size: 16px;
-      font-weight: 800;
-    }
-
-    .navegacion {
-      position: fixed;
-      left: 14px;
-      right: 14px;
-      bottom: calc(14px + env(safe-area-inset-bottom));
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 6px;
-      padding: 8px;
-      background: rgba(255, 253, 249, .9);
-      backdrop-filter: blur(20px);
+      padding: 6px 11px;
+      border-radius: 999px;
+      background: var(--superficie-alta);
       border: 1px solid var(--borde);
-      border-radius: 26px;
-      box-shadow: 0 16px 36px rgba(46, 36, 48, .16);
-    }
-
-    .nav-item {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      min-height: 50px;
-      border-radius: 20px;
       color: var(--texto-suave);
-      font-size: 13px;
-      font-weight: 750;
-      text-decoration: none;
-    }
-
-    .nav-item.activa {
-      background: var(--principal-suave);
-      color: var(--principal);
-    }
-
-    .resumen-datos {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 12px;
-      margin-top: 14px;
-    }
-
-    .resumen-datos div {
-      background: var(--fondo);
-      border-radius: 18px;
-      padding: 14px;
-      text-align: center;
-    }
-
-    .resumen-datos strong {
-      display: block;
-      font-size: 22px;
-      color: var(--principal);
-    }
-
-    .resumen-datos span {
       font-size: 12px;
-      font-weight: 700;
-      color: var(--texto-suave);
+      font-weight: 750;
     }
 
     .producto {
@@ -350,7 +504,7 @@
       align-items: center;
       justify-content: space-between;
       gap: 12px;
-      padding: 10px 0;
+      padding: 12px 0;
       border-bottom: 1px solid var(--borde);
     }
 
@@ -363,14 +517,14 @@
       align-items: center;
       gap: 12px;
       margin: 0;
-      font-weight: 600;
+      font-weight: 650;
       text-transform: none;
       color: var(--texto);
     }
 
     .producto-fila input {
-      width: 24px;
-      height: 24px;
+      width: 26px;
+      height: 26px;
       margin: 0;
       accent-color: var(--principal);
     }
@@ -392,8 +546,10 @@
       z-index: 100;
       display: flex;
       flex-direction: column;
-      background: var(--fondo);
-      padding: calc(24px + env(safe-area-inset-top)) 22px calc(24px + env(safe-area-inset-bottom));
+      background:
+        radial-gradient(circle at 80% 0%, rgba(242, 153, 107, .12), transparent 45%),
+        #14101A;
+      padding: calc(26px + env(safe-area-inset-top)) 22px calc(26px + env(safe-area-inset-bottom));
       overflow-y: auto;
     }
 
@@ -406,12 +562,12 @@
       justify-content: space-between;
       align-items: center;
       gap: 12px;
-      margin-bottom: 20px;
+      margin-bottom: 22px;
     }
 
     .modo-cocina h2 {
       margin: 0;
-      font-size: 24px;
+      font-size: 23px;
     }
 
     .paso-actual {
@@ -420,27 +576,27 @@
       align-items: center;
       justify-content: center;
       text-align: center;
-      font-size: 30px;
-      font-weight: 800;
+      font-size: 31px;
+      font-weight: 830;
       line-height: 1.25;
-      padding: 30px 0;
+      padding: 34px 0;
     }
 
     .paso-numero {
-      font-size: 14px;
-      font-weight: 800;
-      color: var(--texto-suave);
+      font-size: 13px;
+      font-weight: 850;
+      color: var(--principal);
       text-transform: uppercase;
-      letter-spacing: .1em;
+      letter-spacing: .12em;
       text-align: center;
-      margin-bottom: 10px;
+      margin-bottom: 12px;
     }
 
     .controles-cocina {
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 12px;
-      margin-top: 20px;
+      margin-top: 22px;
     }
 
     .selector-raciones {
@@ -450,24 +606,29 @@
       gap: 12px;
       background: var(--superficie);
       border: 1px solid var(--borde);
-      border-radius: 20px;
-      padding: 14px;
+      border-radius: 22px;
+      padding: 15px;
       margin-bottom: 18px;
     }
 
     .selector-raciones strong {
-      font-size: 20px;
+      font-size: 21px;
     }
 
     .boton-racion {
-      min-width: 48px;
-      min-height: 48px;
+      min-width: 50px;
+      min-height: 50px;
       border: none;
-      border-radius: 16px;
+      border-radius: 17px;
       background: var(--principal-suave);
       color: var(--principal);
-      font-size: 22px;
-      font-weight: 800;
+      font-size: 23px;
+      font-weight: 850;
+      transition: transform .15s ease;
+    }
+
+    .boton-racion:active {
+      transform: scale(.92);
     }
 
     @media (max-width: 480px) {
@@ -485,19 +646,23 @@
 
   <main class="contenido">
     <section id="pantalla-hoy">
-      <h2>Hoy</h2>
-      <div id="comidas-hoy"></div>
+      <div id="comida-siguiente"></div>
+
+      <div class="tarjeta">
+        <h3>Tu día</h3>
+        <div id="comidas-hoy"></div>
+      </div>
 
       <div class="tarjeta tarjeta-destacada">
         <h3>Esta semana</h3>
         <div class="resumen-datos">
           <div>
             <strong id="comidas-planificadas">0</strong>
-            <span>Comidas planificadas</span>
+            <span>Comidas</span>
           </div>
           <div>
             <strong id="proteina-semana">0 g</strong>
-            <span>Proteína total</span>
+            <span>Proteína</span>
           </div>
         </div>
       </div>
@@ -614,10 +779,25 @@
   </main>
 
   <nav class="navegacion">
-    <a href="#" class="nav-item activa" data-pantalla="hoy">Hoy</a>
-    <a href="#" class="nav-item" data-pantalla="recetas">Recetas</a>
-    <a href="#" class="nav-item" data-pantalla="menu">Menú</a>
-    <a href="#" class="nav-item" data-pantalla="compra">Compra</a>
+    <a href="#" class="nav-item activa" data-pantalla="hoy">
+      <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M19.1 4.9l-1.4 1.4M6.3 17.7l-1.4 1.4"/></svg>
+      Hoy
+    </a>
+
+    <a href="#" class="nav-item" data-pantalla="recetas">
+      <svg viewBox="0 0 24 24"><path d="M4 19V5a2 2 0 0 1 2-2h13v18H6a2 2 0 0 1-2-2Z"/><path d="M19 17H6a2 2 0 0 0-2 2"/><path d="M9 7h6"/></svg>
+      Recetas
+    </a>
+
+    <a href="#" class="nav-item" data-pantalla="menu">
+      <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="17" rx="3"/><path d="M8 2v4M16 2v4M3 10h18"/></svg>
+      Menú
+    </a>
+
+    <a href="#" class="nav-item" data-pantalla="compra">
+      <svg viewBox="0 0 24 24"><path d="M6 2 4 6v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V6l-2-4Z"/><path d="M4 6h16"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+      Compra
+    </a>
   </nav>
 
   <div id="modo-cocina" class="modo-cocina oculto"></div>
@@ -894,6 +1074,11 @@
         );
       });
 
+      const contenido = document.querySelector(".contenido");
+      contenido.style.animation = "none";
+      contenido.offsetHeight;
+      contenido.style.animation = "";
+
       if (nombre === "hoy") renderizarHoy();
       if (nombre === "recetas") renderizarRecetas();
       if (nombre === "menu") renderizarMenu();
@@ -920,49 +1105,80 @@
     }
 
     function renderizarHoy() {
+      const contenedorSiguiente = document.getElementById("comida-siguiente");
       const contenedor = document.getElementById("comidas-hoy");
       const fechaHoy = obtenerFechaISO(new Date());
       const semana = obtenerSemanaISO(fechaHoy);
       const menu = menus[semana] || {};
 
-      contenedor.innerHTML = "";
+      const tipos = ["Desayuno", "Comida", "Cena"];
+      const comidasHoy = tipos.map(comida => ({
+        comida,
+        receta: obtenerComidaDelDia(fechaHoy, comida)
+      }));
 
-      ["Desayuno", "Comida", "Cena"].forEach(comida => {
-        const receta = obtenerComidaDelDia(fechaHoy, comida);
-        const clave = `${comida}-${fechaHoy}`;
+      const siguiente = comidasHoy.find(item => item.receta);
+
+      contenedorSiguiente.innerHTML = "";
+
+      if (siguiente) {
+        const clave = `${siguiente.comida}-${fechaHoy}`;
         const cocinada = localStorage.getItem(`cocinada-${clave}`) === "true";
 
-        const tarjeta = document.createElement("div");
-        tarjeta.className = "tarjeta";
-
-        tarjeta.innerHTML = `
-          <div class="comida-hoy">
-            <div>
-              <strong>${comida}</strong>
-              <span>${receta ? receta.nombre : "Sin planificar"}</span>
-            </div>
-            <span class="estado ${cocinada ? "cocinada" : ""}">
-              ${cocinada ? "Cocinada" : "Pendiente"}
-            </span>
-          </div>
+        contenedorSiguiente.innerHTML = `
+          <span class="etiqueta">Siguiente: ${siguiente.comida}</span>
+          <h3>${siguiente.receta.nombre}</h3>
+          <p>${siguiente.receta.calorias} kcal · ${siguiente.receta.proteina} g proteína</p>
         `;
 
-        if (receta) {
-          const boton = document.createElement("button");
-          boton.className = cocinada ? "boton secundario" : "boton";
-          boton.textContent = cocinada
-            ? "Marcar como pendiente"
-            : "Marcar como cocinada";
+        const boton = document.createElement("button");
+        boton.className = cocinada ? "boton secundario" : "boton";
+        boton.textContent = cocinada
+          ? "Marcar como pendiente"
+          : "Cocinar esta comida";
 
-          boton.onclick = () => {
-            localStorage.setItem(`cocinada-${clave}`, !cocinada);
-            renderizarHoy();
-          };
+        boton.onclick = () => {
+          localStorage.setItem(`cocinada-${clave}`, !cocinada);
+          renderizarHoy();
+        };
 
-          tarjeta.appendChild(boton);
-        }
+        contenedorSiguiente.appendChild(boton);
+      } else {
+        contenedorSiguiente.className = "tarjeta tarjeta-destacada";
+        contenedorSiguiente.innerHTML = `
+          <span class="etiqueta">Hoy</span>
+          <h3>Aún no has planificado comidas</h3>
+          <p>Elige una receta y organiza tu día en menos de un minuto.</p>
+        `;
 
-        contenedor.appendChild(tarjeta);
+        const boton = document.createElement("button");
+        boton.className = "boton";
+        boton.textContent = "Ir a mis recetas";
+
+        boton.onclick = () => mostrarPantalla("recetas");
+        contenedorSiguiente.appendChild(boton);
+      }
+
+      contenedor.innerHTML = "";
+
+      comidasHoy.forEach(item => {
+        const clave = `${item.comida}-${fechaHoy}`;
+        const cocinada = localStorage.getItem(`cocinada-${clave}`) === "true";
+
+        const fila = document.createElement("div");
+        fila.className = "comida-hoy";
+
+        fila.innerHTML = `
+          <div>
+            <strong>${item.comida}</strong>
+            <span>${item.receta ? item.receta.nombre : "Sin planificar"}</span>
+          </div>
+          <span class="estado ${cocinada ? "cocinada" : ""}">
+            ${cocinada ? "Cocinada" : "Pendiente"}
+          </span>
+        `;
+
+        contenedor.appendChild(fila);
       });
 
       let proteinaTotal = 0;
@@ -999,14 +1215,14 @@
         tarjeta.className = "tarjeta";
 
         tarjeta.innerHTML = `
-          <div style="display:flex;justify-content:space-between;align-items:flex-start;">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:12px;">
             <div>
-              <h3>${receta.nombre}</h3>
-              <p>
-                ${receta.tipo} ·
-                ${receta.calorias} kcal ·
-                ${receta.proteina} g proteína
-              </p>
+              <span class="etiqueta">${receta.tipo}</span>
+              <h3 style="margin:12px 0 8px;">${receta.nombre}</h3>
+              <div style="display:flex;gap:8px;flex-wrap:wrap;">
+                <span class="chip">${receta.calorias} kcal</span>
+                <span class="chip">${receta.proteina} g proteína</span>
+              </div>
             </div>
             <button class="favorito ${receta.favorita ? "activo" : ""}">
               ${receta.favorita ? "♥" : "♡"}
@@ -1136,8 +1352,8 @@
 
         <div class="selector-raciones">
           <div>
-            <span style="font-size:13px;color:var(--texto-suave);font-weight:700;">
-              RACIONES
+            <span style="font-size:12px;color:var(--texto-suave);font-weight:800;text-transform:uppercase;letter-spacing:.08em;">
+              Raciones
             </span>
             <strong>${racionesActuales}</strong>
           </div>
