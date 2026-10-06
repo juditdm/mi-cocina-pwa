@@ -1,0 +1,1085 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#F7F2EC">
+  <title>Mi Cocina</title>
+  <link rel="manifest" href="manifest.json">
+
+  <style>
+    :root {
+      --fondo: #F7F2EC;
+      --superficie: #FFFDF9;
+      --principal: #6D3B5E;
+      --principal-suave: #F0E4EC;
+      --acento: #E8875A;
+      --acento-suave: #FBE8DC;
+      --texto: #2E2430;
+      --texto-suave: #7A6B74;
+      --borde: #E8DFD6;
+      --peligro: #B4472F;
+      --peligro-suave: #F6E0D9;
+      --sombra: 0 12px 32px rgba(46, 36, 48, .08);
+    }
+
+    * {
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    html,
+    body {
+      margin: 0;
+      padding: 0;
+      min-height: 100%;
+    }
+
+    body {
+      background:
+        radial-gradient(circle at 85% -10%, rgba(232, 135, 90, .16), transparent 42%),
+        radial-gradient(circle at 0% 0%, rgba(109, 59, 94, .12), transparent 38%),
+        var(--fondo);
+      color: var(--texto);
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", sans-serif;
+      font-size: 16px;
+      line-height: 1.45;
+    }
+
+    .app {
+      min-height: 100vh;
+      padding-bottom: 104px;
+    }
+
+    .cabecera {
+      padding: 28px 22px 10px;
+    }
+
+    .saludo {
+      margin: 0;
+      color: var(--texto-suave);
+      font-size: 13px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+    }
+
+    h1 {
+      margin: 4px 0 0;
+      font-size: 36px;
+      font-weight: 850;
+      letter-spacing: -.8px;
+    }
+
+    h2 {
+      margin: 10px 0 18px;
+      font-size: 27px;
+      font-weight: 800;
+      letter-spacing: -.5px;
+    }
+
+    h3 {
+      margin: 0 0 12px;
+      font-size: 18px;
+      font-weight: 750;
+    }
+
+    .contenido {
+      padding: 14px 20px 28px;
+    }
+
+    .tarjeta {
+      background: var(--superficie);
+      border: 1px solid var(--borde);
+      border-radius: 26px;
+      padding: 20px;
+      margin-bottom: 18px;
+      box-shadow: var(--sombra);
+    }
+
+    .tarjeta-destacada {
+      background: linear-gradient(145deg, #FFFDF9 0%, #FBEFE6 100%);
+      border-color: #F0D9C8;
+    }
+
+    .etiqueta {
+      display: inline-block;
+      padding: 7px 12px;
+      border-radius: 999px;
+      background: var(--principal-suave);
+      color: var(--principal);
+      font-size: 12px;
+      font-weight: 750;
+      margin: 0 6px 6px 0;
+    }
+
+    .etiqueta-acento {
+      background: var(--acento-suave);
+      color: #A8532B;
+    }
+
+    .boton {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 54px;
+      padding: 15px 20px;
+      border: none;
+      border-radius: 20px;
+      background: var(--principal);
+      color: #FFF7F2;
+      font-size: 16px;
+      font-weight: 800;
+      text-decoration: none;
+      cursor: pointer;
+      box-shadow: 0 8px 20px rgba(109, 59, 94, .22);
+      transition: transform .15s ease, box-shadow .15s ease;
+    }
+
+    .boton:active {
+      transform: scale(.98);
+      box-shadow: 0 4px 12px rgba(109, 59, 94, .18);
+    }
+
+    .boton.secundario {
+      background: var(--superficie);
+      color: var(--principal);
+      border: 1.5px solid var(--principal);
+      box-shadow: none;
+    }
+
+    .boton.acento {
+      background: var(--acento);
+      color: #3B1F14;
+      box-shadow: 0 8px 20px rgba(232, 135, 90, .25);
+    }
+
+    .boton-peligro {
+      min-height: 46px;
+      padding: 11px 16px;
+      border: none;
+      border-radius: 16px;
+      background: var(--peligro-suave);
+      color: var(--peligro);
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    form label {
+      display: block;
+      margin-bottom: 18px;
+      font-size: 13px;
+      font-weight: 750;
+      color: var(--texto-suave);
+      text-transform: uppercase;
+      letter-spacing: .04em;
+    }
+
+    input,
+    select,
+    textarea {
+      width: 100%;
+      margin-top: 8px;
+      padding: 16px;
+      border: 1.5px solid var(--borde);
+      border-radius: 18px;
+      background: var(--superficie);
+      color: var(--texto);
+      font-size: 16px;
+      font-family: inherit;
+      font-weight: 500;
+    }
+
+    input:focus,
+    select:focus,
+    textarea:focus {
+      outline: none;
+      border-color: var(--principal);
+      box-shadow: 0 0 0 4px rgba(109, 59, 94, .13);
+    }
+
+    textarea {
+      min-height: 140px;
+      resize: vertical;
+    }
+
+    button[type="submit"] {
+      width: 100%;
+      min-height: 56px;
+      border: none;
+      border-radius: 20px;
+      background: var(--principal);
+      color: #FFF7F2;
+      font-size: 16px;
+      font-weight: 850;
+      cursor: pointer;
+      box-shadow: 0 8px 20px rgba(109, 59, 94, .22);
+    }
+
+    .aviso {
+      background: var(--principal-suave);
+      color: var(--principal);
+      border-radius: 20px;
+      padding: 15px 17px;
+      margin-bottom: 18px;
+      font-weight: 700;
+    }
+
+    .navegacion {
+      position: fixed;
+      left: 14px;
+      right: 14px;
+      bottom: calc(14px + env(safe-area-inset-bottom));
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 6px;
+      padding: 8px;
+      background: rgba(255, 253, 249, .88);
+      backdrop-filter: saturate(180%) blur(22px);
+      border: 1px solid var(--borde);
+      border-radius: 26px;
+      box-shadow: 0 16px 36px rgba(46, 36, 48, .16);
+    }
+
+    .nav-item {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 50px;
+      border-radius: 20px;
+      color: var(--texto-suave);
+      font-size: 13px;
+      font-weight: 750;
+      text-decoration: none;
+    }
+
+    .nav-item.activa {
+      background: var(--principal-suave);
+      color: var(--principal);
+    }
+
+    .resumen-datos {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+      margin-top: 16px;
+    }
+
+    .resumen-datos div {
+      background: var(--fondo);
+      border: 1px solid var(--borde);
+      border-radius: 20px;
+      padding: 15px;
+      text-align: center;
+    }
+
+    .resumen-datos strong {
+      display: block;
+      font-size: 23px;
+      color: var(--principal);
+    }
+
+    .resumen-datos span {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--texto-suave);
+    }
+
+    .nota {
+      margin: 15px 0 0;
+      font-size: 13px;
+      color: var(--texto-suave);
+    }
+
+    .producto {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 10px 0;
+      border-bottom: 1px solid var(--borde);
+    }
+
+    .producto:last-child {
+      border-bottom: none;
+    }
+
+    .producto-fila {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      font-weight: 600;
+      text-transform: none;
+      color: var(--texto);
+    }
+
+    .producto-fila input[type="checkbox"] {
+      width: 24px;
+      height: 24px;
+      margin: 0;
+      accent-color: var(--principal);
+    }
+
+    .anadir-producto {
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr;
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+
+    .acciones-receta {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      margin-top: 16px;
+    }
+
+    .oculto {
+      display: none;
+    }
+
+    @media (max-width: 480px) {
+      .anadir-producto {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (min-width: 700px) {
+      .app {
+        max-width: 720px;
+        margin: 0 auto;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <header class="cabecera">
+      <p class="saludo">Hola, Judit</p>
+      <h1>Mi Cocina</h1>
+    </header>
+
+    <main class="contenido">
+      <section id="pantalla-inicio">
+        <div class="tarjeta tarjeta-destacada">
+          <h3>Bienvenida</h3>
+          <p>Planifica tus comidas, guarda recetas y genera tu lista de la compra.</p>
+
+          <div class="resumen-datos">
+            <div>
+              <strong id="total-recetas">0</strong>
+              <span>Recetas</span>
+            </div>
+
+            <div>
+              <strong id="comidas-planificadas">0</strong>
+              <span>Comidas esta semana</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="pantalla-recetas" class="oculto">
+        <h2>Mis recetas</h2>
+
+        <div id="lista-recetas"></div>
+
+        <div class="tarjeta">
+          <h3>Nueva receta</h3>
+
+          <form id="formulario-receta">
+            <label>Nombre
+              <input id="receta-nombre" required>
+            </label>
+
+            <label>Tipo
+              <select id="receta-tipo">
+                <option>Desayuno</option>
+                <option>Comida</option>
+                <option>Cena</option>
+              </select>
+            </label>
+
+            <label>Calorías
+              <input id="receta-calorias" type="number" min="0">
+            </label>
+
+            <label>Proteína en gramos
+              <input id="receta-proteina" type="number" min="0">
+            </label>
+
+            <label>Ingredientes
+              <textarea
+                id="receta-ingredientes"
+                rows="5"
+                placeholder="Pechuga de pollo | 180 | g"
+              ></textarea>
+            </label>
+
+            <button type="submit">Guardar receta</button>
+          </form>
+        </div>
+      </section>
+
+      <section id="pantalla-menu" class="oculto">
+        <h2>Menú semanal</h2>
+
+        <div class="tarjeta">
+          <label>Elige un día
+            <input type="date" id="fecha-menu">
+          </label>
+        </div>
+
+        <div id="resumen-menu" class="tarjeta tarjeta-destacada oculto">
+          <h3 id="titulo-semana"></h3>
+
+          <div class="resumen-datos">
+            <div>
+              <strong id="resumen-comidas">0</strong>
+              <span>Comidas</span>
+            </div>
+
+            <div>
+              <strong id="resumen-calorias">0</strong>
+              <span>kcal</span>
+            </div>
+
+            <div>
+              <strong id="resumen-proteina">0 g</strong>
+              <span>Proteína</span>
+            </div>
+
+            <div>
+              <strong id="resumen-media">0 g</strong>
+              <span>Proteína/día</span>
+            </div>
+          </div>
+
+          <p class="nota">
+            Objetivo orientativo: 105–125 g de proteína al día.
+          </p>
+        </div>
+
+        <div id="formulario-menu"></div>
+      </section>
+
+      <section id="pantalla-compra" class="oculto">
+        <h2>Lista de compra</h2>
+
+        <div class="tarjeta">
+          <label>Elige un día
+            <input type="date" id="fecha-compra">
+          </label>
+        </div>
+
+        <div id="contenido-compra"></div>
+      </section>
+    </main>
+
+    <nav class="navegacion">
+      <a href="#" class="nav-item activa" data-pantalla="inicio">Inicio</a>
+      <a href="#" class="nav-item" data-pantalla="recetas">Recetas</a>
+      <a href="#" class="nav-item" data-pantalla="menu">Menú</a>
+      <a href="#" class="nav-item" data-pantalla="compra">Compra</a>
+    </nav>
+  </div>
+
+  <script>
+    const CLAVE_RECETAS = "miCocinaRecetas";
+    const CLAVE_MENUS = "miCocinaMenus";
+    const CLAVE_COMPRAS = "miCocinaCompras";
+
+    const recetasIniciales = [
+      {
+        id: 1,
+        nombre: "Yogur griego con avena y fruta",
+        tipo: "Desayuno",
+        calorias: 300,
+        proteina: 28,
+        ingredientes: [
+          { nombre: "Yogur griego natural", cantidad: 200, unidad: "g", categoria: "Lácteos y huevos" },
+          { nombre: "Avena", cantidad: 30, unidad: "g", categoria: "Despensa" },
+          { nombre: "Fresas", cantidad: 100, unidad: "g", categoria: "Fruta y verdura" }
+        ]
+      },
+      {
+        id: 2,
+        nombre: "Tostada integral con huevo y tomate",
+        tipo: "Desayuno",
+        calorias: 350,
+        proteina: 22,
+        ingredientes: [
+          { nombre: "Pan integral", cantidad: 60, unidad: "g", categoria: "Despensa" },
+          { nombre: "Huevo", cantidad: 2, unidad: "ud", categoria: "Lácteos y huevos" },
+          { nombre: "Tomate", cantidad: 1, unidad: "ud", categoria: "Fruta y verdura" }
+        ]
+      },
+      {
+        id: 3,
+        nombre: "Pollo a la plancha con arroz y judías verdes",
+        tipo: "Comida",
+        calorias: 560,
+        proteina: 45,
+        ingredientes: [
+          { nombre: "Pechuga de pollo", cantidad: 180, unidad: "g", categoria: "Carne y pescado" },
+          { nombre: "Arroz basmati", cantidad: 70, unidad: "g", categoria: "Despensa" },
+          { nombre: "Judías verdes", cantidad: 150, unidad: "g", categoria: "Fruta y verdura" }
+        ]
+      },
+      {
+        id: 4,
+        nombre: "Salmón al horno con patata y brócoli",
+        tipo: "Cena",
+        calorias: 550,
+        proteina: 38,
+        ingredientes: [
+          { nombre: "Salmón", cantidad: 150, unidad: "g", categoria: "Carne y pescado" },
+          { nombre: "Patata", cantidad: 200, unidad: "g", categoria: "Fruta y verdura" },
+          { nombre: "Brócoli", cantidad: 150, unidad: "g", categoria: "Fruta y verdura" }
+        ]
+      },
+      {
+        id: 5,
+        nombre: "Wok de pollo con verduras y fideos de arroz",
+        tipo: "Cena",
+        calorias: 520,
+        proteina: 40,
+        ingredientes: [
+          { nombre: "Pechuga de pollo", cantidad: 150, unidad: "g", categoria: "Carne y pescado" },
+          { nombre: "Fideos de arroz", cantidad: 60, unidad: "g", categoria: "Despensa" },
+          { nombre: "Calabacín", cantidad: 100, unidad: "g", categoria: "Fruta y verdura" },
+          { nombre: "Pimiento rojo", cantidad: 100, unidad: "g", categoria: "Fruta y verdura" }
+        ]
+      },
+      {
+        id: 6,
+        nombre: "Lentejas con verduras y huevo duro",
+        tipo: "Comida",
+        calorias: 580,
+        proteina: 35,
+        ingredientes: [
+          { nombre: "Lentejas cocidas", cantidad: 250, unidad: "g", categoria: "Despensa" },
+          { nombre: "Zanahoria", cantidad: 100, unidad: "g", categoria: "Fruta y verdura" },
+          { nombre: "Huevo", cantidad: 1, unidad: "ud", categoria: "Lácteos y huevos" }
+        ]
+      },
+      {
+        id: 7,
+        nombre: "Merluza al horno con patata y espárragos",
+        tipo: "Cena",
+        calorias: 480,
+        proteina: 40,
+        ingredientes: [
+          { nombre: "Merluza", cantidad: 180, unidad: "g", categoria: "Carne y pescado" },
+          { nombre: "Patata", cantidad: 180, unidad: "g", categoria: "Fruta y verdura" },
+          { nombre: "Espárragos verdes", cantidad: 150, unidad: "g", categoria: "Fruta y verdura" }
+        ]
+      },
+      {
+        id: 8,
+        nombre: "Bowl de ternera, arroz y verduras",
+        tipo: "Comida",
+        calorias: 620,
+        proteina: 42,
+        ingredientes: [
+          { nombre: "Ternera picada magra", cantidad: 150, unidad: "g", categoria: "Carne y pescado" },
+          { nombre: "Arroz integral", cantidad: 70, unidad: "g", categoria: "Despensa" },
+          { nombre: "Aguacate", cantidad: 50, unidad: "g", categoria: "Fruta y verdura" }
+        ]
+      },
+      {
+        id: 9,
+        nombre: "Pasta integral con atún y tomate",
+        tipo: "Comida",
+        calorias: 560,
+        proteina: 38,
+        ingredientes: [
+          { nombre: "Pasta integral", cantidad: 80, unidad: "g", categoria: "Despensa" },
+          { nombre: "Atún al natural", cantidad: 120, unidad: "g", categoria: "Despensa" },
+          { nombre: "Tomate", cantidad: 150, unidad: "g", categoria: "Fruta y verdura" }
+        ]
+      },
+      {
+        id: 10,
+        nombre: "Ensalada completa de atún y huevo",
+        tipo: "Cena",
+        calorias: 480,
+        proteina: 35,
+        ingredientes: [
+          { nombre: "Atún al natural", cantidad: 120, unidad: "g", categoria: "Despensa" },
+          { nombre: "Huevo", cantidad: 2, unidad: "ud", categoria: "Lácteos y huevos" },
+          { nombre: "Lechuga", cantidad: 100, unidad: "g", categoria: "Fruta y verdura" },
+          { nombre: "Aguacate", cantidad: 50, unidad: "g", categoria: "Fruta y verdura" }
+        ]
+      }
+    ];
+
+    function cargarDatos(clave, valorInicial) {
+      const datos = localStorage.getItem(clave);
+      return datos ? JSON.parse(datos) : valorInicial;
+    }
+
+    function guardarDatos(clave, datos) {
+      localStorage.setItem(clave, JSON.stringify(datos));
+    }
+
+    let recetas = cargarDatos(CLAVE_RECETAS, recetasIniciales);
+    let menus = cargarDatos(CLAVE_MENUS, {});
+    let compras = cargarDatos(CLAVE_COMPRAS, {});
+
+    if (!localStorage.getItem(CLAVE_RECETAS)) {
+      guardarDatos(CLAVE_RECETAS, recetas);
+    }
+
+    function obtenerSemanaISO(fechaTexto) {
+      const fecha = new Date(fechaTexto + "T12:00:00");
+      const temporal = new Date(
+        Date.UTC(fecha.getFullYear(), fecha.getMonth(), fecha.getDate())
+      );
+
+      const dia = temporal.getUTCDay() || 7;
+      temporal.setUTCDate(temporal.getUTCDate() + 4 - dia);
+
+      const inicioAno = new Date(Date.UTC(temporal.getUTCFullYear(), 0, 1));
+      const semana = Math.ceil(
+        (((temporal - inicioAno) / 86400000) + 1) / 7
+      );
+
+      return `${temporal.getUTCFullYear()}-W${String(semana).padStart(2, "0")}`;
+    }
+
+    function mostrarPantalla(nombre) {
+      ["inicio", "recetas", "menu", "compra"].forEach(pantalla => {
+        document
+          .getElementById(`pantalla-${pantalla}`)
+          .classList.toggle("oculto", pantalla !== nombre);
+      });
+
+      document.querySelectorAll(".nav-item").forEach(enlace => {
+        enlace.classList.toggle(
+          "activa",
+          enlace.dataset.pantalla === nombre
+        );
+      });
+
+      if (nombre === "inicio") renderizarInicio();
+      if (nombre === "recetas") renderizarRecetas();
+      if (nombre === "menu") renderizarMenu();
+      if (nombre === "compra") renderizarCompra();
+    }
+
+    function renderizarInicio() {
+      document.getElementById("total-recetas").textContent = recetas.length;
+
+      const semanaActual = obtenerSemanaISO(
+        new Date().toISOString().slice(0, 10)
+      );
+
+      const menu = menus[semanaActual] || {};
+
+      document.getElementById("comidas-planificadas").textContent =
+        Object.keys(menu).length;
+    }
+
+    function renderizarRecetas() {
+      const contenedor = document.getElementById("lista-recetas");
+      contenedor.innerHTML = "";
+
+      recetas.forEach(receta => {
+        const tarjeta = document.createElement("article");
+        tarjeta.className = "tarjeta";
+
+        tarjeta.innerHTML = `
+          <h3>${receta.nombre}</h3>
+          <p>
+            ${receta.tipo} ·
+            ${receta.calorias} kcal ·
+            ${receta.proteina} g proteína
+          </p>
+        `;
+
+        contenedor.appendChild(tarjeta);
+      });
+    }
+
+    document
+      .getElementById("formulario-receta")
+      .addEventListener("submit", evento => {
+        evento.preventDefault();
+
+        const nombre = document.getElementById("receta-nombre").value.trim();
+        const tipo = document.getElementById("receta-tipo").value;
+        const calorias =
+          Number(document.getElementById("receta-calorias").value) || 0;
+        const proteina =
+          Number(document.getElementById("receta-proteina").value) || 0;
+        const ingredientesTexto = document
+          .getElementById("receta-ingredientes")
+          .value.trim();
+
+        if (!nombre || !ingredientesTexto) {
+          return;
+        }
+
+        const ingredientes = ingredientesTexto
+          .split("\n")
+          .map(linea => {
+            const partes = linea.split("|").map(valor => valor.trim());
+
+            return {
+              nombre: partes[0],
+              cantidad: Number(partes[1]) || 1,
+              unidad: partes[2] || "ud",
+              categoria: "Otros"
+            };
+          })
+          .filter(ingrediente => ingrediente.nombre);
+
+        const nuevaReceta = {
+          id: Date.now(),
+          nombre,
+          tipo,
+          calorias,
+          proteina,
+          ingredientes
+        };
+
+        recetas.push(nuevaReceta);
+        guardarDatos(CLAVE_RECETAS, recetas);
+
+        evento.target.reset();
+        renderizarRecetas();
+      });
+
+    function renderizarMenu() {
+      const fechaInput = document.getElementById("fecha-menu");
+      const contenedor = document.getElementById("formulario-menu");
+      const resumen = document.getElementById("resumen-menu");
+
+      fechaInput.onchange = () => {
+        if (fechaInput.value) {
+          renderizarMenu();
+        }
+      };
+
+      const fecha = fechaInput.value;
+
+      if (!fecha) {
+        contenedor.innerHTML = "";
+        resumen.classList.add("oculto");
+        return;
+      }
+
+      const semana = obtenerSemanaISO(fecha);
+      const menu = menus[semana] || {};
+
+      document.getElementById("titulo-semana").textContent =
+        `Semana ${semana}`;
+
+      let calorias = 0;
+      let proteina = 0;
+      let numeroComidas = 0;
+
+      Object.values(menu).forEach(recetaId => {
+        const receta = recetas.find(receta => receta.id === recetaId);
+
+        if (receta) {
+          calorias += receta.calorias;
+          proteina += receta.proteina;
+          numeroComidas += 1;
+        }
+      });
+
+      document.getElementById("resumen-comidas").textContent =
+        numeroComidas;
+
+      document.getElementById("resumen-calorias").textContent = calorias;
+
+      document.getElementById("resumen-proteina").textContent =
+        `${proteina} g`;
+
+      document.getElementById("resumen-media").textContent =
+        `${(proteina / 7).toFixed(1)} g`;
+
+      resumen.classList.remove("oculto");
+
+      const dias = [
+        "Lunes",
+        "Martes",
+        "Miércoles",
+        "Jueves",
+        "Viernes",
+        "Sábado",
+        "Domingo"
+      ];
+
+      const tiposComida = ["Desayuno", "Comida", "Cena"];
+
+      contenedor.innerHTML = `
+        <form id="guardar-menu">
+          <input type="hidden" id="semana-actual" value="${semana}">
+        </form>
+      `;
+
+      const formulario = document.getElementById("guardar-menu");
+
+      dias.forEach(dia => {
+        const tarjeta = document.createElement("div");
+        tarjeta.className = "tarjeta";
+        tarjeta.innerHTML = `<h3>${dia}</h3>`;
+
+        tiposComida.forEach(comida => {
+          const clave = `${dia}-${comida}`;
+          const seleccionada = menu[clave] || "";
+
+          const label = document.createElement("label");
+          label.textContent = comida;
+
+          const select = document.createElement("select");
+          select.dataset.clave = clave;
+
+          const opcionVacia = document.createElement("option");
+          opcionVacia.value = "";
+          opcionVacia.textContent = "Sin planificar";
+          select.appendChild(opcionVacia);
+
+          recetas.forEach(receta => {
+            const opcion = document.createElement("option");
+            opcion.value = receta.id;
+            opcion.textContent = receta.nombre;
+
+            if (receta.id === seleccionada) {
+              opcion.selected = true;
+            }
+
+            select.appendChild(opcion);
+          });
+
+          label.appendChild(select);
+          tarjeta.appendChild(label);
+        });
+
+        formulario.appendChild(tarjeta);
+      });
+
+      const botonGuardar = document.createElement("button");
+      botonGuardar.type = "submit";
+      botonGuardar.textContent = "Guardar menú";
+      formulario.appendChild(botonGuardar);
+
+      formulario.onsubmit = evento => {
+        evento.preventDefault();
+
+        const nuevoMenu = {};
+
+        formulario.querySelectorAll("select").forEach(select => {
+          if (select.value) {
+            nuevoMenu[select.dataset.clave] = Number(select.value);
+          }
+        });
+
+        menus[semana] = nuevoMenu;
+        guardarDatos(CLAVE_MENUS, menus);
+
+        renderizarMenu();
+      };
+    }
+
+    function renderizarCompra() {
+      const fechaInput = document.getElementById("fecha-compra");
+      const contenedor = document.getElementById("contenido-compra");
+
+      fechaInput.onchange = () => {
+        if (fechaInput.value) {
+          renderizarCompra();
+        }
+      };
+
+      const fecha = fechaInput.value;
+
+      if (!fecha) {
+        contenedor.innerHTML = "";
+        return;
+      }
+
+      const semana = obtenerSemanaISO(fecha);
+      const menu = menus[semana] || {};
+      const claveCompra = `compra-${semana}`;
+
+      if (!compras[claveCompra]) {
+        const productos = {};
+
+        Object.values(menu).forEach(recetaId => {
+          const receta = recetas.find(receta => receta.id === recetaId);
+
+          if (!receta) {
+            return;
+          }
+
+          receta.ingredientes.forEach(ingrediente => {
+            const clave = `${ingrediente.nombre}-${ingrediente.unidad}`;
+
+            if (!productos[clave]) {
+              productos[clave] = {
+                nombre: ingrediente.nombre,
+                cantidad: 0,
+                unidad: ingrediente.unidad,
+                categoria: ingrediente.categoria,
+                comprado: false
+              };
+            }
+
+            productos[clave].cantidad += ingrediente.cantidad;
+          });
+        });
+
+        compras[claveCompra] = Object.values(productos);
+        guardarDatos(CLAVE_COMPRAS, compras);
+      }
+
+      const productos = compras[claveCompra];
+      const categorias = {};
+
+      productos.forEach((producto, indice) => {
+        if (!categorias[producto.categoria]) {
+          categorias[producto.categoria] = [];
+        }
+
+        categorias[producto.categoria].push({
+          ...producto,
+          indice
+        });
+      });
+
+      contenedor.innerHTML = `
+        <form id="anadir-producto" class="tarjeta">
+          <input type="hidden" value="${semana}" id="semana-compra">
+
+          <div class="anadir-producto">
+            <label>Producto
+              <input id="producto-nombre" required>
+            </label>
+
+            <label>Cantidad
+              <input
+                id="producto-cantidad"
+                type="number"
+                step="0.1"
+                min="0"
+                value="1"
+              >
+            </label>
+
+            <label>Unidad
+              <select id="producto-unidad">
+                <option value="ud">ud</option>
+                <option value="g">g</option>
+                <option value="ml">ml</option>
+                <option value="kg">kg</option>
+                <option value="l">l</option>
+              </select>
+            </label>
+          </div>
+
+          <button type="submit">Añadir producto</button>
+        </form>
+      `;
+
+      Object.entries(categorias).forEach(([categoria, productosCategoria]) => {
+        const tarjeta = document.createElement("div");
+        tarjeta.className = "tarjeta";
+        tarjeta.innerHTML = `<h3>${categoria}</h3>`;
+
+        productosCategoria.forEach(producto => {
+          const fila = document.createElement("div");
+          fila.className = "producto";
+
+          fila.innerHTML = `
+            <label class="producto-fila">
+              <input
+                type="checkbox"
+                data-indice="${producto.indice}"
+                ${producto.comprado ? "checked" : ""}
+              >
+              <span>
+                <strong>${producto.nombre}</strong><br>
+                ${producto.cantidad} ${producto.unidad}
+              </span>
+            </label>
+          `;
+
+          const botonEliminar = document.createElement("button");
+          botonEliminar.className = "boton-peligro";
+          botonEliminar.textContent = "Eliminar";
+
+          botonEliminar.onclick = () => {
+            compras[claveCompra].splice(producto.indice, 1);
+            guardarDatos(CLAVE_COMPRAS, compras);
+            renderizarCompra();
+          };
+
+          fila.appendChild(botonEliminar);
+          tarjeta.appendChild(fila);
+        });
+
+        contenedor.appendChild(tarjeta);
+      });
+
+      document
+        .getElementById("anadir-producto")
+        .addEventListener("submit", evento => {
+          evento.preventDefault();
+
+          const nombre = document
+            .getElementById("producto-nombre")
+            .value.trim();
+
+          const cantidad =
+            Number(document.getElementById("producto-cantidad").value) || 1;
+
+          const unidad = document
+            .getElementById("producto-unidad")
+            .value;
+
+          if (!nombre) {
+            return;
+          }
+
+          compras[claveCompra].push({
+            nombre,
+            cantidad,
+            unidad,
+            categoria: "Otros",
+            comprado: false
+          });
+
+          guardarDatos(CLAVE_COMPRAS, compras);
+          renderizarCompra();
+        });
+
+      contenedor
+        .querySelectorAll('input[type="checkbox"]')
+        .forEach(checkbox => {
+          checkbox.onchange = () => {
+            const indice = Number(checkbox.dataset.indice);
+            compras[claveCompra][indice].comprado = checkbox.checked;
+            guardarDatos(CLAVE_COMPRAS, compras);
+          };
+        });
+    }
+
+    document.querySelectorAll(".nav-item").forEach(enlace => {
+      enlace.addEventListener("click", evento => {
+        evento.preventDefault();
+        mostrarPantalla(enlace.dataset.pantalla);
+      });
+    });
+
+    if ("serviceWorker" in navigator) {
+      navigator.serviceWorker.register("sw.js");
+    }
+
+    mostrarPantalla("inicio");
+  </script>
+</body>
+</html>
