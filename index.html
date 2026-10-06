@@ -3,28 +3,40 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <meta name="theme-color" content="#17121B">
+  <meta name="theme-color" content="#151019">
   <title>Mi Cocina</title>
   <link rel="manifest" href="manifest.json">
   <link rel="apple-touch-icon" href="./icons/apple-touch-icon.png">
 
   <style>
     :root {
-      --fondo: #17121B;
-      --superficie: #221A29;
-      --superficie-alta: #2B2133;
-      --borde: #3A2E44;
-      --texto: #F5EFEA;
-      --texto-suave: #B7A8B5;
-      --principal: #F2996B;
-      --principal-oscuro: #D97B4C;
-      --principal-suave: rgba(242, 153, 107, .14);
-      --ciruela: #6D3B5E;
-      --ciruela-suave: rgba(109, 59, 94, .35);
+      --fondo: #151019;
+      --superficie: #1F1826;
+      --superficie-alta: #282031;
+      --superficie-suave: rgba(255, 255, 255, .04);
+      --borde: #332A3E;
+      --borde-fuerte: #43374F;
+      --texto: #F7F2ED;
+      --texto-medio: #C9BCC7;
+      --texto-suave: #9C8FA0;
+      --principal: #F09A63;
+      --principal-oscuro: #D97F49;
+      --principal-suave: rgba(240, 154, 99, .13);
+      --ciruela: #8A5A7C;
+      --ciruela-suave: rgba(138, 90, 124, .22);
       --verde: #7FC8A9;
+      --verde-suave: rgba(127, 200, 169, .14);
       --peligro: #E1705C;
-      --peligro-suave: rgba(225, 112, 92, .16);
-      --sombra: 0 18px 44px rgba(0, 0, 0, .35);
+      --peligro-suave: rgba(225, 112, 92, .14);
+      --radio-tarjeta: 24px;
+      --radio-boton: 16px;
+      --sombra: 0 10px 30px rgba(0, 0, 0, .24);
+      --espacio-1: 4px;
+      --espacio-2: 8px;
+      --espacio-3: 12px;
+      --espacio-4: 16px;
+      --espacio-5: 20px;
+      --espacio-6: 24px;
     }
 
     * {
@@ -39,116 +51,239 @@
     body {
       margin: 0;
       min-height: 100vh;
-      background:
-        radial-gradient(circle at 90% -10%, rgba(242, 153, 107, .14), transparent 45%),
-        radial-gradient(circle at -10% 10%, rgba(109, 59, 94, .28), transparent 42%),
-        var(--fondo);
+      background: var(--fondo);
       color: var(--texto);
       font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif;
       font-size: 16px;
       line-height: 1.45;
-      padding-bottom: 116px;
+      padding-bottom: calc(112px + env(safe-area-inset-bottom));
       -webkit-font-smoothing: antialiased;
     }
 
     .cabecera {
-      padding: 34px 24px 12px;
+      padding: calc(18px + env(safe-area-inset-top)) 20px 10px;
     }
 
-    .saludo {
+    .fecha-hoy {
       margin: 0;
       color: var(--texto-suave);
       font-size: 13px;
       font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: .1em;
+      text-transform: capitalize;
+      letter-spacing: .04em;
     }
 
     h1 {
-      margin: 6px 0 0;
-      font-size: 36px;
+      margin: 4px 0 0;
+      font-size: 30px;
       font-weight: 850;
-      letter-spacing: -.9px;
+      letter-spacing: -.7px;
     }
 
     h2 {
-      margin: 14px 0 18px;
-      font-size: 27px;
+      margin: 18px 0 16px;
+      font-size: 25px;
       font-weight: 820;
-      letter-spacing: -.6px;
+      letter-spacing: -.5px;
     }
 
     h3 {
       margin: 0 0 12px;
-      font-size: 18px;
+      font-size: 17px;
       font-weight: 760;
     }
 
     .contenido {
-      padding: 14px 20px 30px;
-      animation: aparecer .25s ease both;
+      padding: 8px 18px 28px;
+      animation: aparecer .22s ease both;
     }
 
     @keyframes aparecer {
-      from { opacity: 0; transform: translateY(8px); }
+      from { opacity: 0; transform: translateY(6px); }
       to { opacity: 1; transform: translateY(0); }
     }
 
     .tarjeta {
       background: var(--superficie);
       border: 1px solid var(--borde);
-      border-radius: 26px;
-      padding: 20px;
-      margin-bottom: 16px;
-      box-shadow: var(--sombra);
-      transition: transform .16s ease;
+      border-radius: var(--radio-tarjeta);
+      padding: 18px;
+      margin-bottom: 14px;
     }
 
-    .tarjeta:active {
-      transform: scale(.985);
-    }
-
-    .tarjeta-destacada {
+    .tarjeta-hero {
       background:
-        linear-gradient(145deg, rgba(242, 153, 107, .16), rgba(109, 59, 94, .22)),
+        linear-gradient(150deg, rgba(240, 154, 99, .17), rgba(138, 90, 124, .13)),
         var(--superficie);
-      border-color: rgba(242, 153, 107, .28);
+      border-color: rgba(240, 154, 99, .26);
+      padding: 22px;
+      margin-bottom: 14px;
     }
 
-    .comida-siguiente {
-      background:
-        linear-gradient(135deg, rgba(242, 153, 107, .22), rgba(109, 59, 94, .30)),
-        var(--superficie-alta);
-      border: 1px solid rgba(242, 153, 107, .30);
-      border-radius: 28px;
-      padding: 24px;
-      margin-bottom: 18px;
-      box-shadow: var(--sombra);
+    .tarjeta-suave {
+      background: var(--superficie-suave);
+      border-color: var(--borde);
     }
 
     .etiqueta {
       display: inline-flex;
       align-items: center;
       gap: 6px;
-      padding: 7px 12px;
+      padding: 6px 11px;
       border-radius: 999px;
       background: var(--principal-suave);
       color: var(--principal);
-      font-size: 12px;
+      font-size: 11px;
       font-weight: 800;
       text-transform: uppercase;
-      letter-spacing: .08em;
+      letter-spacing: .09em;
     }
 
-    .comida-siguiente h3 {
+    .etiqueta-neutra {
+      background: var(--superficie-alta);
+      color: var(--texto-medio);
+    }
+
+    .comida-hero-nombre {
       margin: 14px 0 6px;
-      font-size: 25px;
-      font-weight: 820;
+      font-size: 27px;
+      font-weight: 830;
+      letter-spacing: -.6px;
+      line-height: 1.15;
     }
 
-    .comida-siguiente p {
-      margin: 0 0 18px;
-      color: var(--texto-suave);
+    .comida-hero-datos {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-bottom: 18px;
+    }
+
+    .dato {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 12px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, .06);
+      border: 1px solid var(--borde);
+      color: var(--texto-medio);
+      font-size: 13px;
+      font-weight: 750;
+    }
+
+    .progreso-dia {
+      margin: 18px 0 16px;
+    }
+
+    .progreso-dia-texto {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 8px;
+      font-size: 13px;
+      font-weight: 780;
+      color: var(--texto-medio);
+    }
+
+    .barra {
+      height: 8px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, .08);
+      overflow: hidden;
+    }
+
+    .barra div {
+      height: 100%;
+      border-radius: 999px;
+      background: var(--principal);
+      transition: width .3s ease;
+    }
+
+    .boton {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      width: 100%;
+      min-height: 54px;
+      padding: 15px 20px;
+      border: none;
+      border-radius: var(--radio-boton);
+      background: var(--principal);
+      color: #231409;
+      font-size: 16px;
+      font-weight: 850;
+      cursor: pointer;
+      transition: transform .15s ease, background .15s ease;
+    }
+
+    .boton:active {
+      transform: scale(.98);
+      background: var(--principal-oscuro);
+    }
+
+    .boton.secundario {
+      background: var(--superficie-alta);
+      color: var(--texto);
+      border: 1px solid var(--borde-fuerte);
+    }
+
+    .boton-mini {
+      min-height: 44px;
+      padding: 10px 14px;
+      border: 1px solid var(--borde);
+      border-radius: 14px;
+      background: var(--superficie-alta);
+      color: var(--texto-medio);
+      font-size: 13px;
+      font-weight: 780;
+      cursor: pointer;
+      transition: transform .15s ease;
+    }
+
+    .boton-mini:active {
+      transform: scale(.95);
+    }
+
+    .acciones-rapidas {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+
+    .accion-rapida {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 7px;
+      min-height: 88px;
+      padding: 12px 8px;
+      background: var(--superficie);
+      border: 1px solid var(--borde);
+      border-radius: 20px;
+      color: var(--texto-medio);
+      font-size: 12px;
+      font-weight: 780;
+      text-align: center;
+      cursor: pointer;
+      transition: transform .15s ease, border-color .15s ease;
+    }
+
+    .accion-rapida:active {
+      transform: scale(.96);
+      border-color: var(--borde-fuerte);
+    }
+
+    .accion-rapida svg {
+      width: 23px;
+      height: 23px;
+      stroke: var(--principal);
+      fill: none;
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
     }
 
     .comida-hoy {
@@ -156,7 +291,7 @@
       align-items: center;
       justify-content: space-between;
       gap: 12px;
-      padding: 15px 0;
+      padding: 14px 0;
       border-bottom: 1px solid var(--borde);
     }
 
@@ -166,6 +301,7 @@
 
     .comida-hoy strong {
       display: block;
+      font-size: 15px;
     }
 
     .comida-hoy span {
@@ -174,72 +310,54 @@
     }
 
     .estado {
-      font-size: 12px;
-      font-weight: 800;
-      padding: 7px 12px;
+      min-height: 32px;
+      display: inline-flex;
+      align-items: center;
+      padding: 6px 12px;
       border-radius: 999px;
       background: var(--ciruela-suave);
-      color: #E7C6DC;
+      color: #E4C3D8;
+      font-size: 12px;
+      font-weight: 800;
       white-space: nowrap;
     }
 
     .estado.cocinada {
-      background: rgba(127, 200, 169, .16);
+      background: var(--verde-suave);
       color: var(--verde);
     }
 
-    .boton {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      min-height: 54px;
-      padding: 15px 20px;
-      border: none;
-      border-radius: 18px;
-      background: var(--principal);
-      color: #241712;
-      font-size: 16px;
-      font-weight: 850;
-      cursor: pointer;
-      transition: transform .15s ease, background .15s ease;
-    }
-
-    .boton:active {
-      transform: scale(.97);
-      background: var(--principal-oscuro);
-    }
-
-    .boton.secundario {
-      background: var(--superficie-alta);
-      color: var(--texto);
-      border: 1px solid var(--borde);
-    }
-
-    .boton-mini {
-      min-height: 38px;
-      padding: 8px 12px;
-      border: 1px solid var(--borde);
-      border-radius: 12px;
+    .estado.vacia {
       background: var(--superficie-alta);
       color: var(--texto-suave);
-      font-size: 13px;
+    }
+
+    .resumen-semanal {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+    }
+
+    .resumen-semanal div {
+      background: var(--superficie-suave);
+      border: 1px solid var(--borde);
+      border-radius: 18px;
+      padding: 14px 10px;
+      text-align: center;
+    }
+
+    .resumen-semanal strong {
+      display: block;
+      font-size: 19px;
+      color: var(--principal);
+    }
+
+    .resumen-semanal span {
+      font-size: 10px;
       font-weight: 780;
-      cursor: pointer;
-      transition: transform .15s ease;
-    }
-
-    .boton-mini:active {
-      transform: scale(.94);
-    }
-
-    .boton-peligro {
-      min-height: 42px;
-      padding: 9px 14px;
-      border: none;
-      border-radius: 14px;
-      background: var(--peligro-suave);
-      color: var(--peligro);
-      font-weight: 800;
+      color: var(--texto-suave);
+      text-transform: uppercase;
+      letter-spacing: .05em;
     }
 
     label {
@@ -247,7 +365,7 @@
       margin-bottom: 14px;
       font-size: 12px;
       font-weight: 780;
-      color: var(--texto-suave);
+      color: var(--texto-medio);
       text-transform: uppercase;
       letter-spacing: .07em;
     }
@@ -259,7 +377,7 @@
       margin-top: 8px;
       padding: 16px;
       border: 1.5px solid var(--borde);
-      border-radius: 18px;
+      border-radius: var(--radio-boton);
       background: var(--superficie-alta);
       color: var(--texto);
       font-size: 16px;
@@ -271,16 +389,16 @@
     textarea:focus {
       outline: none;
       border-color: var(--principal);
-      box-shadow: 0 0 0 4px rgba(242, 153, 107, .16);
+      box-shadow: 0 0 0 4px rgba(240, 154, 99, .14);
     }
 
     button[type="submit"] {
       width: 100%;
-      min-height: 56px;
+      min-height: 54px;
       border: none;
-      border-radius: 18px;
+      border-radius: var(--radio-boton);
       background: var(--principal);
-      color: #241712;
+      color: #231409;
       font-size: 16px;
       font-weight: 850;
       cursor: pointer;
@@ -288,18 +406,18 @@
 
     .navegacion {
       position: fixed;
-      left: 10px;
-      right: 10px;
+      left: 12px;
+      right: 12px;
       bottom: calc(12px + env(safe-area-inset-bottom));
       display: grid;
       grid-template-columns: repeat(5, 1fr);
       gap: 4px;
       padding: 8px;
-      background: rgba(34, 26, 41, .9);
+      background: rgba(31, 24, 38, .88);
       backdrop-filter: blur(24px);
       border: 1px solid var(--borde);
-      border-radius: 28px;
-      box-shadow: 0 20px 44px rgba(0, 0, 0, .45);
+      border-radius: 26px;
+      box-shadow: 0 16px 40px rgba(0, 0, 0, .4);
     }
 
     .nav-item {
@@ -307,8 +425,8 @@
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      gap: 3px;
-      min-height: 56px;
+      gap: 4px;
+      min-height: 58px;
       border-radius: 18px;
       color: var(--texto-suave);
       font-size: 10px;
@@ -318,8 +436,8 @@
     }
 
     .nav-item svg {
-      width: 21px;
-      height: 21px;
+      width: 22px;
+      height: 22px;
       stroke: currentColor;
       fill: none;
       stroke-width: 2;
@@ -334,34 +452,6 @@
     .nav-item.activa {
       background: var(--principal-suave);
       color: var(--principal);
-    }
-
-    .resumen-datos {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 12px;
-      margin-top: 16px;
-    }
-
-    .resumen-datos div {
-      background: rgba(23, 18, 27, .55);
-      border: 1px solid var(--borde);
-      border-radius: 20px;
-      padding: 16px;
-      text-align: center;
-    }
-
-    .resumen-datos strong {
-      display: block;
-      font-size: 23px;
-      color: var(--principal);
-    }
-
-    .resumen-datos span {
-      font-size: 11px;
-      font-weight: 750;
-      color: var(--texto-suave);
-      text-transform: uppercase;
     }
 
     .semana {
@@ -379,7 +469,7 @@
     }
 
     .dia-semana.hoy {
-      border-color: rgba(242, 153, 107, .55);
+      border-color: rgba(240, 154, 99, .5);
     }
 
     .dia-cabecera {
@@ -388,14 +478,8 @@
       margin-bottom: 10px;
     }
 
-    .dia-nombre {
-      font-weight: 820;
-    }
-
-    .dia-fecha {
-      font-size: 13px;
-      color: var(--texto-suave);
-    }
+    .dia-nombre { font-weight: 820; }
+    .dia-fecha { font-size: 13px; color: var(--texto-suave); }
 
     .comida-linea {
       display: flex;
@@ -411,8 +495,8 @@
     }
 
     .favorito {
-      width: 42px;
-      height: 42px;
+      width: 44px;
+      height: 44px;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -426,7 +510,7 @@
 
     .favorito.activo {
       color: var(--principal);
-      border-color: rgba(242, 153, 107, .45);
+      border-color: rgba(240, 154, 99, .4);
       background: var(--principal-suave);
     }
 
@@ -448,18 +532,16 @@
     }
 
     .filtros::-webkit-scrollbar,
-    .chips-navegacion::-webkit-scrollbar {
-      display: none;
-    }
+    .chips-navegacion::-webkit-scrollbar { display: none; }
 
     .filtro,
     .chip-navegacion {
-      min-height: 42px;
-      padding: 10px 16px;
+      min-height: 44px;
+      padding: 11px 16px;
       border-radius: 999px;
       border: 1.5px solid var(--borde);
       background: var(--superficie);
-      color: var(--texto-suave);
+      color: var(--texto-medio);
       font-size: 14px;
       font-weight: 780;
       white-space: nowrap;
@@ -469,13 +551,13 @@
     .filtro.activo {
       background: var(--principal);
       border-color: var(--principal);
-      color: #241712;
+      color: #231409;
     }
 
     .filtro-nueva {
       background: var(--principal);
       border-color: var(--principal);
-      color: #241712;
+      color: #231409;
     }
 
     .chip {
@@ -484,7 +566,7 @@
       border-radius: 999px;
       background: var(--superficie-alta);
       border: 1px solid var(--borde);
-      color: var(--texto-suave);
+      color: var(--texto-medio);
       font-size: 12px;
       font-weight: 750;
     }
@@ -527,38 +609,9 @@
       margin-bottom: 16px;
     }
 
-    .progreso-compra-texto {
-      display: flex;
-      justify-content: space-between;
-      margin-bottom: 10px;
-      font-size: 13px;
-      font-weight: 780;
-      color: var(--texto-suave);
-    }
+    .categoria-compra { scroll-margin-top: 78px; }
 
-    .barra-progreso {
-      height: 8px;
-      border-radius: 999px;
-      background: var(--superficie-alta);
-      overflow: hidden;
-    }
-
-    .barra-progreso div {
-      height: 100%;
-      border-radius: 999px;
-      background: var(--principal);
-      transition: width .3s ease;
-    }
-
-    .categoria-compra {
-      scroll-margin-top: 78px;
-    }
-
-    .grafico {
-      width: 100%;
-      height: 180px;
-      margin-top: 8px;
-    }
+    .grafico { width: 100%; height: 180px; margin-top: 8px; }
 
     .registro {
       display: flex;
@@ -569,36 +622,23 @@
       border-bottom: 1px solid var(--borde);
     }
 
-    .registro:last-child {
-      border-bottom: none;
-    }
+    .registro:last-child { border-bottom: none; }
+    .registro strong { display: block; }
+    .registro span { font-size: 13px; color: var(--texto-suave); }
 
-    .registro strong {
-      display: block;
-    }
-
-    .registro span {
-      font-size: 13px;
-      color: var(--texto-suave);
-    }
-
-    .oculto {
-      display: none;
-    }
+    .oculto { display: none; }
 
     .modal-fondo {
       position: fixed;
       inset: 0;
       z-index: 120;
-      background: rgba(12, 8, 16, .68);
+      background: rgba(10, 7, 14, .7);
       backdrop-filter: blur(6px);
       display: flex;
       align-items: flex-end;
     }
 
-    .modal-fondo.oculto {
-      display: none;
-    }
+    .modal-fondo.oculto { display: none; }
 
     .modal {
       width: 100%;
@@ -607,8 +647,8 @@
       background: var(--superficie);
       border: 1px solid var(--borde);
       border-bottom: none;
-      border-radius: 30px 30px 0 0;
-      padding: 24px 22px calc(28px + env(safe-area-inset-bottom));
+      border-radius: 28px 28px 0 0;
+      padding: 22px 20px calc(26px + env(safe-area-inset-bottom));
     }
 
     .modal-cabecera {
@@ -618,10 +658,7 @@
       margin-bottom: 18px;
     }
 
-    .modal h2 {
-      margin: 0;
-      font-size: 23px;
-    }
+    .modal h2 { margin: 0; font-size: 22px; }
 
     .modo-cocina {
       position: fixed;
@@ -629,14 +666,12 @@
       z-index: 100;
       display: flex;
       flex-direction: column;
-      background: #14101A;
-      padding: calc(26px + env(safe-area-inset-top)) 22px calc(26px + env(safe-area-inset-bottom));
+      background: #120E16;
+      padding: calc(24px + env(safe-area-inset-top)) 20px calc(24px + env(safe-area-inset-bottom));
       overflow-y: auto;
     }
 
-    .modo-cocina.oculto {
-      display: none;
-    }
+    .modo-cocina.oculto { display: none; }
 
     .modo-cocina-cabecera {
       display: flex;
@@ -646,10 +681,7 @@
       margin-bottom: 18px;
     }
 
-    .modo-cocina h2 {
-      margin: 0;
-      font-size: 23px;
-    }
+    .modo-cocina h2 { margin: 0; font-size: 22px; }
 
     .progreso-cocina {
       height: 6px;
@@ -671,9 +703,9 @@
       align-items: center;
       justify-content: center;
       text-align: center;
-      font-size: 30px;
+      font-size: 29px;
       font-weight: 830;
-      padding: 34px 0;
+      padding: 30px 0;
     }
 
     .paso-numero {
@@ -707,7 +739,7 @@
       min-width: 50px;
       min-height: 50px;
       border: none;
-      border-radius: 17px;
+      border-radius: 16px;
       background: var(--principal-suave);
       color: var(--principal);
       font-size: 23px;
@@ -715,15 +747,13 @@
     }
 
     @media (max-width: 480px) {
-      .anadir-producto {
-        grid-template-columns: 1fr;
-      }
+      .anadir-producto { grid-template-columns: 1fr; }
     }
   </style>
 </head>
 <body>
   <header class="cabecera">
-    <p class="saludo">Hola, Judit</p>
+    <p class="fecha-hoy" id="fecha-cabecera">Hoy</p>
     <h1>Mi Cocina</h1>
   </header>
 
@@ -731,21 +761,34 @@
     <section id="pantalla-hoy">
       <div id="comida-siguiente"></div>
 
+      <div class="acciones-rapidas">
+        <button class="accion-rapida" data-ir="menu">
+          <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="17" rx="3"/><path d="M8 2v4M16 2v4M3 10h18"/></svg>
+          Menú
+        </button>
+
+        <button class="accion-rapida" data-ir="compra">
+          <svg viewBox="0 0 24 24"><path d="M6 2 4 6v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V6l-2-4Z"/><path d="M4 6h16"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+          Compra
+        </button>
+
+        <button class="accion-rapida" data-ir="progreso">
+          <svg viewBox="0 0 24 24"><path d="M3 17l6-6 4 4 8-8"/><path d="M15 7h6v6"/></svg>
+          Progreso
+        </button>
+      </div>
+
       <div class="tarjeta">
         <h3>Tu día</h3>
         <div id="comidas-hoy"></div>
       </div>
 
-      <div class="tarjeta tarjeta-destacada">
+      <div class="tarjeta tarjeta-suave">
         <h3>Esta semana</h3>
-        <div class="resumen-datos">
+        <div class="resumen-semanal">
           <div>
             <strong id="comidas-planificadas">0</strong>
             <span>Comidas</span>
-          </div>
-          <div>
-            <strong id="proteina-semana">0 g</strong>
-            <span>Proteína</span>
           </div>
           <div>
             <strong id="media-calorias">0</strong>
@@ -753,7 +796,7 @@
           </div>
           <div>
             <strong id="media-proteina">0 g</strong>
-            <span>Proteína/día</span>
+            <span>Proteína</span>
           </div>
         </div>
       </div>
@@ -785,10 +828,10 @@
 
       <div id="chips-dias" class="chips-navegacion"></div>
 
-      <div id="resumen-menu" class="tarjeta tarjeta-destacada oculto">
+      <div id="resumen-menu" class="tarjeta tarjeta-hero oculto">
         <h3 id="titulo-semana"></h3>
 
-        <div class="resumen-datos">
+        <div class="resumen-semanal">
           <div>
             <strong id="resumen-comidas">0</strong>
             <span>Comidas</span>
@@ -796,10 +839,6 @@
           <div>
             <strong id="resumen-calorias">0</strong>
             <span>kcal</span>
-          </div>
-          <div>
-            <strong id="resumen-proteina">0 g</strong>
-            <span>Proteína</span>
           </div>
           <div>
             <strong id="resumen-media">0 g</strong>
@@ -827,7 +866,7 @@
     <section id="pantalla-progreso" class="oculto">
       <h2>Mi progreso</h2>
 
-      <div class="tarjeta tarjeta-destacada">
+      <div class="tarjeta tarjeta-hero">
         <h3>Mis objetivos</h3>
 
         <form id="formulario-objetivos">
@@ -876,6 +915,19 @@
         <h3>Historial</h3>
         <div id="lista-registros"></div>
       </div>
+
+      <div class="tarjeta tarjeta-suave">
+        <h3>Copia de seguridad</h3>
+
+        <button class="boton" id="boton-exportar" style="margin-bottom:12px;">
+          Exportar copia de seguridad
+        </button>
+
+        <label style="text-transform:none;">
+          Importar copia de seguridad
+          <input type="file" id="input-importar" accept=".json">
+        </label>
+      </div>
     </section>
   </main>
 
@@ -910,7 +962,7 @@
     <div class="modal">
       <div class="modal-cabecera">
         <h2>Nueva receta</h2>
-        <button class="boton-peligro" id="cerrar-modal-receta">Cerrar</button>
+        <button class="boton-mini" id="cerrar-modal-receta">Cerrar</button>
       </div>
 
       <form id="formulario-receta">
@@ -951,7 +1003,7 @@
     <div class="modal">
       <div class="modal-cabecera">
         <h2 id="titulo-modal-dia">Editar día</h2>
-        <button class="boton-peligro" id="cerrar-modal-dia">Cerrar</button>
+        <button class="boton-mini" id="cerrar-modal-dia">Cerrar</button>
       </div>
 
       <form id="formulario-dia">
@@ -1279,11 +1331,17 @@
     }
 
     function renderizarHoy() {
-      const contenedorSiguiente = document.getElementById("comida-siguiente");
-      const contenedor = document.getElementById("comidas-hoy");
       const fechaHoy = obtenerFechaISO(new Date());
       const semana = obtenerSemanaISO(fechaHoy);
       const menu = menus[semana] || {};
+
+      const fecha = new Date();
+      document.getElementById("fecha-cabecera").textContent =
+        fecha.toLocaleDateString("es-ES", {
+          weekday: "long",
+          day: "numeric",
+          month: "long"
+        });
 
       const tipos = ["Desayuno", "Comida", "Cena"];
       const comidasHoy = tipos.map(comida => ({
@@ -1292,18 +1350,24 @@
       }));
 
       const siguiente = comidasHoy.find(item => item.receta);
+      const contenedorHero = document.getElementById("comida-siguiente");
 
-      contenedorSiguiente.innerHTML = "";
+      contenedorHero.innerHTML = "";
 
       if (siguiente) {
-        contenedorSiguiente.className = "comida-siguiente";
         const clave = `${siguiente.comida}-${fechaHoy}`;
         const cocinada = localStorage.getItem(`cocinada-${clave}`) === "true";
 
-        contenedorSiguiente.innerHTML = `
+        contenedorHero.className = "tarjeta tarjeta-hero";
+
+        contenedorHero.innerHTML = `
           <span class="etiqueta">Siguiente: ${siguiente.comida}</span>
-          <h3>${siguiente.receta.nombre}</h3>
-          <p>${siguiente.receta.calorias} kcal · ${siguiente.receta.proteina} g proteína</p>
+          <h2 class="comida-hero-nombre">${siguiente.receta.nombre}</h2>
+
+          <div class="comida-hero-datos">
+            <span class="dato">🔥 ${siguiente.receta.calorias} kcal</span>
+            <span class="dato">💪 ${siguiente.receta.proteina} g</span>
+          </div>
         `;
 
         const boton = document.createElement("button");
@@ -1317,23 +1381,47 @@
           renderizarHoy();
         };
 
-        contenedorSiguiente.appendChild(boton);
+        contenedorHero.appendChild(boton);
       } else {
-        contenedorSiguiente.className = "tarjeta tarjeta-destacada";
-        contenedorSiguiente.innerHTML = `
+        contenedorHero.className = "tarjeta tarjeta-hero";
+
+        contenedorHero.innerHTML = `
           <span class="etiqueta">Hoy</span>
-          <h3>Aún no has planificado comidas</h3>
-          <p>Elige una receta y organiza tu día en menos de un minuto.</p>
+          <h2 class="comida-hero-nombre">Aún no has planificado comidas</h2>
+          <p style="color:var(--texto-medio);margin:0 0 18px;">
+            Elige una receta y organiza tu día en menos de un minuto.
+          </p>
         `;
 
         const boton = document.createElement("button");
         boton.className = "boton";
-        boton.textContent = "Ir a mis recetas";
+        boton.textContent = "Elegir receta";
 
         boton.onclick = () => mostrarPantalla("recetas");
-        contenedorSiguiente.appendChild(boton);
+        contenedorHero.appendChild(boton);
       }
 
+      const cocinadas = comidasHoy.filter(item => {
+        const clave = `${item.comida}-${fechaHoy}`;
+        return localStorage.getItem(`cocinada-${clave}`) === "true";
+      }).length;
+
+      const barraDia = document.createElement("div");
+      barraDia.className = "progreso-dia";
+
+      barraDia.innerHTML = `
+        <div class="progreso-dia-texto">
+          <span>Progreso del día</span>
+          <span>${cocinadas} de ${comidasHoy.length}</span>
+        </div>
+        <div class="barra">
+          <div style="width:${(cocinadas / comidasHoy.length) * 100}%;"></div>
+        </div>
+      `;
+
+      contenedorHero.appendChild(barraDia);
+
+      const contenedor = document.getElementById("comidas-hoy");
       contenedor.innerHTML = "";
 
       comidasHoy.forEach(item => {
@@ -1348,8 +1436,8 @@
             <strong>${item.comida}</strong>
             <span>${item.receta ? item.receta.nombre : "Sin planificar"}</span>
           </div>
-          <span class="estado ${cocinada ? "cocinada" : ""}">
-            ${cocinada ? "Cocinada" : "Pendiente"}
+          <span class="estado ${cocinada ? "cocinada" : item.receta ? "" : "vacia"}">
+            ${cocinada ? "Cocinada" : item.receta ? "Pendiente" : "Vacío"}
           </span>
         `;
 
@@ -1372,9 +1460,6 @@
 
       document.getElementById("comidas-planificadas").textContent =
         comidasPlanificadas;
-
-      document.getElementById("proteina-semana").textContent =
-        `${proteinaTotal} g`;
 
       document.getElementById("media-calorias").textContent =
         Math.round(caloriasTotales / 7);
@@ -1401,10 +1486,10 @@
           <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:12px;">
             <div>
               <span class="etiqueta">${receta.tipo}</span>
-              <h3 style="margin:12px 0 8px;">${receta.nombre}</h3>
+              <h3 style="margin:12px 0 10px;">${receta.nombre}</h3>
               <div style="display:flex;gap:8px;flex-wrap:wrap;">
-                <span class="chip">${receta.calorias} kcal</span>
-                <span class="chip">${receta.proteina} g proteína</span>
+                <span class="dato">🔥 ${receta.calorias} kcal</span>
+                <span class="dato">💪 ${receta.proteina} g</span>
               </div>
             </div>
             <button class="favorito ${receta.favorita ? "activo" : ""}">
@@ -1550,7 +1635,7 @@
       contenedor.innerHTML = `
         <div class="modo-cocina-cabecera">
           <h2>${receta.nombre}</h2>
-          <button class="boton-peligro" id="cerrar-cocina">Cerrar</button>
+          <button class="boton-mini" id="cerrar-cocina">Cerrar</button>
         </div>
 
         <div class="progreso-cocina">
@@ -1707,7 +1792,6 @@
 
       document.getElementById("resumen-comidas").textContent = numeroComidas;
       document.getElementById("resumen-calorias").textContent = calorias;
-      document.getElementById("resumen-proteina").textContent = `${proteina} g`;
       document.getElementById("resumen-media").textContent =
         `${(proteina / 7).toFixed(1)} g`;
 
@@ -2028,16 +2112,16 @@
       crearChipsCategorias(categorias);
 
       contenedor.innerHTML = `
-        <div class="tarjeta progreso-compra">
-          <div class="progreso-compra-texto">
+        <div class="tarjeta">
+          <div class="progreso-dia-texto">
             <span>Progreso de la compra</span>
             <span>${hechos} de ${total}</span>
           </div>
-          <div class="barra-progreso">
+          <div class="barra">
             <div style="width:${porcentaje}%;"></div>
           </div>
 
-          <button class="boton secundario" id="regenerar-lista" style="width:100%;margin-top:16px;">
+          <button class="boton secundario" id="regenerar-lista" style="margin-top:16px;">
             Regenerar lista
           </button>
         </div>
@@ -2187,7 +2271,7 @@
         (a, b) => new Date(b.fecha) - new Date(a.fecha)
       );
 
-      registrosOrdenados.forEach((registro, indice) => {
+      registrosOrdenados.forEach(registro => {
         const indiceReal = registros.findIndex(item => item.id === registro.id);
 
         const fila = document.createElement("div");
@@ -2245,17 +2329,86 @@
           <polyline
             points="${puntos.join(" ")}"
             fill="none"
-            stroke="#F2996B"
+            stroke="#F09A63"
             stroke-width="4"
             stroke-linecap="round"
             stroke-linejoin="round"
           />
           ${datosPeso.map((registro, indice) => {
             const coordenadas = puntos[indice].split(",");
-            return `<circle cx="${coordenadas[0]}" cy="${coordenadas[1]}" r="5" fill="#F2996B"/>`;
+            return `<circle cx="${coordenadas[0]}" cy="${coordenadas[1]}" r="5" fill="#F09A63"/>`;
           }).join("")}
         </svg>
       `;
+    }
+
+    function exportarCopia() {
+      const copia = {
+        fecha: new Date().toISOString(),
+        recetas,
+        menus,
+        compras,
+        despensa,
+        perfil,
+        registros
+      };
+
+      const contenido = JSON.stringify(copia, null, 2);
+      const blob = new Blob([contenido], { type: "application/json" });
+      const enlace = document.createElement("a");
+
+      enlace.href = URL.createObjectURL(blob);
+      enlace.download = `mi-cocina-copia-${obtenerFechaISO(new Date())}.json`;
+      enlace.click();
+
+      URL.revokeObjectURL(enlace.href);
+    }
+
+    function importarCopia(archivo) {
+      const lector = new FileReader();
+
+      lector.onload = evento => {
+        try {
+          const datos = JSON.parse(evento.target.result);
+
+          if (datos.recetas) {
+            recetas = datos.recetas;
+            guardarDatos(CLAVE_RECETAS, recetas);
+          }
+
+          if (datos.menus) {
+            menus = datos.menus;
+            guardarDatos(CLAVE_MENUS, menus);
+          }
+
+          if (datos.compras) {
+            compras = datos.compras;
+            guardarDatos(CLAVE_COMPRAS, compras);
+          }
+
+          if (datos.despensa) {
+            despensa = datos.despensa;
+            guardarDatos(CLAVE_DESPENSA, despensa);
+          }
+
+          if (datos.perfil) {
+            perfil = datos.perfil;
+            guardarDatos(CLAVE_PERFIL, perfil);
+          }
+
+          if (datos.registros) {
+            registros = datos.registros;
+            guardarDatos(CLAVE_REGISTROS, registros);
+          }
+
+          renderizarProgreso();
+          alert("Copia de seguridad importada correctamente.");
+        } catch (error) {
+          alert("El archivo no es una copia de seguridad válida.");
+        }
+      };
+
+      lector.readAsText(archivo);
     }
 
     document
@@ -2301,11 +2454,29 @@
         renderizarProgreso();
       });
 
+    document.getElementById("boton-exportar").onclick = exportarCopia;
+
+    document
+      .getElementById("input-importar")
+      .addEventListener("change", evento => {
+        const archivo = evento.target.files[0];
+
+        if (archivo) {
+          importarCopia(archivo);
+        }
+      });
+
     document.querySelectorAll(".nav-item").forEach(enlace => {
       enlace.addEventListener("click", evento => {
         evento.preventDefault();
         mostrarPantalla(enlace.dataset.pantalla);
       });
+    });
+
+    document.querySelectorAll(".accion-rapida").forEach(boton => {
+      boton.onclick = () => {
+        mostrarPantalla(boton.dataset.ir);
+      };
     });
 
     if ("serviceWorker" in navigator) {
