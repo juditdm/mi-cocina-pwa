@@ -383,11 +383,12 @@
       border-radius: 22px;
       padding: 16px;
       background: var(--superficie);
-      transition: transform .15s ease;
+      cursor: pointer;
+      transition: transform .15s ease, border-color .15s ease;
     }
 
     .dia-semana:active {
-      transform: scale(.99);
+      transform: scale(.98);
     }
 
     .dia-semana.hoy {
@@ -487,6 +488,12 @@
       color: #241712;
     }
 
+    .filtro-nueva {
+      background: var(--principal);
+      border-color: var(--principal);
+      color: #241712;
+    }
+
     .chip {
       display: inline-flex;
       align-items: center;
@@ -540,6 +547,62 @@
       display: none;
     }
 
+    .modal-fondo {
+      position: fixed;
+      inset: 0;
+      z-index: 120;
+      background: rgba(12, 8, 16, .68);
+      backdrop-filter: blur(6px);
+      display: flex;
+      align-items: flex-end;
+      animation: aparecerFondo .2s ease both;
+    }
+
+    .modal-fondo.oculto {
+      display: none;
+    }
+
+    .modal {
+      width: 100%;
+      max-height: 88vh;
+      overflow-y: auto;
+      background: var(--superficie);
+      border: 1px solid var(--borde);
+      border-bottom: none;
+      border-radius: 30px 30px 0 0;
+      padding: 24px 22px calc(28px + env(safe-area-inset-bottom));
+      box-shadow: 0 -20px 50px rgba(0, 0, 0, .5);
+      animation: subirModal .25s ease both;
+    }
+
+    @keyframes aparecerFondo {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    @keyframes subirModal {
+      from {
+        transform: translateY(40px);
+        opacity: 0;
+      }
+      to {
+        transform: translateY(0);
+        opacity: 1;
+      }
+    }
+
+    .modal-cabecera {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 18px;
+    }
+
+    .modal h2 {
+      margin: 0;
+      font-size: 23px;
+    }
+
     .modo-cocina {
       position: fixed;
       inset: 0;
@@ -562,12 +625,27 @@
       justify-content: space-between;
       align-items: center;
       gap: 12px;
-      margin-bottom: 22px;
+      margin-bottom: 18px;
     }
 
     .modo-cocina h2 {
       margin: 0;
       font-size: 23px;
+    }
+
+    .progreso-cocina {
+      height: 6px;
+      border-radius: 999px;
+      background: var(--superficie-alta);
+      overflow: hidden;
+      margin-bottom: 22px;
+    }
+
+    .progreso-cocina div {
+      height: 100%;
+      background: var(--principal);
+      border-radius: 999px;
+      transition: width .25s ease;
     }
 
     .paso-actual {
@@ -677,53 +755,10 @@
         <button class="filtro" data-filtro="Desayuno">Desayuno</button>
         <button class="filtro" data-filtro="Comida">Comida</button>
         <button class="filtro" data-filtro="Cena">Cena</button>
+        <button class="filtro filtro-nueva" id="boton-nueva-receta">+ Nueva</button>
       </div>
 
       <div id="lista-recetas"></div>
-
-      <div class="tarjeta">
-        <h3>Nueva receta</h3>
-
-        <form id="formulario-receta">
-          <label>Nombre
-            <input id="receta-nombre" required>
-          </label>
-
-          <label>Tipo
-            <select id="receta-tipo">
-              <option>Desayuno</option>
-              <option>Comida</option>
-              <option>Cena</option>
-            </select>
-          </label>
-
-          <label>Calorías
-            <input id="receta-calorias" type="number" min="0">
-          </label>
-
-          <label>Proteína en gramos
-            <input id="receta-proteina" type="number" min="0">
-          </label>
-
-          <label>Ingredientes
-            <textarea
-              id="receta-ingredientes"
-              rows="5"
-              placeholder="Pechuga de pollo | 180 | g"
-            ></textarea>
-          </label>
-
-          <label>Pasos
-            <textarea
-              id="receta-pasos"
-              rows="6"
-              placeholder="Un paso por línea"
-            ></textarea>
-          </label>
-
-          <button type="submit">Guardar receta</button>
-        </form>
-      </div>
     </section>
 
     <section id="pantalla-menu" class="oculto">
@@ -762,7 +797,6 @@
       </div>
 
       <div id="vista-semana"></div>
-      <div id="formulario-menu"></div>
     </section>
 
     <section id="pantalla-compra" class="oculto">
@@ -799,6 +833,69 @@
       Compra
     </a>
   </nav>
+
+  <div id="modal-receta" class="modal-fondo oculto">
+    <div class="modal">
+      <div class="modal-cabecera">
+        <h2>Nueva receta</h2>
+        <button class="boton-peligro" id="cerrar-modal-receta">Cerrar</button>
+      </div>
+
+      <form id="formulario-receta">
+        <label>Nombre
+          <input id="receta-nombre" required>
+        </label>
+
+        <label>Tipo
+          <select id="receta-tipo">
+            <option>Desayuno</option>
+            <option>Comida</option>
+            <option>Cena</option>
+          </select>
+        </label>
+
+        <label>Calorías
+          <input id="receta-calorias" type="number" min="0">
+        </label>
+
+        <label>Proteína en gramos
+          <input id="receta-proteina" type="number" min="0">
+        </label>
+
+        <label>Ingredientes
+          <textarea
+            id="receta-ingredientes"
+            rows="5"
+            placeholder="Pechuga de pollo | 180 | g"
+          ></textarea>
+        </label>
+
+        <label>Pasos
+          <textarea
+            id="receta-pasos"
+            rows="6"
+            placeholder="Un paso por línea"
+          ></textarea>
+        </label>
+
+        <button type="submit">Guardar receta</button>
+      </form>
+    </div>
+  </div>
+
+  <div id="modal-dia" class="modal-fondo oculto">
+    <div class="modal">
+      <div class="modal-cabecera">
+        <h2 id="titulo-modal-dia">Editar día</h2>
+        <button class="boton-peligro" id="cerrar-modal-dia">Cerrar</button>
+      </div>
+
+      <form id="formulario-dia">
+        <div id="campos-dia"></div>
+        <button type="submit">Guardar día</button>
+      </form>
+    </div>
+  </div>
 
   <div id="modo-cocina" class="modo-cocina oculto"></div>
 
@@ -1025,6 +1122,8 @@
     let recetaCocinando = null;
     let pasoActual = 0;
     let racionesActuales = 1;
+    let diaEditando = null;
+    let semanaEditando = null;
 
     if (!localStorage.getItem(CLAVE_RECETAS)) {
       guardarDatos(CLAVE_RECETAS, recetas);
@@ -1122,6 +1221,7 @@
       contenedorSiguiente.innerHTML = "";
 
       if (siguiente) {
+        contenedorSiguiente.className = "comida-siguiente";
         const clave = `${siguiente.comida}-${fechaHoy}`;
         const cocinada = localStorage.getItem(`cocinada-${clave}`) === "true";
 
@@ -1253,8 +1353,15 @@
 
     document.querySelectorAll(".filtro").forEach(boton => {
       boton.onclick = () => {
+        if (boton.id === "boton-nueva-receta") {
+          abrirModalReceta();
+          return;
+        }
+
         document.querySelectorAll(".filtro").forEach(filtro => {
-          filtro.classList.remove("activo");
+          if (filtro.id !== "boton-nueva-receta") {
+            filtro.classList.remove("activo");
+          }
         });
 
         boton.classList.add("activo");
@@ -1262,6 +1369,17 @@
         renderizarRecetas();
       };
     });
+
+    function abrirModalReceta() {
+      document.getElementById("modal-receta").classList.remove("oculto");
+    }
+
+    function cerrarModalReceta() {
+      document.getElementById("modal-receta").classList.add("oculto");
+    }
+
+    document.getElementById("boton-nueva-receta").onclick = abrirModalReceta;
+    document.getElementById("cerrar-modal-receta").onclick = cerrarModalReceta;
 
     document
       .getElementById("formulario-receta")
@@ -1315,6 +1433,7 @@
 
         guardarDatos(CLAVE_RECETAS, recetas);
         evento.target.reset();
+        cerrarModalReceta();
         renderizarRecetas();
       });
 
@@ -1343,11 +1462,16 @@
         : ["Prepara los ingredientes.", "Cocina y sirve."];
 
       const paso = pasos[pasoActual];
+      const progreso = ((pasoActual + 1) / pasos.length) * 100;
 
       contenedor.innerHTML = `
         <div class="modo-cocina-cabecera">
           <h2>${receta.nombre}</h2>
           <button class="boton-peligro" id="cerrar-cocina">Cerrar</button>
+        </div>
+
+        <div class="progreso-cocina">
+          <div style="width:${progreso}%;"></div>
         </div>
 
         <div class="selector-raciones">
@@ -1438,7 +1562,6 @@
     function renderizarMenu() {
       const fechaInput = document.getElementById("fecha-menu");
       const vistaSemana = document.getElementById("vista-semana");
-      const contenedor = document.getElementById("formulario-menu");
       const resumen = document.getElementById("resumen-menu");
 
       fechaInput.onchange = () => {
@@ -1449,7 +1572,6 @@
 
       if (!fecha) {
         vistaSemana.innerHTML = "";
-        contenedor.innerHTML = "";
         resumen.classList.add("oculto");
         return;
       }
@@ -1531,80 +1653,96 @@
           tarjetaDia.appendChild(linea);
         });
 
+        tarjetaDia.onclick = () => {
+          abrirModalDia(nombreDia, semana, menu);
+        };
+
         contenedorSemana.appendChild(tarjetaDia);
       });
 
       vistaSemana.appendChild(contenedorSemana);
+    }
 
-      contenedor.innerHTML = `
-        <form id="guardar-menu">
-          <input type="hidden" id="semana-actual" value="${semana}">
-        </form>
-      `;
+    function abrirModalDia(nombreDia, semana, menu) {
+      diaEditando = nombreDia;
+      semanaEditando = semana;
 
-      const formulario = document.getElementById("guardar-menu");
+      document.getElementById("titulo-modal-dia").textContent =
+        `Editar ${nombreDia}`;
 
-      nombresDias.forEach(nombreDia => {
-        const tarjeta = document.createElement("div");
-        tarjeta.className = "tarjeta";
-        tarjeta.innerHTML = `<h3>${nombreDia}</h3>`;
+      const contenedor = document.getElementById("campos-dia");
+      contenedor.innerHTML = "";
 
-        tiposComida.forEach(comida => {
-          const clave = `${nombreDia}-${comida}`;
-          const seleccionada = menu[clave] || "";
+      ["Desayuno", "Comida", "Cena"].forEach(comida => {
+        const clave = `${nombreDia}-${comida}`;
+        const seleccionada = menu[clave] || "";
 
-          const label = document.createElement("label");
-          label.textContent = comida;
+        const label = document.createElement("label");
+        label.textContent = comida;
 
-          const select = document.createElement("select");
-          select.dataset.clave = clave;
+        const select = document.createElement("select");
+        select.dataset.clave = clave;
 
-          const opcionVacia = document.createElement("option");
-          opcionVacia.value = "";
-          opcionVacia.textContent = "Sin planificar";
-          select.appendChild(opcionVacia);
+        const opcionVacia = document.createElement("option");
+        opcionVacia.value = "";
+        opcionVacia.textContent = "Sin planificar";
+        select.appendChild(opcionVacia);
 
-          recetas.forEach(receta => {
-            const opcion = document.createElement("option");
-            opcion.value = receta.id;
-            opcion.textContent = receta.nombre;
+        recetas.forEach(receta => {
+          const opcion = document.createElement("option");
+          opcion.value = receta.id;
+          opcion.textContent = receta.nombre;
 
-            if (receta.id === seleccionada) {
-              opcion.selected = true;
-            }
+          if (receta.id === seleccionada) {
+            opcion.selected = true;
+          }
 
-            select.appendChild(opcion);
-          });
-
-          label.appendChild(select);
-          tarjeta.appendChild(label);
+          select.appendChild(opcion);
         });
 
-        formulario.appendChild(tarjeta);
+        label.appendChild(select);
+        contenedor.appendChild(label);
       });
 
-      const botonGuardar = document.createElement("button");
-      botonGuardar.type = "submit";
-      botonGuardar.textContent = "Guardar menú";
-      formulario.appendChild(botonGuardar);
+      document.getElementById("modal-dia").classList.remove("oculto");
+    }
 
-      formulario.onsubmit = evento => {
+    function cerrarModalDia() {
+      document.getElementById("modal-dia").classList.add("oculto");
+      diaEditando = null;
+      semanaEditando = null;
+    }
+
+    document.getElementById("cerrar-modal-dia").onclick = cerrarModalDia;
+
+    document
+      .getElementById("formulario-dia")
+      .addEventListener("submit", evento => {
         evento.preventDefault();
 
-        const nuevoMenu = {};
+        if (!diaEditando || !semanaEditando) return;
 
-        formulario.querySelectorAll("select").forEach(select => {
-          if (select.value) {
-            nuevoMenu[select.dataset.clave] = Number(select.value);
-          }
-        });
+        const menu = menus[semanaEditando] || {};
 
-        menus[semana] = nuevoMenu;
+        document
+          .getElementById("campos-dia")
+          .querySelectorAll("select")
+          .forEach(select => {
+            const clave = select.dataset.clave;
+
+            if (select.value) {
+              menu[clave] = Number(select.value);
+            } else {
+              delete menu[clave];
+            }
+          });
+
+        menus[semanaEditando] = menu;
         guardarDatos(CLAVE_MENUS, menus);
 
+        cerrarModalDia();
         renderizarMenu();
-      };
-    }
+      });
 
     function renderizarCompra() {
       const fechaInput = document.getElementById("fecha-compra");
