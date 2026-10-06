@@ -32,11 +32,7 @@
       --radio-boton: 16px;
     }
 
-    * {
-      box-sizing: border-box;
-      -webkit-tap-highlight-color: transparent;
-    }
-
+    * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
     html { scroll-behavior: smooth; }
 
     body {
@@ -46,14 +42,12 @@
       color: var(--texto);
       font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif;
       font-size: 16px;
-      line-height: 1.45;
+      line-height: 1.5;
       padding-bottom: calc(112px + env(safe-area-inset-bottom));
       -webkit-font-smoothing: antialiased;
     }
 
-    .cabecera {
-      padding: calc(18px + env(safe-area-inset-top)) 20px 10px;
-    }
+    .cabecera { padding: calc(18px + env(safe-area-inset-top)) 20px 10px; }
 
     .fecha-hoy {
       margin: 0;
@@ -93,9 +87,7 @@
       padding: 22px;
     }
 
-    .tarjeta-suave {
-      background: var(--superficie-suave);
-    }
+    .tarjeta-suave { background: var(--superficie-suave); }
 
     .etiqueta {
       display: inline-flex;
@@ -419,24 +411,10 @@
       margin-bottom: 12px;
     }
 
-    .dia-nombre {
-      display: block;
-      font-weight: 820;
-      font-size: 17px;
-    }
+    .dia-nombre { display: block; font-weight: 820; font-size: 17px; }
+    .dia-fecha { display: block; font-size: 13px; color: var(--texto-suave); margin-top: 2px; }
 
-    .dia-fecha {
-      display: block;
-      font-size: 13px;
-      color: var(--texto-suave);
-      margin-top: 2px;
-    }
-
-    .puntos-comida {
-      display: flex;
-      gap: 6px;
-      margin-top: 10px;
-    }
+    .puntos-comida { display: flex; gap: 6px; margin-top: 10px; }
 
     .punto-comida {
       width: 10px;
@@ -530,16 +508,115 @@
       border-radius: 18px;
     }
 
+    .modo-cocina {
+      position: fixed;
+      inset: 0;
+      z-index: 100;
+      display: flex;
+      flex-direction: column;
+      background: #120E16;
+      padding: calc(24px + env(safe-area-inset-top)) 20px calc(24px + env(safe-area-inset-bottom));
+      overflow-y: auto;
+    }
+
+    .modo-cocina.oculto { display: none; }
+
+    .modo-cocina-cabecera {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    .modo-cocina h2 {
+      margin: 0;
+      font-size: 21px;
+      line-height: 1.25;
+    }
+
+    .progreso-cocina {
+      height: 6px;
+      border-radius: 999px;
+      background: var(--superficie-alta);
+      overflow: hidden;
+      margin-bottom: 18px;
+    }
+
+    .progreso-cocina div {
+      height: 100%;
+      background: var(--principal);
+      transition: width .25s ease;
+    }
+
+    .paso-numero {
+      font-size: 12px;
+      font-weight: 850;
+      color: var(--principal);
+      text-transform: uppercase;
+      letter-spacing: .1em;
+      text-align: center;
+      margin-bottom: 12px;
+    }
+
     .paso-cocina {
       background: var(--superficie);
       border: 1px solid var(--borde);
       border-radius: 24px;
-      padding: 28px 22px;
+      padding: 26px 22px;
       text-align: center;
-      font-size: 27px;
+      font-size: 23px;
       font-weight: 820;
-      line-height: 1.3;
-      margin: 18px 0;
+      line-height: 1.4;
+      margin-bottom: 16px;
+    }
+
+    .consejo-cocina {
+      background: var(--principal-suave);
+      border: 1px solid rgba(240, 154, 99, .25);
+      border-radius: 20px;
+      padding: 16px;
+      margin-bottom: 16px;
+      font-size: 15px;
+      color: var(--texto-medio);
+    }
+
+    .consejo-cocina strong {
+      display: block;
+      margin-bottom: 6px;
+      color: var(--principal);
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+    }
+
+    .controles-cocina {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-top: 18px;
+    }
+
+    .selector-raciones {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: var(--superficie);
+      border: 1px solid var(--borde);
+      border-radius: 22px;
+      padding: 15px;
+      margin-bottom: 16px;
+    }
+
+    .boton-racion {
+      min-width: 50px;
+      min-height: 50px;
+      border: none;
+      border-radius: 16px;
+      background: var(--principal-suave);
+      color: var(--principal);
+      font-size: 23px;
+      font-weight: 850;
     }
 
     .filtros,
@@ -632,10 +709,7 @@
       accent-color: var(--principal);
     }
 
-    .acciones-producto {
-      display: flex;
-      gap: 8px;
-    }
+    .acciones-producto { display: flex; gap: 8px; }
 
     .anadir-producto {
       display: grid;
@@ -694,81 +768,6 @@
     }
 
     .modal h2 { margin: 0; font-size: 22px; }
-
-    .modo-cocina {
-      position: fixed;
-      inset: 0;
-      z-index: 100;
-      display: flex;
-      flex-direction: column;
-      background: #120E16;
-      padding: calc(24px + env(safe-area-inset-top)) 20px calc(24px + env(safe-area-inset-bottom));
-      overflow-y: auto;
-    }
-
-    .modo-cocina.oculto { display: none; }
-
-    .modo-cocina-cabecera {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 12px;
-      margin-bottom: 18px;
-    }
-
-    .modo-cocina h2 { margin: 0; font-size: 22px; }
-
-    .progreso-cocina {
-      height: 6px;
-      border-radius: 999px;
-      background: var(--superficie-alta);
-      overflow: hidden;
-      margin-bottom: 22px;
-    }
-
-    .progreso-cocina div {
-      height: 100%;
-      background: var(--principal);
-      transition: width .25s ease;
-    }
-
-    .paso-numero {
-      font-size: 13px;
-      font-weight: 850;
-      color: var(--principal);
-      text-transform: uppercase;
-      text-align: center;
-      margin-bottom: 12px;
-    }
-
-    .controles-cocina {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 12px;
-      margin-top: 22px;
-    }
-
-    .selector-raciones {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      background: var(--superficie);
-      border: 1px solid var(--borde);
-      border-radius: 22px;
-      padding: 15px;
-      margin-bottom: 18px;
-    }
-
-    .boton-racion {
-      min-width: 50px;
-      min-height: 50px;
-      border: none;
-      border-radius: 16px;
-      background: var(--principal-suave);
-      color: var(--principal);
-      font-size: 23px;
-      font-weight: 850;
-    }
 
     @media (max-width: 480px) {
       .anadir-producto { grid-template-columns: 1fr; }
@@ -1014,8 +1013,12 @@
           <textarea id="receta-ingredientes" rows="5" placeholder="Pechuga de pollo | 180 | g"></textarea>
         </label>
 
-        <label>Pasos
-          <textarea id="receta-pasos" rows="6" placeholder="Un paso por línea"></textarea>
+        <label>Pasos detallados
+          <textarea id="receta-pasos" rows="8" placeholder="Escribe un paso por línea, explicando qué hacer y cómo saber que está listo."></textarea>
+        </label>
+
+        <label>Consejos
+          <textarea id="receta-consejos" rows="4" placeholder="Un consejo por línea"></textarea>
         </label>
 
         <button type="submit">Guardar receta</button>
@@ -1050,7 +1053,7 @@
     const recetasIniciales = [
       {
         id: 1,
-        nombre: "Yogur griego con avena y fruta",
+        nombre: "Yogur griego con avena y fresas",
         tipo: "Desayuno",
         calorias: 300,
         proteina: 28,
@@ -1062,9 +1065,20 @@
           { nombre: "Fresas", cantidad: 100, unidad: "g", categoria: "Fruta y verdura" }
         ],
         pasos: [
-          "Pon el yogur griego en un bol.",
-          "Añade la avena y las fresas troceadas.",
-          "Mezcla y sirve."
+          "Lávate las manos y prepara un bol, una cuchara y un cuchillo pequeño.",
+          "Pon las fresas bajo el grifo y lávalas bien. Retira el rabito verde de cada una.",
+          "Corta cada fresa en cuatro trozos. No hace falta que sean perfectos.",
+          "Vierte el yogur griego en el bol.",
+          "Añade la avena encima del yogur.",
+          "Añade las fresas troceadas.",
+          "Mezcla suavemente con la cuchara.",
+          "Prueba un poco. Si quieres más dulzor, añade miel o canela.",
+          "¡Listo! Ya puedes comerlo."
+        ],
+        consejos: [
+          "Si la avena te parece muy seca, déjala reposar 5 minutos con el yogur.",
+          "Puedes cambiar las fresas por plátano, arándanos o kiwi.",
+          "No necesitas fuego ni cocina para esta receta."
         ]
       },
       {
@@ -1081,9 +1095,23 @@
           { nombre: "Tomate", cantidad: 1, unidad: "ud", categoria: "Fruta y verdura" }
         ],
         pasos: [
-          "Tuesta el pan integral.",
-          "Cocina el huevo a tu gusto.",
-          "Sirve con tomate en rodajas."
+          "Prepara una sartén antiadherente, una espátula, un plato y un cuchillo.",
+          "Lava el tomate y córtalo en rodajas finas.",
+          "Pon una sartén a fuego medio-bajo. Espera unos 30 segundos.",
+          "Si usas aceite, añade solo una cucharadita y repártela por la sartén.",
+          "Casa los dos huevos: golpéalos suavemente contra el borde del bol o de la sartén y ábrelos con las manos.",
+          "Vierte los huevos en la sartén, con cuidado de que no salpiquen.",
+          "Cocina los huevos 2 o 3 minutos. Si quieres la yema líquida, retíralos cuando la clara esté blanca.",
+          "Mientras se cocinan, introduce el pan en la tostadora o tuéstalo en otra sartén.",
+          "Coloca el pan en un plato.",
+          "Pon las rodajas de tomate encima del pan.",
+          "Con la espátula, saca los huevos con cuidado y colócalos sobre el tomate.",
+          "Añade sal y pimienta si te gusta. ¡Listo!"
+        ],
+        consejos: [
+          "Si el huevo se pega, baja el fuego y añade una cucharadita de agua a la sartén.",
+          "Para un huevo más hecho, cocínalo 1 minuto más por cada lado.",
+          "El fuego medio-bajo evita que el pan y el huevo se quemen."
         ]
       },
       {
@@ -1100,10 +1128,27 @@
           { nombre: "Judías verdes", cantidad: 150, unidad: "g", categoria: "Fruta y verdura" }
         ],
         pasos: [
-          "Cuece el arroz según las instrucciones del paquete.",
-          "Cocina las judías verdes al vapor o en agua.",
-          "Haz la pechuga de pollo a la plancha.",
-          "Sirve todo junto."
+          "Prepara una olla pequeña para el arroz, una sartén grande, una tabla, un cuchillo y una espátula.",
+          "Lávate bien las manos antes y después de tocar el pollo crudo.",
+          "Pon a hervir agua en la olla. Usa suficiente agua para cubrir el arroz.",
+          "Cuando hierva, añade el arroz y una pizca de sal.",
+          "Cocina el arroz siguiendo el tiempo del paquete, normalmente entre 10 y 12 minutos.",
+          "Mientras se cuece el arroz, lava las judías verdes y córtales las puntas.",
+          "Pon las judías verdes en un cazo con agua hirviendo y cocínalas 6 u 8 minutos.",
+          "Están listas cuando están tiernas pero siguen verdes. Escúrrelas.",
+          "Corta la pechuga de pollo en filetes finos para que se haga antes.",
+          "Pon la sartén a fuego medio-alto y añade una cucharadita de aceite.",
+          "Cuando el aceite esté caliente, añade el pollo.",
+          "Cocina el pollo 3 o 4 minutos por cada lado.",
+          "El pollo está listo cuando está dorado por fuera y no queda rosa en el centro.",
+          "Escurre el arroz y mézclalo con las judías verdes.",
+          "Sirve el arroz, las judías y el pollo en el mismo plato.",
+          "Añade sal, pimienta o especias al gusto. ¡Listo!"
+        ],
+        consejos: [
+          "No laves el pollo crudo bajo el grifo: mejor cocínalo directamente.",
+          "Si el pollo se dora demasiado rápido, baja el fuego.",
+          "Puedes añadir ajo en polvo, pimentón o hierbas para dar más sabor."
         ]
       },
       {
@@ -1120,10 +1165,25 @@
           { nombre: "Brócoli", cantidad: 150, unidad: "g", categoria: "Fruta y verdura" }
         ],
         pasos: [
-          "Precalienta el horno a 200 grados.",
-          "Corta la patata y ponla en la bandeja.",
-          "Añade el salmón y el brócoli.",
-          "Hornea unos 20 minutos."
+          "Precalienta el horno a 200 grados durante 10 minutos.",
+          "Prepara una bandeja de horno, papel de horno, un cuchillo, una tabla y un bol.",
+          "Lava la patata y córtala en trozos pequeños, del tamaño de un dado.",
+          "Coloca la patata en la bandeja con una cucharadita de aceite, sal y pimienta.",
+          "Hornea la patata sola durante 10 minutos.",
+          "Mientras tanto, lava el brócoli y córtalo en ramilletes pequeños.",
+          "Saca la bandeja del horno con cuidado, usando un guante.",
+          "Añade el brócoli a la bandeja.",
+          "Coloca el salmón en el centro de la bandeja.",
+          "Añade un poco de aceite, sal, pimienta y limón si tienes.",
+          "Hornea todo juntos entre 12 y 15 minutos.",
+          "El salmón está listo cuando se separa fácilmente con un tenedor.",
+          "El brócoli está listo cuando está tierno pero sigue verde.",
+          "Saca la bandeja con cuidado y sirve. ¡Listo!"
+        ],
+        consejos: [
+          "No hace falta dar la vuelta al salmón en el horno.",
+          "Si el salmón tiene piel, puedes ponerlo con la piel hacia abajo.",
+          "Corta la patata pequeña para que se haga al mismo tiempo que el pescado."
         ]
       },
       {
@@ -1141,11 +1201,29 @@
           { nombre: "Pimiento rojo", cantidad: 100, unidad: "g", categoria: "Fruta y verdura" }
         ],
         pasos: [
-          "Prepara los fideos de arroz según el paquete.",
-          "Corta el pollo y las verduras.",
-          "Saltea el pollo en la sartén.",
-          "Añade las verduras y los fideos.",
-          "Mezcla y sirve."
+          "Prepara una sartén grande o wok, una olla para los fideos, una tabla y un cuchillo.",
+          "Pon agua a hervir para los fideos de arroz.",
+          "Cuando hierva, añade los fideos y cocina según el paquete.",
+          "Escúrrelos y resérvalos.",
+          "Lava el calabacín y el pimiento.",
+          "Corta el calabacín en rodajas o dados pequeños.",
+          "Corta el pimiento en tiras finas.",
+          "Corta el pollo en tiras pequeñas.",
+          "Pon la sartén a fuego medio-alto con una cucharadita de aceite.",
+          "Cuando esté caliente, añade el pollo.",
+          "Cocina el pollo 4 o 5 minutos, moviéndolo de vez en cuando.",
+          "El pollo está listo cuando no queda rosa en el centro.",
+          "Añade el calabacín y el pimiento.",
+          "Cocina las verduras 4 o 5 minutos, moviendo con una espátula.",
+          "Añade los fideos escurridos.",
+          "Mezcla todo durante 1 o 2 minutos.",
+          "Añade salsa de soja, sal o especias al gusto.",
+          "Sirve caliente. ¡Listo!"
+        ],
+        consejos: [
+          "Corta todo antes de encender el fuego: en el wok todo va rápido.",
+          "Si no tienes wok, sirve cualquier sartén grande.",
+          "No añadas demasiado aceite: con una cucharadita suele bastar."
         ]
       },
       {
@@ -1162,9 +1240,26 @@
           { nombre: "Huevo", cantidad: 1, unidad: "ud", categoria: "Lácteos y huevos" }
         ],
         pasos: [
-          "Calienta las lentejas con la zanahoria troceada.",
-          "Cuece el huevo.",
-          "Sirve las lentejas con el huevo duro."
+          "Prepara un cazo, un bol con agua fría, una tabla y un cuchillo.",
+          "Pon un cazo con agua a hervir para el huevo.",
+          "Cuando hierva, introduce el huevo con cuidado usando una cuchara.",
+          "Cocina el huevo 10 minutos para que quede duro.",
+          "Mientras se cuece, pela la zanahoria con un pelador.",
+          "Corta la zanahoria en dados pequeños.",
+          "Pon las lentejas en otro cazo a fuego medio.",
+          "Añade la zanahoria y un poco de agua si hace falta.",
+          "Cocina 8 o 10 minutos, removiendo de vez en cuando.",
+          "Cuando el huevo lleve 10 minutos, sácalo y ponlo en agua fría.",
+          "Pélalo cuando esté templado.",
+          "Comprueba que las lentejas están calientes y la zanahoria tierna.",
+          "Sirve las lentejas en un plato hondo.",
+          "Corta el huevo en trozos y añádelo encima.",
+          "Añade sal, pimienta o un chorrito de aceite de oliva. ¡Listo!"
+        ],
+        consejos: [
+          "El agua fría ayuda a pelar el huevo más fácilmente.",
+          "Si usas lentejas de bote, escúrrelas antes de calentarlas.",
+          "Puedes añadir espinacas o pimiento para más verdura."
         ]
       },
       {
@@ -1181,15 +1276,30 @@
           { nombre: "Espárragos verdes", cantidad: 150, unidad: "g", categoria: "Fruta y verdura" }
         ],
         pasos: [
-          "Precalienta el horno a 200 grados.",
-          "Coloca la patata, la merluza y los espárragos en una bandeja.",
-          "Hornea unos 20 minutos.",
-          "Sirve caliente."
+          "Precalienta el horno a 200 grados durante 10 minutos.",
+          "Prepara una bandeja, papel de horno, un cuchillo y una tabla.",
+          "Lava la patata y córtala en rodajas finas o dados pequeños.",
+          "Coloca la patata en la bandeja con aceite, sal y pimienta.",
+          "Hornea la patata 10 minutos.",
+          "Lava los espárragos y córtales la parte dura del tallo.",
+          "Saca la bandeja con cuidado.",
+          "Añade los espárragos a la bandeja.",
+          "Coloca la merluza en el centro.",
+          "Añade un poco de aceite, sal, pimienta y limón si tienes.",
+          "Hornea entre 12 y 15 minutos.",
+          "La merluza está lista cuando se separa fácilmente con un tenedor.",
+          "Los espárragos están listos cuando están tiernos pero siguen verdes.",
+          "Saca la bandeja y sirve. ¡Listo!"
+        ],
+        consejos: [
+          "No muevas mucho el pescado en el horno.",
+          "Si la merluza es congelada, descongélala antes en la nevera.",
+          "El limón realza mucho el sabor del pescado."
         ]
       },
       {
         id: 8,
-        nombre: "Bowl de ternera, arroz y verduras",
+        nombre: "Bowl de ternera, arroz y aguacate",
         tipo: "Comida",
         calorias: 620,
         proteina: 42,
@@ -1201,9 +1311,27 @@
           { nombre: "Aguacate", cantidad: 50, unidad: "g", categoria: "Fruta y verdura" }
         ],
         pasos: [
-          "Cuece el arroz integral.",
-          "Cocina la ternera picada.",
-          "Sirve en un bowl con el aguacate."
+          "Prepara una olla para el arroz, una sartén, una espátula y un bol.",
+          "Pon agua a hervir y añade el arroz integral.",
+          "Cocina el arroz según el paquete, normalmente entre 20 y 25 minutos.",
+          "Mientras se cuece, corta el aguacate por la mitad.",
+          "Retira el hueso con cuidado y saca la carne con una cuchara.",
+          "Corta el aguacate en dados o láminas.",
+          "Pon la sartén a fuego medio-alto con una cucharadita de aceite.",
+          "Añade la ternera picada.",
+          "Cocina 5 o 6 minutos, removiendo para que se haga por igual.",
+          "La ternera está lista cuando no queda rosa.",
+          "Escurre el arroz.",
+          "Coloca el arroz en un bol.",
+          "Añade la ternera encima.",
+          "Añade el aguacate.",
+          "Añade sal, pimienta o salsa al gusto.",
+          "Mezcla un poco y sirve. ¡Listo!"
+        ],
+        consejos: [
+          "El aguacate está maduro cuando cede un poco al presionarlo suavemente.",
+          "No cocines la ternera demasiado tiempo o quedará seca.",
+          "Puedes añadir tomate, maíz o pepino para hacer el bowl más completo."
         ]
       },
       {
@@ -1220,10 +1348,25 @@
           { nombre: "Tomate", cantidad: 150, unidad: "g", categoria: "Fruta y verdura" }
         ],
         pasos: [
-          "Cuece la pasta integral.",
-          "Calienta el tomate.",
-          "Mezcla la pasta con el tomate y el atún.",
-          "Sirve."
+          "Prepara una olla grande, un colador, una sartén y una espátula.",
+          "Pon agua a hervir con una pizca de sal.",
+          "Cuando hierva, añade la pasta.",
+          "Cocina según el tiempo del paquete, normalmente entre 8 y 11 minutos.",
+          "Mientras se cuece, lava el tomate y córtalo en dados.",
+          "Pon la sartén a fuego medio con una cucharadita de aceite.",
+          "Añade el tomate y cocina 5 minutos, removiendo de vez en cuando.",
+          "El tomate está listo cuando se ablanda y suelta algo de jugo.",
+          "Escurre la pasta con el colador.",
+          "Añade la pasta a la sartén con el tomate.",
+          "Añade el atún escurrido.",
+          "Mezcla todo durante 1 minuto.",
+          "Prueba y añade sal o pimienta si hace falta.",
+          "Sirve caliente. ¡Listo!"
+        ],
+        consejos: [
+          "Guarda un poco del agua de cocer la pasta por si la salsa queda seca.",
+          "No escurras el atún con demasiada fuerza: un poco de jugo da sabor.",
+          "Puedes añadir albahaca, orégano o queso rallado."
         ]
       },
       {
@@ -1241,10 +1384,26 @@
           { nombre: "Aguacate", cantidad: 50, unidad: "g", categoria: "Fruta y verdura" }
         ],
         pasos: [
-          "Lava y trocea la lechuga.",
-          "Cuece los huevos.",
-          "Mezcla todos los ingredientes.",
-          "Sirve la ensalada."
+          "Prepara un cazo, un bol grande, un cuchillo, una tabla y un colador.",
+          "Pon agua a hervir y cocina los huevos 10 minutos.",
+          "Cuando estén listos, sácalos y ponlos en agua fría.",
+          "Lava la lechuga bajo el grifo.",
+          "Escúrrela bien y córtala en trozos no muy grandes.",
+          "Pon la lechuga en el bol.",
+          "Corta el aguacate por la mitad, retira el hueso y saca la carne.",
+          "Corta el aguacate en dados.",
+          "Añade el aguacate al bol.",
+          "Escurre el atún y añádelo al bol.",
+          "Pela los huevos y córtalos en cuartos.",
+          "Añade los huevos al bol.",
+          "Mezcla suavemente para no romper demasiado el aguacate.",
+          "Añade aceite de oliva, limón, sal y pimienta al gusto.",
+          "Sirve en un plato hondo. ¡Listo!"
+        ],
+        consejos: [
+          "Si no te gusta la cebolla, puedes omitirla.",
+          "El limón evita que el aguacate se oscurezca.",
+          "Puedes añadir maíz, tomate o pepino para más variedad."
         ]
       }
     ];
@@ -1276,9 +1435,45 @@
     let semanaEditando = null;
     let formularioCompraVisible = false;
 
-    if (!localStorage.getItem(CLAVE_RECETAS)) {
-      guardarDatos(CLAVE_RECETAS, recetas);
+    if (!Array.isArray(recetas) || recetas.length === 0) {
+      recetas = recetasIniciales;
     }
+
+    recetas = recetas.map(receta => ({
+      ...receta,
+      ingredientes: Array.isArray(receta.ingredientes) ? receta.ingredientes : [],
+      pasos: Array.isArray(receta.pasos) ? receta.pasos : [],
+      consejos: Array.isArray(receta.consejos) ? receta.consejos : [],
+      racionesBase: receta.racionesBase || 1
+    }));
+
+    recetasIniciales.forEach(recetaInicial => {
+      const indice = recetas.findIndex(
+        receta => receta.id === recetaInicial.id
+      );
+
+      if (indice === -1) {
+        recetas.push(recetaInicial);
+        return;
+      }
+
+      const recetaGuardada = recetas[indice];
+
+      if (recetaGuardada.pasos.length < 3) {
+        recetas[indice] = {
+          ...recetaGuardada,
+          nombre: recetaInicial.nombre,
+          ingredientes: recetaInicial.ingredientes,
+          pasos: recetaInicial.pasos,
+          consejos: recetaInicial.consejos,
+          calorias: recetaInicial.calorias,
+          proteina: recetaInicial.proteina,
+          racionesBase: recetaInicial.racionesBase
+        };
+      }
+    });
+
+    guardarDatos(CLAVE_RECETAS, recetas);
 
     function obtenerSemanaISO(fechaTexto) {
       const fecha = new Date(fechaTexto + "T12:00:00");
@@ -1513,7 +1708,8 @@
         const tarjeta = document.createElement("article");
         tarjeta.className = "tarjeta";
 
-        const claseTipo = receta.tipo.toLowerCase();
+        const claseTipo = (receta.tipo || "").toLowerCase();
+        const numeroPasos = (receta.pasos || []).length;
 
         tarjeta.innerHTML = `
           <div class="receta-cabecera ${claseTipo}">
@@ -1528,7 +1724,7 @@
           <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px;">
             <span class="dato">🔥 ${receta.calorias} kcal</span>
             <span class="dato">💪 ${receta.proteina} g</span>
-            <span class="dato">👥 ${receta.racionesBase || 1} ración${(receta.racionesBase || 1) === 1 ? "" : "es"}</span>
+            <span class="dato">📋 ${numeroPasos} pasos</span>
           </div>
         `;
 
@@ -1551,7 +1747,7 @@
 
         const botonCocinar = document.createElement("button");
         botonCocinar.className = "boton";
-        botonCocinar.textContent = "Cocinar";
+        botonCocinar.textContent = "Cocinar paso a paso";
 
         botonCocinar.onclick = () => abrirModoCocina(receta);
 
@@ -1612,8 +1808,11 @@
         const pasosTexto = document
           .getElementById("receta-pasos")
           .value.trim();
+        const consejosTexto = document
+          .getElementById("receta-consejos")
+          .value.trim();
 
-        if (!nombre || !ingredientesTexto) return;
+        if (!nombre || !ingredientesTexto || !pasosTexto) return;
 
         const ingredientes = ingredientesTexto
           .split("\n")
@@ -1630,8 +1829,13 @@
           .filter(ingrediente => ingrediente.nombre);
 
         const pasos = pasosTexto
-          ? pasosTexto.split("\n").filter(paso => paso.trim())
-          : ["Prepara los ingredientes.", "Cocina y sirve."];
+          .split("\n")
+          .map(paso => paso.trim())
+          .filter(paso => paso);
+
+        const consejos = consejosTexto
+          ? consejosTexto.split("\n").map(consejo => consejo.trim()).filter(Boolean)
+          : [];
 
         recetas.push({
           id: Date.now(),
@@ -1642,7 +1846,8 @@
           favorita: false,
           racionesBase: 1,
           ingredientes,
-          pasos
+          pasos,
+          consejos
         });
 
         guardarDatos(CLAVE_RECETAS, recetas);
@@ -1671,12 +1876,17 @@
       const receta = recetaCocinando;
       const factor = racionesActuales / (receta.racionesBase || 1);
 
-      const pasos = receta.pasos && receta.pasos.length
+      const pasos = (receta.pasos || []).length
         ? receta.pasos
         : ["Prepara los ingredientes.", "Cocina y sirve."];
 
       const paso = pasos[pasoActual];
       const progreso = ((pasoActual + 1) / pasos.length) * 100;
+
+      const consejos = receta.consejos || [];
+      const consejo = consejos.length
+        ? consejos[pasoActual % consejos.length]
+        : "";
 
       contenedor.innerHTML = `
         <div class="modo-cocina-cabecera">
@@ -1707,6 +1917,13 @@
 
         <div class="paso-cocina">${paso}</div>
 
+        ${consejo ? `
+          <div class="consejo-cocina">
+            <strong>Consejo</strong>
+            ${consejo}
+          </div>
+        ` : ""}
+
         <div class="tarjeta">
           <h3>Ingredientes para ${racionesActuales} ración${racionesActuales === 1 ? "" : "es"}</h3>
           <div id="ingredientes-cocina"></div>
@@ -1723,7 +1940,7 @@
       const contenedorIngredientes =
         document.getElementById("ingredientes-cocina");
 
-      receta.ingredientes.forEach(ingrediente => {
+      (receta.ingredientes || []).forEach(ingrediente => {
         const fila = document.createElement("div");
         fila.className = "comida-linea";
 
@@ -2034,7 +2251,7 @@
 
         if (!receta) return;
 
-        receta.ingredientes.forEach(ingrediente => {
+        (receta.ingredientes || []).forEach(ingrediente => {
           const yaEnDespensa = despensa.some(item =>
             item.toLowerCase() === ingrediente.nombre.toLowerCase()
           );
@@ -2489,7 +2706,6 @@
 
           if (datos.recetas) {
             recetas = datos.recetas;
-            guardarDatos(CLAVE_RECETAS, recetas);
           }
 
           if (datos.menus) {
@@ -2517,6 +2733,30 @@
             guardarDatos(CLAVE_REGISTROS, registros);
           }
 
+          recetas = recetas.map(receta => ({
+            ...receta,
+            ingredientes: Array.isArray(receta.ingredientes) ? receta.ingredientes : [],
+            pasos: Array.isArray(receta.pasos) ? receta.pasos : [],
+            consejos: Array.isArray(receta.consejos) ? receta.consejos : [],
+            racionesBase: receta.racionesBase || 1
+          }));
+
+          recetasIniciales.forEach(recetaInicial => {
+            const indice = recetas.findIndex(
+              receta => receta.id === recetaInicial.id
+            );
+
+            if (indice !== -1 && recetas[indice].pasos.length < 3) {
+              recetas[indice] = {
+                ...recetas[indice],
+                pasos: recetaInicial.pasos,
+                consejos: recetaInicial.consejos,
+                ingredientes: recetaInicial.ingredientes
+              };
+            }
+          });
+
+          guardarDatos(CLAVE_RECETAS, recetas);
           renderizarProgreso();
           alert("Copia de seguridad importada correctamente.");
         } catch (error) {
