@@ -967,6 +967,40 @@
       <h2>Mi progreso</h2>
 
       <div class="tarjeta tarjeta-hero">
+        <h3>Comidas cocinadas</h3>
+
+        <div class="resumen-semanal">
+          <div>
+            <strong id="historial-total">0</strong>
+            <span>Total</span>
+          </div>
+          <div>
+            <strong id="historial-semana">0</strong>
+            <span>Esta semana</span>
+          </div>
+          <div>
+            <strong id="historial-proteina">0 g</strong>
+            <span>Proteína</span>
+          </div>
+        </div>
+
+        <div class="progreso-dia" style="margin-top:16px;">
+          <div class="progreso-dia-texto">
+            <span>Calorías cocinadas</span>
+            <span id="historial-calorias">0 kcal</span>
+          </div>
+          <div class="barra">
+            <div id="barra-historial" style="width:0%;"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="tarjeta">
+        <h3>Historial reciente</h3>
+        <div id="lista-historial"></div>
+      </div>
+
+      <div class="tarjeta tarjeta-hero">
         <h3>Mis objetivos</h3>
 
         <form id="formulario-objetivos">
@@ -1012,7 +1046,7 @@
       </div>
 
       <div class="tarjeta">
-        <h3>Historial</h3>
+        <h3>Historial de peso</h3>
         <div id="lista-registros"></div>
       </div>
 
@@ -1133,6 +1167,7 @@
     const CLAVE_DESPENSA = "miCocinaDespensa";
     const CLAVE_PERFIL = "miCocinaPerfil";
     const CLAVE_REGISTROS = "miCocinaRegistros";
+    const CLAVE_HISTORIAL = "miCocinaHistorial";
 
     const recetasIniciales = [
       {
@@ -1523,6 +1558,7 @@
       pesoObjetivo: 60
     });
     let registros = cargarDatos(CLAVE_REGISTROS, []);
+    let historial = cargarDatos(CLAVE_HISTORIAL, []);
     let filtroActual = "todas";
     let recetaCocinando = null;
     let pasoActual = 0;
@@ -1669,6 +1705,33 @@
       return fecha;
     }
 
+    function marcarComidaCocinada(comida, fechaISO, receta, cocinada) {
+      const clave = `${comida}-${fechaISO}`;
+      localStorage.setItem(`cocinada-${clave}`, cocinada);
+
+      if (cocinada) {
+        const yaExiste = historial.some(item => item.clave === clave);
+
+        if (!yaExiste) {
+          historial.push({
+            id: Date.now(),
+            clave,
+            comida,
+            fecha: fechaISO,
+            recetaId: receta.id,
+            nombre: receta.nombre,
+            calorias: receta.calorias,
+            proteina: receta.proteina
+          });
+
+          guardarDatos(CLAVE_HISTORIAL, historial);
+        }
+      } else {
+        historial = historial.filter(item => item.clave !== clave);
+        guardarDatos(CLAVE_HISTORIAL, historial);
+      }
+    }
+
     function mostrarPantalla(nombre) {
       ["hoy", "recetas", "menu", "compra", "despensa", "progreso"].forEach(pantalla => {
         document
@@ -1762,7 +1825,13 @@
           : "Cocinar esta comida";
 
         boton.onclick = () => {
-          localStorage.setItem(`cocinada-${clave}`, !cocinada);
+          marcarComidaCocinada(
+            siguiente.comida,
+            fechaHoy,
+            siguiente.receta,
+            !cocinada
+          );
+
           renderizarHoy();
         };
 
@@ -3245,7 +3314,88 @@
       }
     };
 
+    function renderizarHistorial() {
+      const contenedor = document.getElementById("lista-historial");
+      const semanaActual = obtenerSemanaISO(obtenerFechaISO(new Date()));
+
+      const totalComidas = historial.length;
+
+      const comidasSemana = historial.filter(item =>
+        obtenerSemanaISO(item.fecha) === semanaActual
+      );
+
+      const caloriasTotales = historial.reduce(
+        (total, item) => total + item.calorias,
+        0
+      );
+
+      const proteinaTotal = historial.reduce(
+        (total, item) => total + item.proteina,
+        0
+      );
+
+      document.getElementById("historial-total").textContent = totalComidas;
+      document.getElementById("historial-semana").textContent =
+        comidasSemana.length;
+      document.getElementById("historial-proteina").textContent =
+        `${proteinaTotal} g`;
+      document.getElementById("historial-calorias").textContent =
+        `${caloriasTotales} kcal`;
+
+      const objetivo = perfil.calorias || 1;
+      const porcentaje = Math.min(
+        100,
+        Math.round((caloriasTotales / objetivo) * 100)
+      );
+
+      document.getElementById("barra-historial").style.width =
+        `${porcentaje}%`;
+
+      contenedor.innerHTML = "";
+
+      const historialOrdenado = [...historial].sort(
+        (a, b) => new Date(b.fecha) - new Date(a.fecha)
+      );
+
+      historialOrdenado.slice(0, 10).forEach(item => {
+        const indiceReal = historial.findIndex(registro =>
+          registro.id === item.id
+        );
+
+        const fila = document.createElement("div");
+        fila.className = "registro";
+
+        fila.innerHTML = `
+          <div>
+            <strong>${item.nombre}</strong>
+            <span>${item.fecha} · ${item.comida} · ${item.calorias} kcal · ${item.proteina} g</span>
+          </div>
+        `;
+
+        const botonEliminar = document.createElement("button");
+        botonEliminar.className = "boton-mini";
+        botonEliminar.textContent = "×";
+
+        botonEliminar.onclick = () => {
+          historial.splice(indiceReal, 1);
+          guardarDatos(CLAVE_HISTORIAL, historial);
+          renderizarHistorial();
+        };
+
+        fila.appendChild(botonEliminar);
+        contenedor.appendChild(fila);
+      });
+
+      if (!historial.length) {
+        contenedor.innerHTML = `
+          <p>Aún no has marcado comidas como cocinadas.</p>
+        `;
+      }
+    }
+
     function renderizarProgreso() {
+      renderizarHistorial();
+
       document.getElementById("objetivo-calorias").value = perfil.calorias;
       document.getElementById("objetivo-proteina").value = perfil.proteina;
       document.getElementById("objetivo-peso").value = perfil.pesoObjetivo;
@@ -3338,7 +3488,8 @@
         compras,
         despensa,
         perfil,
-        registros
+        registros,
+        historial
       };
 
       const contenido = JSON.stringify(copia, null, 2);
@@ -3386,6 +3537,11 @@
           if (datos.registros) {
             registros = datos.registros;
             guardarDatos(CLAVE_REGISTROS, registros);
+          }
+
+          if (datos.historial) {
+            historial = datos.historial;
+            guardarDatos(CLAVE_HISTORIAL, historial);
           }
 
           recetas = recetas.map(receta => ({
