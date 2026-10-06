@@ -228,6 +228,23 @@
       background: #332840;
     }
 
+    .boton-mini {
+      min-height: 38px;
+      padding: 8px 12px;
+      border: 1px solid var(--borde);
+      border-radius: 12px;
+      background: var(--superficie-alta);
+      color: var(--texto-suave);
+      font-size: 13px;
+      font-weight: 780;
+      cursor: pointer;
+      transition: transform .15s ease, color .15s ease;
+    }
+
+    .boton-mini:active {
+      transform: scale(.94);
+    }
+
     .boton-peligro {
       min-height: 42px;
       padding: 9px 14px;
@@ -513,10 +530,17 @@
       gap: 12px;
       padding: 12px 0;
       border-bottom: 1px solid var(--borde);
+      animation: aparecer .2s ease both;
     }
 
     .producto:last-child {
       border-bottom: none;
+    }
+
+    .producto.comprado span strong,
+    .producto.comprado span {
+      text-decoration: line-through;
+      opacity: .55;
     }
 
     .producto-fila {
@@ -541,6 +565,33 @@
       grid-template-columns: 2fr 1fr 1fr;
       gap: 10px;
       margin-bottom: 16px;
+    }
+
+    .progreso-compra {
+      margin-bottom: 16px;
+    }
+
+    .progreso-compra-texto {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 10px;
+      font-size: 13px;
+      font-weight: 780;
+      color: var(--texto-suave);
+    }
+
+    .barra-progreso {
+      height: 8px;
+      border-radius: 999px;
+      background: var(--superficie-alta);
+      overflow: hidden;
+    }
+
+    .barra-progreso div {
+      height: 100%;
+      border-radius: 999px;
+      background: var(--principal);
+      transition: width .3s ease;
     }
 
     .oculto {
@@ -903,6 +954,7 @@
     const CLAVE_RECETAS = "miCocinaRecetas";
     const CLAVE_MENUS = "miCocinaMenus";
     const CLAVE_COMPRAS = "miCocinaCompras";
+    const CLAVE_DESPENSA = "miCocinaDespensa";
 
     const recetasIniciales = [
       {
@@ -1118,6 +1170,7 @@
     let recetas = cargarDatos(CLAVE_RECETAS, recetasIniciales);
     let menus = cargarDatos(CLAVE_MENUS, {});
     let compras = cargarDatos(CLAVE_COMPRAS, {});
+    let despensa = cargarDatos(CLAVE_DESPENSA, []);
     let filtroActual = "todas";
     let recetaCocinando = null;
     let pasoActual = 0;
@@ -1744,6 +1797,40 @@
         renderizarMenu();
       });
 
+    function generarListaDesdeMenu(semana, menu) {
+      const productos = {};
+
+      Object.values(menu).forEach(recetaId => {
+        const receta = recetas.find(receta => receta.id === recetaId);
+
+        if (!receta) return;
+
+        receta.ingredientes.forEach(ingrediente => {
+          const yaEnDespensa = despensa.some(item =>
+            item.toLowerCase() === ingrediente.nombre.toLowerCase()
+          );
+
+          if (yaEnDespensa) return;
+
+          const clave = `${ingrediente.nombre}-${ingrediente.unidad}`;
+
+          if (!productos[clave]) {
+            productos[clave] = {
+              nombre: ingrediente.nombre,
+              cantidad: 0,
+              unidad: ingrediente.unidad,
+              categoria: ingrediente.categoria,
+              comprado: false
+            };
+          }
+
+          productos[clave].cantidad += ingrediente.cantidad;
+        });
+      });
+
+      return Object.values(productos);
+    }
+
     function renderizarCompra() {
       const fechaInput = document.getElementById("fecha-compra");
       const contenedor = document.getElementById("contenido-compra");
@@ -1763,50 +1850,35 @@
       const menu = menus[semana] || {};
       const claveCompra = `compra-${semana}`;
 
-      if (!compras[claveCompra]) {
-        const productos = {};
+      const listaExistente = compras[claveCompra];
 
-        Object.values(menu).forEach(recetaId => {
-          const receta = recetas.find(receta => receta.id === recetaId);
-
-          if (!receta) return;
-
-          receta.ingredientes.forEach(ingrediente => {
-            const clave = `${ingrediente.nombre}-${ingrediente.unidad}`;
-
-            if (!productos[clave]) {
-              productos[clave] = {
-                nombre: ingrediente.nombre,
-                cantidad: 0,
-                unidad: ingrediente.unidad,
-                categoria: ingrediente.categoria,
-                comprado: false
-              };
-            }
-
-            productos[clave].cantidad += ingrediente.cantidad;
-          });
-        });
-
-        compras[claveCompra] = Object.values(productos);
+      if (!listaExistente || listaExistente.length === 0) {
+        compras[claveCompra] = generarListaDesdeMenu(semana, menu);
         guardarDatos(CLAVE_COMPRAS, compras);
       }
 
       const productos = compras[claveCompra];
-      const categorias = {};
-
-      productos.forEach((producto, indice) => {
-        if (!categorias[producto.categoria]) {
-          categorias[producto.categoria] = [];
-        }
-
-        categorias[producto.categoria].push({
-          ...producto,
-          indice
-        });
-      });
+      const pendientes = productos.filter(producto => !producto.comprado);
+      const comprados = productos.filter(producto => producto.comprado);
+      const total = productos.length;
+      const hechos = comprados.length;
+      const porcentaje = total ? (hechos / total) * 100 : 0;
 
       contenedor.innerHTML = `
+        <div class="tarjeta progreso-compra">
+          <div class="progreso-compra-texto">
+            <span>Progreso de la compra</span>
+            <span>${hechos} de ${total}</span>
+          </div>
+          <div class="barra-progreso">
+            <div style="width:${porcentaje}%;"></div>
+          </div>
+
+          <button class="boton secundario" id="regenerar-lista" style="width:100%;margin-top:16px;">
+            Regenerar lista
+          </button>
+        </div>
+
         <form id="anadir-producto" class="tarjeta">
           <input type="hidden" value="${semana}" id="semana-compra">
 
@@ -1840,45 +1912,115 @@
         </form>
       `;
 
-      Object.entries(categorias).forEach(([categoria, productosCategoria]) => {
+      document.getElementById("regenerar-lista").onclick = () => {
+        compras[claveCompra] = generarListaDesdeMenu(semana, menu);
+        guardarDatos(CLAVE_COMPRAS, compras);
+        renderizarCompra();
+      };
+
+      function crearTarjetaCategoria(titulo, listaProductos) {
         const tarjeta = document.createElement("div");
         tarjeta.className = "tarjeta";
-        tarjeta.innerHTML = `<h3>${categoria}</h3>`;
+        tarjeta.innerHTML = `<h3>${titulo}</h3>`;
 
-        productosCategoria.forEach(producto => {
-          const fila = document.createElement("div");
-          fila.className = "producto";
+        const categorias = {};
 
-          fila.innerHTML = `
-            <label class="producto-fila">
-              <input
-                type="checkbox"
-                data-indice="${producto.indice}"
-                ${producto.comprado ? "checked" : ""}
-              >
-              <span>
-                <strong>${producto.nombre}</strong><br>
-                ${producto.cantidad} ${producto.unidad}
-              </span>
-            </label>
-          `;
+        listaProductos.forEach(producto => {
+          if (!categorias[producto.categoria]) {
+            categorias[producto.categoria] = [];
+          }
 
-          const botonEliminar = document.createElement("button");
-          botonEliminar.className = "boton-peligro";
-          botonEliminar.textContent = "Eliminar";
-
-          botonEliminar.onclick = () => {
-            compras[claveCompra].splice(producto.indice, 1);
-            guardarDatos(CLAVE_COMPRAS, compras);
-            renderizarCompra();
-          };
-
-          fila.appendChild(botonEliminar);
-          tarjeta.appendChild(fila);
+          categorias[producto.categoria].push(producto);
         });
 
-        contenedor.appendChild(tarjeta);
-      });
+        Object.entries(categorias).forEach(([categoria, items]) => {
+          const subtitulo = document.createElement("p");
+          subtitulo.textContent = categoria;
+          subtitulo.style.cssText =
+            "margin:14px 0 4px;font-size:12px;font-weight:800;color:var(--texto-suave);text-transform:uppercase;letter-spacing:.07em;";
+
+          tarjeta.appendChild(subtitulo);
+
+          items.forEach(producto => {
+            const indice = productos.findIndex(item =>
+              item.nombre === producto.nombre &&
+              item.unidad === producto.unidad &&
+              item.cantidad === producto.cantidad
+            );
+
+            const fila = document.createElement("div");
+            fila.className = `producto ${producto.comprado ? "comprado" : ""}`;
+
+            fila.innerHTML = `
+              <label class="producto-fila">
+                <input
+                  type="checkbox"
+                  data-indice="${indice}"
+                  ${producto.comprado ? "checked" : ""}
+                >
+                <span>
+                  <strong>${producto.nombre}</strong><br>
+                  ${producto.cantidad} ${producto.unidad}
+                </span>
+              </label>
+            `;
+
+            const acciones = document.createElement("div");
+            acciones.style.cssText = "display:flex;gap:8px;";
+
+            const botonDespensa = document.createElement("button");
+            botonDespensa.className = "boton-mini";
+            botonDespensa.textContent = "Despensa";
+
+            botonDespensa.onclick = () => {
+              despensa.push(producto.nombre);
+              guardarDatos(CLAVE_DESPENSA, despensa);
+
+              compras[claveCompra].splice(indice, 1);
+              guardarDatos(CLAVE_COMPRAS, compras);
+              renderizarCompra();
+            };
+
+            const botonEliminar = document.createElement("button");
+            botonEliminar.className = "boton-mini";
+            botonEliminar.textContent = "×";
+
+            botonEliminar.onclick = () => {
+              compras[claveCompra].splice(indice, 1);
+              guardarDatos(CLAVE_COMPRAS, compras);
+              renderizarCompra();
+            };
+
+            acciones.appendChild(botonDespensa);
+            acciones.appendChild(botonEliminar);
+            fila.appendChild(acciones);
+            tarjeta.appendChild(fila);
+          });
+        });
+
+        return tarjeta;
+      }
+
+      if (pendientes.length) {
+        contenedor.appendChild(
+          crearTarjetaCategoria("Por comprar", pendientes)
+        );
+      }
+
+      if (comprados.length) {
+        contenedor.appendChild(
+          crearTarjetaCategoria("Comprados", comprados)
+        );
+      }
+
+      if (!total) {
+        contenedor.innerHTML += `
+          <div class="tarjeta">
+            <h3>No hay ingredientes que comprar</h3>
+            <p>Comprueba que has guardado comidas en el menú de esta semana.</p>
+          </div>
+        `;
+      }
 
       document
         .getElementById("anadir-producto")
@@ -1917,6 +2059,7 @@
             const indice = Number(checkbox.dataset.indice);
             compras[claveCompra][indice].comprado = checkbox.checked;
             guardarDatos(CLAVE_COMPRAS, compras);
+            renderizarCompra();
           };
         });
     }
