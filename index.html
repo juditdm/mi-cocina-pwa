@@ -181,6 +181,12 @@
       border: 1px solid var(--borde-fuerte);
     }
 
+    .boton.peligro {
+      background: var(--peligro-suave);
+      color: var(--peligro);
+      border: 1px solid rgba(225, 112, 92, .35);
+    }
+
     .boton-mini {
       min-width: 44px;
       min-height: 44px;
@@ -812,6 +818,24 @@
 
     .modal h2 { margin: 0; font-size: 22px; }
 
+    .aviso-flotante {
+      position: fixed;
+      left: 50%;
+      bottom: calc(96px + env(safe-area-inset-bottom));
+      transform: translateX(-50%);
+      z-index: 200;
+      max-width: calc(100% - 32px);
+      padding: 14px 20px;
+      border-radius: 999px;
+      background: var(--superficie-alta);
+      border: 1px solid var(--borde-fuerte);
+      color: var(--texto);
+      font-size: 14px;
+      font-weight: 780;
+      box-shadow: 0 12px 30px rgba(0, 0, 0, .4);
+      animation: aparecer .2s ease both;
+    }
+
     @media (max-width: 480px) {
       .anadir-producto { grid-template-columns: 1fr; }
     }
@@ -851,6 +875,10 @@
 
       <div class="tarjeta tarjeta-suave">
         <h3>Esta semana</h3>
+        <p style="font-size:13px;color:var(--texto-suave);margin:0 0 14px;">
+          Estas son las comidas que has planificado. Para que aparezcan en Progreso, márcalas como cocinadas desde Hoy.
+        </p>
+
         <div class="resumen-semanal">
           <div>
             <strong id="comidas-planificadas">0</strong>
@@ -890,6 +918,10 @@
       <h2>Menú semanal</h2>
 
       <div class="tarjeta">
+        <p style="font-size:13px;color:var(--texto-suave);margin:0 0 14px;">
+          Elige una fecha para ver su semana. Después, pulsa “Editar día” para asignar recetas.
+        </p>
+
         <label>Elige un día
           <input type="date" id="fecha-menu">
         </label>
@@ -923,6 +955,10 @@
       <h2>Lista de compra</h2>
 
       <div class="tarjeta">
+        <p style="font-size:13px;color:var(--texto-suave);margin:0 0 14px;">
+          La lista se crea a partir de tu menú semanal y excluye lo que ya tienes en la despensa.
+        </p>
+
         <label>Elige un día
           <input type="date" id="fecha-compra">
         </label>
@@ -968,6 +1004,9 @@
 
       <div class="tarjeta tarjeta-hero">
         <h3>Comidas cocinadas</h3>
+        <p style="font-size:13px;color:var(--texto-medio);margin:0 0 16px;">
+          Aquí aparecen las comidas que has marcado como cocinadas desde la pantalla Hoy.
+        </p>
 
         <div class="resumen-semanal">
           <div>
@@ -1051,7 +1090,11 @@
       </div>
 
       <div class="tarjeta tarjeta-suave">
-        <h3>Copia de seguridad</h3>
+        <h3>App y copia de seguridad</h3>
+
+        <button class="boton oculto" id="boton-instalar" style="margin-bottom:12px;">
+          Instalar app en el móvil
+        </button>
 
         <button class="boton" id="boton-exportar" style="margin-bottom:12px;">
           Exportar copia de seguridad
@@ -1061,6 +1104,10 @@
           Importar copia de seguridad
           <input type="file" id="input-importar" accept=".json">
         </label>
+
+        <button class="boton peligro" id="boton-borrar-datos" style="margin-top:16px;">
+          Borrar todos los datos
+        </button>
       </div>
     </section>
   </main>
@@ -1563,6 +1610,7 @@
     let recetaCocinando = null;
     let pasoActual = 0;
     let racionesActuales = 1;
+    let instalacionPendiente = null;
 
     let temporizador = {
       activo: false,
@@ -1616,6 +1664,24 @@
     });
 
     guardarDatos(CLAVE_RECETAS, recetas);
+
+    function mostrarAviso(texto) {
+      const avisoAnterior = document.querySelector(".aviso-flotante");
+
+      if (avisoAnterior) {
+        avisoAnterior.remove();
+      }
+
+      const aviso = document.createElement("div");
+      aviso.className = "aviso-flotante";
+      aviso.textContent = texto;
+
+      document.body.appendChild(aviso);
+
+      setTimeout(() => {
+        aviso.remove();
+      }, 2600);
+    }
 
     function tengoIngrediente(nombre) {
       const nombreNormalizado = nombre.toLowerCase().trim();
@@ -1725,10 +1791,12 @@
           });
 
           guardarDatos(CLAVE_HISTORIAL, historial);
+          mostrarAviso(`“${receta.nombre}” añadida a tu progreso.`);
         }
       } else {
         historial = historial.filter(item => item.clave !== clave);
         guardarDatos(CLAVE_HISTORIAL, historial);
+        mostrarAviso("Comida marcada como pendiente.");
       }
     }
 
@@ -1841,17 +1909,17 @@
 
         contenedorHero.innerHTML = `
           <span class="etiqueta">Hoy</span>
-          <h2 class="comida-hero-nombre">Aún no has planificado comidas</h2>
+          <h2 class="comida-hero-nombre">Aún no has planificado comidas para hoy</h2>
           <p style="color:var(--texto-medio);margin:0 0 18px;">
-            Elige una receta y organiza tu día en menos de un minuto.
+            Ve a Menú, pulsa “Editar día” en el día de hoy y elige una receta.
           </p>
         `;
 
         const boton = document.createElement("button");
         boton.className = "boton";
-        boton.textContent = "Elegir receta";
+        boton.textContent = "Ir al menú";
 
-        boton.onclick = () => mostrarPantalla("recetas");
+        boton.onclick = () => mostrarPantalla("menu");
         contenedorHero.appendChild(boton);
       }
 
@@ -2032,9 +2100,9 @@
           const anadidos = anadirRecetaADespensa(receta);
 
           if (anadidos > 0) {
-            alert(`Has añadido ${anadidos} ingredientes a la despensa.`);
+            mostrarAviso(`${anadidos} ingredientes añadidos a la despensa.`);
           } else {
-            alert("Todos los ingredientes ya estaban en la despensa.");
+            mostrarAviso("Todos los ingredientes ya estaban en la despensa.");
           }
 
           renderizarRecetas();
@@ -2053,6 +2121,12 @@
           receta.favorita = !receta.favorita;
           guardarDatos(CLAVE_RECETAS, recetas);
           renderizarRecetas();
+
+          mostrarAviso(
+            receta.favorita
+              ? "Receta añadida a favoritas."
+              : "Receta quitada de favoritas."
+          );
         };
 
         cabeceraAcciones.appendChild(botonFavorito);
@@ -2195,6 +2269,7 @@
         evento.target.reset();
         cerrarModalReceta();
         renderizarRecetas();
+        mostrarAviso("Receta guardada correctamente.");
       });
 
     function detectarTiempo(paso) {
@@ -2271,6 +2346,8 @@
       } catch (error) {
         // Si el navegador bloquea el sonido, seguirán la vibración y el aviso visual.
       }
+
+      mostrarAviso("¡Tiempo terminado!");
     }
 
     function iniciarTemporizador() {
@@ -2460,7 +2537,12 @@
         botonDespensa.setAttribute("aria-label", "Añadir a despensa");
 
         botonDespensa.onclick = () => {
-          anadirIngredienteADespensa(ingrediente.nombre);
+          if (anadirIngredienteADespensa(ingrediente.nombre)) {
+            mostrarAviso(`${ingrediente.nombre} añadido a la despensa.`);
+          } else {
+            mostrarAviso("Ese ingrediente ya estaba en la despensa.");
+          }
+
           renderizarModoCocina();
         };
 
@@ -2512,6 +2594,7 @@
           renderizarModoCocina();
         } else {
           cerrarModoCocina();
+          mostrarAviso("¡Receta terminada!");
         }
       };
     }
@@ -2872,6 +2955,7 @@
 
         cerrarModalDia();
         renderizarMenu();
+        mostrarAviso("Día guardado correctamente.");
       });
 
     function generarListaDesdeMenu(semana, menu) {
@@ -2984,6 +3068,7 @@
           compras[claveCompra].splice(indice, 1);
           guardarDatos(CLAVE_COMPRAS, compras);
           renderizarCompra();
+          mostrarAviso(`${producto.nombre} añadido a la despensa.`);
         };
 
         const botonEliminar = document.createElement("button");
@@ -3105,6 +3190,11 @@
 
         guardarDatos(CLAVE_COMPRAS, compras);
         renderizarCompra();
+        mostrarAviso(
+          marcarTodo
+            ? "Todos los productos marcados como comprados."
+            : "Productos desmarcados."
+        );
       };
 
       document.getElementById("boton-anadir-producto").onclick = () => {
@@ -3116,6 +3206,7 @@
         compras[claveCompra] = generarListaDesdeMenu(semana, menu);
         guardarDatos(CLAVE_COMPRAS, compras);
         renderizarCompra();
+        mostrarAviso("Lista regenerada desde el menú semanal.");
       };
 
       const categoriasAgrupadas = {};
@@ -3203,6 +3294,7 @@
           guardarDatos(CLAVE_COMPRAS, compras);
           formularioCompraVisible = false;
           renderizarCompra();
+          mostrarAviso("Producto añadido a la lista.");
         });
 
       contenedor
@@ -3267,6 +3359,7 @@
           despensa.splice(indice, 1);
           guardarDatos(CLAVE_DESPENSA, despensa);
           renderizarDespensa();
+          mostrarAviso("Ingrediente eliminado de la despensa.");
         };
 
         fila.appendChild(botonEliminar);
@@ -3288,8 +3381,9 @@
       if (anadirIngredienteADespensa(nombre)) {
         input.value = "";
         renderizarDespensa();
+        mostrarAviso(`${nombre} añadido a la despensa.`);
       } else {
-        alert("Ese ingrediente ya está en la despensa.");
+        mostrarAviso("Ese ingrediente ya está en la despensa.");
       }
     };
 
@@ -3311,6 +3405,7 @@
         despensa = [];
         guardarDatos(CLAVE_DESPENSA, despensa);
         renderizarDespensa();
+        mostrarAviso("Despensa vaciada.");
       }
     };
 
@@ -3380,6 +3475,7 @@
           historial.splice(indiceReal, 1);
           guardarDatos(CLAVE_HISTORIAL, historial);
           renderizarHistorial();
+          mostrarAviso("Registro eliminado del historial.");
         };
 
         fila.appendChild(botonEliminar);
@@ -3430,6 +3526,7 @@
           registros.splice(indiceReal, 1);
           guardarDatos(CLAVE_REGISTROS, registros);
           renderizarProgreso();
+          mostrarAviso("Registro de peso eliminado.");
         };
 
         fila.appendChild(botonEliminar);
@@ -3501,6 +3598,7 @@
       enlace.click();
 
       URL.revokeObjectURL(enlace.href);
+      mostrarAviso("Copia de seguridad descargada.");
     }
 
     function importarCopia(archivo) {
@@ -3571,9 +3669,9 @@
 
           guardarDatos(CLAVE_RECETAS, recetas);
           renderizarProgreso();
-          alert("Copia de seguridad importada correctamente.");
+          mostrarAviso("Copia de seguridad importada correctamente.");
         } catch (error) {
-          alert("El archivo no es una copia de seguridad válida.");
+          mostrarAviso("El archivo no es una copia de seguridad válida.");
         }
       };
 
@@ -3596,6 +3694,7 @@
 
         guardarDatos(CLAVE_PERFIL, perfil);
         renderizarProgreso();
+        mostrarAviso("Objetivos guardados.");
       });
 
     document
@@ -3621,6 +3720,7 @@
         guardarDatos(CLAVE_REGISTROS, registros);
         evento.target.reset();
         renderizarProgreso();
+        mostrarAviso("Medida guardada.");
       });
 
     document.getElementById("boton-exportar").onclick = exportarCopia;
@@ -3634,6 +3734,56 @@
           importarCopia(archivo);
         }
       });
+
+    document.getElementById("boton-borrar-datos").onclick = () => {
+      const primeraConfirmacion = confirm(
+        "Esto borrará recetas guardadas, menús, compras, despensa, objetivos, registros e historial. ¿Quieres continuar?"
+      );
+
+      if (!primeraConfirmacion) return;
+
+      const segundaConfirmacion = confirm(
+        "Última confirmación: ¿seguro que quieres borrar todos los datos?"
+      );
+
+      if (!segundaConfirmacion) return;
+
+      [
+        CLAVE_RECETAS,
+        CLAVE_MENUS,
+        CLAVE_COMPRAS,
+        CLAVE_DESPENSA,
+        CLAVE_PERFIL,
+        CLAVE_REGISTROS,
+        CLAVE_HISTORIAL
+      ].forEach(clave => localStorage.removeItem(clave));
+
+      location.reload();
+    };
+
+    window.addEventListener("beforeinstallprompt", evento => {
+      evento.preventDefault();
+      instalacionPendiente = evento;
+
+      document
+        .getElementById("boton-instalar")
+        .classList.remove("oculto");
+    });
+
+    document.getElementById("boton-instalar").onclick = async () => {
+      if (!instalacionPendiente) return;
+
+      instalacionPendiente.prompt();
+
+      const resultado = await instalacionPendiente.userChoice;
+
+      if (resultado.outcome === "accepted") {
+        mostrarAviso("¡App instalada!");
+      }
+
+      instalacionPendiente = null;
+      document.getElementById("boton-instalar").classList.add("oculto");
+    };
 
     document.querySelectorAll(".nav-item").forEach(enlace => {
       enlace.addEventListener("click", evento => {
