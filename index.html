@@ -491,6 +491,57 @@
       background: var(--principal-suave);
     }
 
+    .receta-cabecera {
+      height: 96px;
+      border-radius: 18px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 42px;
+      margin-bottom: 16px;
+      background:
+        linear-gradient(150deg, rgba(240, 154, 99, .18), rgba(138, 90, 124, .16)),
+        var(--superficie-alta);
+      border: 1px solid var(--borde);
+    }
+
+    .receta-cabecera.desayuno {
+      background:
+        linear-gradient(150deg, rgba(240, 154, 99, .22), rgba(255, 214, 143, .12)),
+        var(--superficie-alta);
+    }
+
+    .receta-cabecera.comida {
+      background:
+        linear-gradient(150deg, rgba(127, 200, 169, .16), rgba(240, 154, 99, .12)),
+        var(--superficie-alta);
+    }
+
+    .receta-cabecera.cena {
+      background:
+        linear-gradient(150deg, rgba(138, 90, 124, .22), rgba(240, 154, 99, .10)),
+        var(--superficie-alta);
+    }
+
+    .receta-cabecera img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 18px;
+    }
+
+    .paso-cocina {
+      background: var(--superficie);
+      border: 1px solid var(--borde);
+      border-radius: 24px;
+      padding: 28px 22px;
+      text-align: center;
+      font-size: 27px;
+      font-weight: 820;
+      line-height: 1.3;
+      margin: 18px 0;
+    }
+
     .filtros,
     .chips-navegacion {
       display: flex;
@@ -679,17 +730,6 @@
       height: 100%;
       background: var(--principal);
       transition: width .25s ease;
-    }
-
-    .paso-actual {
-      flex: 1;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      text-align: center;
-      font-size: 29px;
-      font-weight: 830;
-      padding: 30px 0;
     }
 
     .paso-numero {
@@ -1457,6 +1497,12 @@
       const contenedor = document.getElementById("lista-recetas");
       contenedor.innerHTML = "";
 
+      const emojis = {
+        Desayuno: "🥣",
+        Comida: "🍽️",
+        Cena: "🌙"
+      };
+
       const recetasFiltradas = recetas.filter(receta => {
         if (filtroActual === "todas") return true;
         if (filtroActual === "favoritas") return receta.favorita;
@@ -1467,27 +1513,41 @@
         const tarjeta = document.createElement("article");
         tarjeta.className = "tarjeta";
 
+        const claseTipo = receta.tipo.toLowerCase();
+
         tarjeta.innerHTML = `
-          <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:12px;">
-            <div>
-              <span class="etiqueta">${receta.tipo}</span>
-              <h3 style="margin:12px 0 10px;">${receta.nombre}</h3>
-              <div style="display:flex;gap:8px;flex-wrap:wrap;">
-                <span class="dato">🔥 ${receta.calorias} kcal</span>
-                <span class="dato">💪 ${receta.proteina} g</span>
-              </div>
-            </div>
-            <button class="favorito ${receta.favorita ? "activo" : ""}">
-              ${receta.favorita ? "♥" : "♡"}
-            </button>
+          <div class="receta-cabecera ${claseTipo}">
+            ${receta.imagen
+              ? `<img src="${receta.imagen}" alt="${receta.nombre}">`
+              : emojis[receta.tipo] || "🍲"}
+          </div>
+
+          <span class="etiqueta">${receta.tipo}</span>
+          <h3 style="margin:12px 0 10px;">${receta.nombre}</h3>
+
+          <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px;">
+            <span class="dato">🔥 ${receta.calorias} kcal</span>
+            <span class="dato">💪 ${receta.proteina} g</span>
+            <span class="dato">👥 ${receta.racionesBase || 1} ración${(receta.racionesBase || 1) === 1 ? "" : "es"}</span>
           </div>
         `;
 
-        tarjeta.querySelector(".favorito").onclick = () => {
+        const cabeceraAcciones = document.createElement("div");
+        cabeceraAcciones.style.cssText =
+          "display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:14px;";
+
+        const botonFavorito = document.createElement("button");
+        botonFavorito.className = `favorito ${receta.favorita ? "activo" : ""}`;
+        botonFavorito.textContent = receta.favorita ? "♥" : "♡";
+        botonFavorito.setAttribute("aria-label", "Marcar como favorita");
+
+        botonFavorito.onclick = () => {
           receta.favorita = !receta.favorita;
           guardarDatos(CLAVE_RECETAS, recetas);
           renderizarRecetas();
         };
+
+        cabeceraAcciones.appendChild(botonFavorito);
 
         const botonCocinar = document.createElement("button");
         botonCocinar.className = "boton";
@@ -1495,6 +1555,7 @@
 
         botonCocinar.onclick = () => abrirModoCocina(receta);
 
+        tarjeta.appendChild(cabeceraAcciones);
         tarjeta.appendChild(botonCocinar);
         contenedor.appendChild(tarjeta);
       });
@@ -1644,7 +1705,7 @@
           Paso ${pasoActual + 1} de ${pasos.length}
         </div>
 
-        <div class="paso-actual">${paso}</div>
+        <div class="paso-cocina">${paso}</div>
 
         <div class="tarjeta">
           <h3>Ingredientes para ${racionesActuales} ración${racionesActuales === 1 ? "" : "es"}</h3>
