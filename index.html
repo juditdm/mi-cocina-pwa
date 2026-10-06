@@ -30,13 +30,10 @@
       --peligro-suave: rgba(225, 112, 92, .14);
       --radio-tarjeta: 24px;
       --radio-boton: 16px;
-      --sombra: 0 10px 30px rgba(0, 0, 0, .24);
-      --espacio-1: 4px;
       --espacio-2: 8px;
       --espacio-3: 12px;
       --espacio-4: 16px;
       --espacio-5: 20px;
-      --espacio-6: 24px;
     }
 
     * {
@@ -44,9 +41,7 @@
       -webkit-tap-highlight-color: transparent;
     }
 
-    html {
-      scroll-behavior: smooth;
-    }
+    html { scroll-behavior: smooth; }
 
     body {
       margin: 0;
@@ -70,28 +65,11 @@
       font-size: 13px;
       font-weight: 700;
       text-transform: capitalize;
-      letter-spacing: .04em;
     }
 
-    h1 {
-      margin: 4px 0 0;
-      font-size: 30px;
-      font-weight: 850;
-      letter-spacing: -.7px;
-    }
-
-    h2 {
-      margin: 18px 0 16px;
-      font-size: 25px;
-      font-weight: 820;
-      letter-spacing: -.5px;
-    }
-
-    h3 {
-      margin: 0 0 12px;
-      font-size: 17px;
-      font-weight: 760;
-    }
+    h1 { margin: 4px 0 0; font-size: 30px; font-weight: 850; letter-spacing: -.7px; }
+    h2 { margin: 18px 0 16px; font-size: 25px; font-weight: 820; letter-spacing: -.5px; }
+    h3 { margin: 0 0 12px; font-size: 17px; font-weight: 760; }
 
     .contenido {
       padding: 8px 18px 28px;
@@ -117,18 +95,14 @@
         var(--superficie);
       border-color: rgba(240, 154, 99, .26);
       padding: 22px;
-      margin-bottom: 14px;
     }
 
     .tarjeta-suave {
       background: var(--superficie-suave);
-      border-color: var(--borde);
     }
 
     .etiqueta {
       display: inline-flex;
-      align-items: center;
-      gap: 6px;
       padding: 6px 11px;
       border-radius: 999px;
       background: var(--principal-suave);
@@ -139,16 +113,10 @@
       letter-spacing: .09em;
     }
 
-    .etiqueta-neutra {
-      background: var(--superficie-alta);
-      color: var(--texto-medio);
-    }
-
     .comida-hero-nombre {
       margin: 14px 0 6px;
       font-size: 27px;
       font-weight: 830;
-      letter-spacing: -.6px;
       line-height: 1.15;
     }
 
@@ -172,9 +140,7 @@
       font-weight: 750;
     }
 
-    .progreso-dia {
-      margin: 18px 0 16px;
-    }
+    .progreso-dia { margin: 18px 0 16px; }
 
     .progreso-dia-texto {
       display: flex;
@@ -203,7 +169,6 @@
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      gap: 8px;
       width: 100%;
       min-height: 54px;
       padding: 15px 20px;
@@ -229,6 +194,7 @@
     }
 
     .boton-mini {
+      min-width: 44px;
       min-height: 44px;
       padding: 10px 14px;
       border: 1px solid var(--borde);
@@ -241,9 +207,7 @@
       transition: transform .15s ease;
     }
 
-    .boton-mini:active {
-      transform: scale(.95);
-    }
+    .boton-mini:active { transform: scale(.95); }
 
     .acciones-rapidas {
       display: grid;
@@ -266,14 +230,7 @@
       color: var(--texto-medio);
       font-size: 12px;
       font-weight: 780;
-      text-align: center;
       cursor: pointer;
-      transition: transform .15s ease, border-color .15s ease;
-    }
-
-    .accion-rapida:active {
-      transform: scale(.96);
-      border-color: var(--borde-fuerte);
     }
 
     .accion-rapida svg {
@@ -295,19 +252,9 @@
       border-bottom: 1px solid var(--borde);
     }
 
-    .comida-hoy:last-child {
-      border-bottom: none;
-    }
-
-    .comida-hoy strong {
-      display: block;
-      font-size: 15px;
-    }
-
-    .comida-hoy span {
-      font-size: 13px;
-      color: var(--texto-suave);
-    }
+    .comida-hoy:last-child { border-bottom: none; }
+    .comida-hoy strong { display: block; font-size: 15px; }
+    .comida-hoy span { font-size: 13px; color: var(--texto-suave); }
 
     .estado {
       min-height: 32px;
@@ -319,7 +266,6 @@
       color: #E4C3D8;
       font-size: 12px;
       font-weight: 800;
-      white-space: nowrap;
     }
 
     .estado.cocinada {
@@ -357,7 +303,6 @@
       font-weight: 780;
       color: var(--texto-suave);
       text-transform: uppercase;
-      letter-spacing: .05em;
     }
 
     label {
@@ -432,7 +377,6 @@
       font-size: 10px;
       font-weight: 800;
       text-decoration: none;
-      transition: background .15s ease, color .15s ease, transform .15s ease;
     }
 
     .nav-item svg {
@@ -445,19 +389,12 @@
       stroke-linejoin: round;
     }
 
-    .nav-item:active {
-      transform: scale(.94);
-    }
-
     .nav-item.activa {
       background: var(--principal-suave);
       color: var(--principal);
     }
 
-    .semana {
-      display: grid;
-      gap: 12px;
-    }
+    .semana { display: grid; gap: 12px; }
 
     .dia-semana {
       border: 1px solid var(--borde);
@@ -468,9 +405,7 @@
       scroll-margin-top: 78px;
     }
 
-    .dia-semana.hoy {
-      border-color: rgba(240, 154, 99, .5);
-    }
+    .dia-semana.hoy { border-color: rgba(240, 154, 99, .5); }
 
     .dia-cabecera {
       display: flex;
@@ -576,6 +511,7 @@
       align-items: center;
       justify-content: space-between;
       gap: 12px;
+      min-height: 64px;
       padding: 12px 0;
       border-bottom: 1px solid var(--borde);
     }
@@ -588,18 +524,24 @@
     .producto-fila {
       display: flex;
       align-items: center;
-      gap: 12px;
+      gap: 14px;
       margin: 0;
       font-weight: 650;
       text-transform: none;
       color: var(--texto);
+      cursor: pointer;
     }
 
     .producto-fila input {
-      width: 26px;
-      height: 26px;
+      width: 28px;
+      height: 28px;
       margin: 0;
       accent-color: var(--principal);
+    }
+
+    .acciones-producto {
+      display: flex;
+      gap: 8px;
     }
 
     .anadir-producto {
@@ -1250,6 +1192,7 @@
     let racionesActuales = 1;
     let diaEditando = null;
     let semanaEditando = null;
+    let formularioCompraVisible = false;
 
     if (!localStorage.getItem(CLAVE_RECETAS)) {
       guardarDatos(CLAVE_RECETAS, recetas);
@@ -2039,11 +1982,14 @@
         `;
 
         const acciones = document.createElement("div");
-        acciones.style.cssText = "display:flex;gap:8px;";
+        acciones.className = "acciones-producto";
 
         const botonDespensa = document.createElement("button");
         botonDespensa.className = "boton-mini";
-        botonDespensa.textContent = "Despensa";
+        botonDespensa.textContent = "🧺";
+
+        botonDespensa.title = "Guardar en despensa";
+        botonDespensa.setAttribute("aria-label", "Guardar en despensa");
 
         botonDespensa.onclick = () => {
           despensa.push(producto.nombre);
@@ -2057,6 +2003,7 @@
         const botonEliminar = document.createElement("button");
         botonEliminar.className = "boton-mini";
         botonEliminar.textContent = "×";
+        botonEliminar.setAttribute("aria-label", "Eliminar producto");
 
         botonEliminar.onclick = () => {
           compras[claveCompra].splice(indice, 1);
@@ -2121,12 +2068,22 @@
             <div style="width:${porcentaje}%;"></div>
           </div>
 
-          <button class="boton secundario" id="regenerar-lista" style="margin-top:16px;">
-            Regenerar lista
-          </button>
+          <div style="display:grid;gap:10px;margin-top:16px;">
+            <button class="boton" id="marcar-todos">
+              ${pendientes.length ? "Marcar todos como comprados" : "Desmarcar todos"}
+            </button>
+
+            <button class="boton secundario" id="boton-anadir-producto">
+              ${formularioCompraVisible ? "Ocultar formulario" : "+ Añadir producto"}
+            </button>
+
+            <button class="boton secundario" id="regenerar-lista">
+              Regenerar lista
+            </button>
+          </div>
         </div>
 
-        <form id="anadir-producto" class="tarjeta">
+        <form id="anadir-producto" class="tarjeta ${formularioCompraVisible ? "" : "oculto"}">
           <input type="hidden" value="${semana}" id="semana-compra">
 
           <div class="anadir-producto">
@@ -2152,6 +2109,22 @@
           <button type="submit">Añadir producto</button>
         </form>
       `;
+
+      document.getElementById("marcar-todos").onclick = () => {
+        const marcarTodo = pendientes.length > 0;
+
+        compras[claveCompra].forEach(producto => {
+          producto.comprado = marcarTodo;
+        });
+
+        guardarDatos(CLAVE_COMPRAS, compras);
+        renderizarCompra();
+      };
+
+      document.getElementById("boton-anadir-producto").onclick = () => {
+        formularioCompraVisible = !formularioCompraVisible;
+        renderizarCompra();
+      };
 
       document.getElementById("regenerar-lista").onclick = () => {
         compras[claveCompra] = generarListaDesdeMenu(semana, menu);
@@ -2242,6 +2215,7 @@
           });
 
           guardarDatos(CLAVE_COMPRAS, compras);
+          formularioCompraVisible = false;
           renderizarCompra();
         });
 
