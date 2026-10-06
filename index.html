@@ -571,6 +571,49 @@
       margin-bottom: 16px;
     }
 
+    .tarjeta-temporizador {
+      background: var(--principal-suave);
+      border: 1px solid rgba(240, 154, 99, .3);
+      border-radius: 22px;
+      padding: 18px;
+      margin-bottom: 16px;
+      text-align: center;
+    }
+
+    .texto-temporizador {
+      font-size: 42px;
+      font-weight: 850;
+      color: var(--principal);
+      letter-spacing: 1px;
+      margin: 8px 0 12px;
+    }
+
+    .barra-temporizador {
+      height: 8px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, .1);
+      overflow: hidden;
+      margin-bottom: 14px;
+    }
+
+    .barra-temporizador div {
+      height: 100%;
+      background: var(--principal);
+      transition: width 1s linear;
+    }
+
+    .controles-temporizador {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .temporizador-terminado {
+      color: var(--verde);
+      font-weight: 850;
+      margin-bottom: 10px;
+    }
+
     .consejo-cocina {
       background: var(--principal-suave);
       border: 1px solid rgba(240, 154, 99, .25);
@@ -1431,6 +1474,14 @@
     let recetaCocinando = null;
     let pasoActual = 0;
     let racionesActuales = 1;
+
+    let temporizador = {
+      activo: false,
+      total: 0,
+      segundosRestantes: 0,
+      intervalo: null
+    };
+
     let diaEditando = null;
     let semanaEditando = null;
     let formularioCompraVisible = false;
@@ -1856,6 +1907,127 @@
         renderizarRecetas();
       });
 
+    function detectarTiempo(paso) {
+      const minutos = paso.match(/(\d+)\s*(?:a\s*\d+\s*)?minutos?/i);
+
+      if (minutos) {
+        return Number(minutos[1]) * 60;
+      }
+
+      const segundos = paso.match(/(\d+)\s*(?:a\s*\d+\s*)?segundos?/i);
+
+      if (segundos) {
+        return Number(segundos[1]);
+      }
+
+      return 0;
+    }
+
+    function detenerTemporizador() {
+      if (temporizador.intervalo) {
+        clearInterval(temporizador.intervalo);
+      }
+
+      temporizador.intervalo = null;
+      temporizador.activo = false;
+    }
+
+    function formatearTiempo(segundos) {
+      const minutos = Math.floor(segundos / 60);
+      const resto = segundos % 60;
+
+      return `${String(minutos).padStart(2, "0")}:${String(resto).padStart(2, "0")}`;
+    }
+
+    function actualizarTemporizador() {
+      const texto = document.getElementById("texto-temporizador");
+      const barra = document.getElementById("barra-temporizador");
+
+      if (!texto || !barra) return;
+
+      texto.textContent = formatearTiempo(temporizador.segundosRestantes);
+
+      const porcentaje = temporizador.total
+        ? (temporizador.segundosRestantes / temporizador.total) * 100
+        : 0;
+
+      barra.querySelector("div").style.width = `${porcentaje}%`;
+    }
+
+    function avisarFinTemporizador() {
+      if (navigator.vibrate) {
+        navigator.vibrate([300, 150, 300]);
+      }
+
+      try {
+        const contexto = new (window.AudioContext || window.webkitAudioContext)();
+        const oscilador = contexto.createOscillator();
+        const ganancia = contexto.createGain();
+
+        oscilador.connect(ganancia);
+        ganancia.connect(contexto.destination);
+
+        oscilador.frequency.value = 880;
+        oscilador.type = "sine";
+
+        ganancia.gain.setValueAtTime(0.2, contexto.currentTime);
+        ganancia.gain.exponentialRampToValueAtTime(
+          0.001,
+          contexto.currentTime + 1
+        );
+
+        oscilador.start();
+        oscilador.stop(contexto.currentTime + 1);
+      } catch (error) {
+        // Si el navegador bloquea el sonido, seguirá la vibración y el aviso visual.
+      }
+    }
+
+    function iniciarTemporizador() {
+      if (temporizador.intervalo || temporizador.segundosRestantes <= 0) {
+        return;
+      }
+
+      temporizador.activo = true;
+
+      temporizador.intervalo = setInterval(() => {
+        temporizador.segundosRestantes -= 1;
+        actualizarTemporizador();
+
+        if (temporizador.segundosRestantes <= 0) {
+          detenerTemporizador();
+          temporizador.segundosRestantes = 0;
+
+          const aviso = document.getElementById("aviso-temporizador");
+
+          if (aviso) {
+            aviso.textContent = "¡Tiempo terminado!";
+            aviso.classList.remove("oculto");
+          }
+
+          avisarFinTemporizador();
+        }
+      }, 1000);
+
+      actualizarTemporizador();
+    }
+
+    function pausarTemporizador() {
+      detenerTemporizador();
+    }
+
+    function reiniciarTemporizador() {
+      detenerTemporizador();
+      temporizador.segundosRestantes = temporizador.total;
+      actualizarTemporizador();
+
+      const aviso = document.getElementById("aviso-temporizador");
+
+      if (aviso) {
+        aviso.classList.add("oculto");
+      }
+    }
+
     function abrirModoCocina(receta) {
       recetaCocinando = receta;
       pasoActual = 0;
@@ -1866,6 +2038,10 @@
     }
 
     function cerrarModoCocina() {
+      detenerTemporizador();
+      temporizador.total = 0;
+      temporizador.segundosRestantes = 0;
+
       document.getElementById("modo-cocina").classList.add("oculto");
       recetaCocinando = null;
       pasoActual = 0;
@@ -1887,6 +2063,12 @@
       const consejo = consejos.length
         ? consejos[pasoActual % consejos.length]
         : "";
+
+      const segundosPaso = detectarTiempo(paso);
+
+      detenerTemporizador();
+      temporizador.total = segundosPaso;
+      temporizador.segundosRestantes = segundosPaso;
 
       contenedor.innerHTML = `
         <div class="modo-cocina-cabecera">
@@ -1916,6 +2098,29 @@
         </div>
 
         <div class="paso-cocina">${paso}</div>
+
+        ${segundosPaso > 0 ? `
+          <div class="tarjeta-temporizador">
+            <span class="etiqueta">Temporizador</span>
+
+            <div class="texto-temporizador" id="texto-temporizador">
+              ${formatearTiempo(temporizador.segundosRestantes)}
+            </div>
+
+            <div class="barra-temporizador" id="barra-temporizador">
+              <div style="width:100%;"></div>
+            </div>
+
+            <p class="temporizador-terminado oculto" id="aviso-temporizador">
+              ¡Tiempo terminado!
+            </p>
+
+            <div class="controles-temporizador">
+              <button class="boton" id="iniciar-temporizador">Iniciar</button>
+              <button class="boton secundario" id="reiniciar-temporizador">Reiniciar</button>
+            </div>
+          </div>
+        ` : ""}
 
         ${consejo ? `
           <div class="consejo-cocina">
@@ -1972,6 +2177,21 @@
           renderizarModoCocina();
         }
       };
+
+      if (segundosPaso > 0) {
+        document.getElementById("iniciar-temporizador").onclick = () => {
+          if (temporizador.activo) {
+            pausarTemporizador();
+            document.getElementById("iniciar-temporizador").textContent = "Iniciar";
+          } else {
+            iniciarTemporizador();
+            document.getElementById("iniciar-temporizador").textContent = "Pausar";
+          }
+        };
+
+        document.getElementById("reiniciar-temporizador").onclick =
+          reiniciarTemporizador;
+      }
 
       document.getElementById("paso-anterior").onclick = () => {
         if (pasoActual > 0) {
