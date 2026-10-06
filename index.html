@@ -390,6 +390,41 @@
       letter-spacing: .06em;
     }
 
+    .chips-navegacion {
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+      padding: 4px 2px 10px;
+      margin-bottom: 14px;
+      scrollbar-width: none;
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      background: linear-gradient(to bottom, var(--fondo) 75%, transparent);
+    }
+
+    .chips-navegacion::-webkit-scrollbar {
+      display: none;
+    }
+
+    .chip-navegacion {
+      min-height: 42px;
+      padding: 10px 16px;
+      border-radius: 999px;
+      border: 1.5px solid var(--borde);
+      background: var(--superficie);
+      color: var(--texto-suave);
+      font-size: 14px;
+      font-weight: 780;
+      white-space: nowrap;
+      cursor: pointer;
+      transition: transform .15s ease, background .15s ease, color .15s ease;
+    }
+
+    .chip-navegacion:active {
+      transform: scale(.94);
+    }
+
     .semana {
       display: grid;
       gap: 12px;
@@ -401,6 +436,7 @@
       padding: 16px;
       background: var(--superficie);
       cursor: pointer;
+      scroll-margin-top: 78px;
       transition: transform .15s ease, border-color .15s ease;
     }
 
@@ -592,6 +628,10 @@
       border-radius: 999px;
       background: var(--principal);
       transition: width .3s ease;
+    }
+
+    .categoria-compra {
+      scroll-margin-top: 78px;
     }
 
     .oculto {
@@ -821,6 +861,8 @@
         </label>
       </div>
 
+      <div id="chips-dias" class="chips-navegacion"></div>
+
       <div id="resumen-menu" class="tarjeta tarjeta-destacada oculto">
         <h3 id="titulo-semana"></h3>
 
@@ -859,6 +901,7 @@
         </label>
       </div>
 
+      <div id="chips-categorias" class="chips-navegacion"></div>
       <div id="contenido-compra"></div>
     </section>
   </main>
@@ -1612,6 +1655,30 @@
       };
     }
 
+    function crearChipsDias(nombresDias) {
+      const contenedor = document.getElementById("chips-dias");
+      contenedor.innerHTML = "";
+
+      nombresDias.forEach(nombreDia => {
+        const chip = document.createElement("button");
+        chip.className = "chip-navegacion";
+        chip.textContent = nombreDia;
+
+        chip.onclick = () => {
+          const destino = document.getElementById(`dia-${nombreDia}`);
+
+          if (destino) {
+            destino.scrollIntoView({
+              behavior: "smooth",
+              block: "start"
+            });
+          }
+        };
+
+        contenedor.appendChild(chip);
+      });
+    }
+
     function renderizarMenu() {
       const fechaInput = document.getElementById("fecha-menu");
       const vistaSemana = document.getElementById("vista-semana");
@@ -1624,6 +1691,7 @@
       const fecha = fechaInput.value;
 
       if (!fecha) {
+        document.getElementById("chips-dias").innerHTML = "";
         vistaSemana.innerHTML = "";
         resumen.classList.add("oculto");
         return;
@@ -1658,10 +1726,6 @@
 
       resumen.classList.remove("oculto");
 
-      vistaSemana.innerHTML = "";
-      const contenedorSemana = document.createElement("div");
-      contenedorSemana.className = "semana";
-
       const nombresDias = [
         "Lunes",
         "Martes",
@@ -1671,6 +1735,12 @@
         "Sábado",
         "Domingo"
       ];
+
+      crearChipsDias(nombresDias);
+
+      vistaSemana.innerHTML = "";
+      const contenedorSemana = document.createElement("div");
+      contenedorSemana.className = "semana";
 
       const tiposComida = ["Desayuno", "Comida", "Cena"];
       const fechaHoy = obtenerFechaISO(new Date());
@@ -1682,6 +1752,7 @@
 
         const tarjetaDia = document.createElement("div");
         tarjetaDia.className = `dia-semana ${fechaISO === fechaHoy ? "hoy" : ""}`;
+        tarjetaDia.id = `dia-${nombreDia}`;
 
         tarjetaDia.innerHTML = `
           <div class="dia-cabecera">
@@ -1831,6 +1902,106 @@
       return Object.values(productos);
     }
 
+    function crearChipsCategorias(categorias) {
+      const contenedor = document.getElementById("chips-categorias");
+      contenedor.innerHTML = "";
+
+      categorias.forEach(categoria => {
+        const chip = document.createElement("button");
+        chip.className = "chip-navegacion";
+        chip.textContent = categoria;
+
+        chip.onclick = () => {
+          const idCategoria = `categoria-${categoria
+            .toLowerCase()
+            .replace(/\s+/g, "-")
+            .replace(/[^\w-]/g, "")}`;
+
+          const destino = document.getElementById(idCategoria);
+
+          if (destino) {
+            destino.scrollIntoView({
+              behavior: "smooth",
+              block: "start"
+            });
+          }
+        };
+
+        contenedor.appendChild(chip);
+      });
+    }
+
+    function crearTarjetaCategoria(categoria, productosCategoria, claveCompra, productos) {
+      const idCategoria = `categoria-${categoria
+        .toLowerCase()
+        .replace(/\s+/g, "-")
+        .replace(/[^\w-]/g, "")}`;
+
+      const tarjeta = document.createElement("div");
+      tarjeta.className = "tarjeta categoria-compra";
+      tarjeta.id = idCategoria;
+
+      tarjeta.innerHTML = `<h3>${categoria}</h3>`;
+
+      productosCategoria.forEach(producto => {
+        const indice = productos.findIndex(item =>
+          item.nombre === producto.nombre &&
+          item.unidad === producto.unidad &&
+          item.cantidad === producto.cantidad
+        );
+
+        const fila = document.createElement("div");
+        fila.className = `producto ${producto.comprado ? "comprado" : ""}`;
+
+        fila.innerHTML = `
+          <label class="producto-fila">
+            <input
+              type="checkbox"
+              data-indice="${indice}"
+              ${producto.comprado ? "checked" : ""}
+            >
+            <span>
+              <strong>${producto.nombre}</strong><br>
+              ${producto.cantidad} ${producto.unidad}
+            </span>
+          </label>
+        `;
+
+        const acciones = document.createElement("div");
+        acciones.style.cssText = "display:flex;gap:8px;";
+
+        const botonDespensa = document.createElement("button");
+        botonDespensa.className = "boton-mini";
+        botonDespensa.textContent = "Despensa";
+
+        botonDespensa.onclick = () => {
+          despensa.push(producto.nombre);
+          guardarDatos(CLAVE_DESPENSA, despensa);
+
+          compras[claveCompra].splice(indice, 1);
+          guardarDatos(CLAVE_COMPRAS, compras);
+          renderizarCompra();
+        };
+
+        const botonEliminar = document.createElement("button");
+        botonEliminar.className = "boton-mini";
+        botonEliminar.textContent = "×";
+
+        botonEliminar.onclick = () => {
+          compras[claveCompra].splice(indice, 1);
+          guardarDatos(CLAVE_COMPRAS, compras);
+          renderizarCompra();
+        };
+
+        acciones.appendChild(botonDespensa);
+        acciones.appendChild(botonEliminar);
+        fila.appendChild(acciones);
+        tarjeta.appendChild(fila);
+      });
+
+      return tarjeta;
+    }
+
     function renderizarCompra() {
       const fechaInput = document.getElementById("fecha-compra");
       const contenedor = document.getElementById("contenido-compra");
@@ -1842,6 +2013,7 @@
       const fecha = fechaInput.value;
 
       if (!fecha) {
+        document.getElementById("chips-categorias").innerHTML = "";
         contenedor.innerHTML = "";
         return;
       }
@@ -1863,6 +2035,10 @@
       const total = productos.length;
       const hechos = comprados.length;
       const porcentaje = total ? (hechos / total) * 100 : 0;
+
+      const categorias = [...new Set(pendientes.map(p => p.categoria))];
+
+      crearChipsCategorias(categorias);
 
       contenedor.innerHTML = `
         <div class="tarjeta progreso-compra">
@@ -1918,99 +2094,60 @@
         renderizarCompra();
       };
 
-      function crearTarjetaCategoria(titulo, listaProductos) {
-        const tarjeta = document.createElement("div");
-        tarjeta.className = "tarjeta";
-        tarjeta.innerHTML = `<h3>${titulo}</h3>`;
+      const categoriasAgrupadas = {};
 
-        const categorias = {};
+      pendientes.forEach(producto => {
+        if (!categoriasAgrupadas[producto.categoria]) {
+          categoriasAgrupadas[producto.categoria] = [];
+        }
 
-        listaProductos.forEach(producto => {
-          if (!categorias[producto.categoria]) {
-            categorias[producto.categoria] = [];
-          }
+        categoriasAgrupadas[producto.categoria].push(producto);
+      });
 
-          categorias[producto.categoria].push(producto);
-        });
-
-        Object.entries(categorias).forEach(([categoria, items]) => {
-          const subtitulo = document.createElement("p");
-          subtitulo.textContent = categoria;
-          subtitulo.style.cssText =
-            "margin:14px 0 4px;font-size:12px;font-weight:800;color:var(--texto-suave);text-transform:uppercase;letter-spacing:.07em;";
-
-          tarjeta.appendChild(subtitulo);
-
-          items.forEach(producto => {
-            const indice = productos.findIndex(item =>
-              item.nombre === producto.nombre &&
-              item.unidad === producto.unidad &&
-              item.cantidad === producto.cantidad
-            );
-
-            const fila = document.createElement("div");
-            fila.className = `producto ${producto.comprado ? "comprado" : ""}`;
-
-            fila.innerHTML = `
-              <label class="producto-fila">
-                <input
-                  type="checkbox"
-                  data-indice="${indice}"
-                  ${producto.comprado ? "checked" : ""}
-                >
-                <span>
-                  <strong>${producto.nombre}</strong><br>
-                  ${producto.cantidad} ${producto.unidad}
-                </span>
-              </label>
-            `;
-
-            const acciones = document.createElement("div");
-            acciones.style.cssText = "display:flex;gap:8px;";
-
-            const botonDespensa = document.createElement("button");
-            botonDespensa.className = "boton-mini";
-            botonDespensa.textContent = "Despensa";
-
-            botonDespensa.onclick = () => {
-              despensa.push(producto.nombre);
-              guardarDatos(CLAVE_DESPENSA, despensa);
-
-              compras[claveCompra].splice(indice, 1);
-              guardarDatos(CLAVE_COMPRAS, compras);
-              renderizarCompra();
-            };
-
-            const botonEliminar = document.createElement("button");
-            botonEliminar.className = "boton-mini";
-            botonEliminar.textContent = "×";
-
-            botonEliminar.onclick = () => {
-              compras[claveCompra].splice(indice, 1);
-              guardarDatos(CLAVE_COMPRAS, compras);
-              renderizarCompra();
-            };
-
-            acciones.appendChild(botonDespensa);
-            acciones.appendChild(botonEliminar);
-            fila.appendChild(acciones);
-            tarjeta.appendChild(fila);
-          });
-        });
-
-        return tarjeta;
-      }
-
-      if (pendientes.length) {
+      Object.entries(categoriasAgrupadas).forEach(([categoria, items]) => {
         contenedor.appendChild(
-          crearTarjetaCategoria("Por comprar", pendientes)
+          crearTarjetaCategoria(
+            categoria,
+            items,
+            claveCompra,
+            productos
+          )
         );
-      }
+      });
 
       if (comprados.length) {
-        contenedor.appendChild(
-          crearTarjetaCategoria("Comprados", comprados)
-        );
+        const tarjetaComprados = document.createElement("div");
+        tarjetaComprados.className = "tarjeta";
+        tarjetaComprados.innerHTML = "<h3>Comprados</h3>";
+
+        comprados.forEach(producto => {
+          const indice = productos.findIndex(item =>
+            item.nombre === producto.nombre &&
+            item.unidad === producto.unidad &&
+            item.cantidad === producto.cantidad
+          );
+
+          const fila = document.createElement("div");
+          fila.className = "producto comprado";
+
+          fila.innerHTML = `
+            <label class="producto-fila">
+              <input
+                type="checkbox"
+                data-indice="${indice}"
+                checked
+              >
+              <span>
+                <strong>${producto.nombre}</strong><br>
+                ${producto.cantidad} ${producto.unidad}
+              </span>
+            </label>
+          `;
+
+          tarjetaComprados.appendChild(fila);
+        });
+
+        contenedor.appendChild(tarjetaComprados);
       }
 
       if (!total) {
